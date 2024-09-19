@@ -21,5 +21,6 @@
     "outDir": "dist",
     "target": "ES2022"
   },
-  "exclude": ["test"]
+  "exclude": ["node_modules", "dist", ".eslintrc.js"],
+  "include": ["./src"]
 }
