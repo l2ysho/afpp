@@ -2,7 +2,6 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 import { createCanvas } from "canvas";
-// import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 
 import type {
   TextContent,
@@ -51,7 +50,6 @@ const parsePdfFileBuffer = async (pathToFile: string) => {
 const pdf2string = async (source: string | Buffer | Uint8Array) => {
   if (typeof source === "string") {
     return parsePdfFileBuffer(source);
-    // return console.error("implement");
   }
   if (Buffer.isBuffer(source)) {
     return;
