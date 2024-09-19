@@ -21,6 +21,6 @@
     "outDir": "dist",
     "target": "ES2022"
   },
-  "exclude": ["node_modules", "dist", ".eslintrc.js"],
+  "exclude": ["node_modules", "dist", ".eslintrc.js", "commitlint.config.js"],
   "include": ["./src"]
 }
