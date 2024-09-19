@@ -1,0 +1,44 @@
+{
+  "name": "afpp",
+  "version": "0.0.1",
+  "description": "another f*cking pdf parser",
+  "types": "./dist/types/index.d.ts",
+  "main": "./dist/index.js",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "test": "test",
+    "prebuild": "rm -rf dist",
+    "build": "tsc -p tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/l2ysho/afpp.git"
+  },
+  "keywords": [
+    "pdf",
+    "parse-pdf",
+    "pdf-parser",
+    "pdf.js",
+    "pdf2text",
+    "pdf2json",
+    "pdfreader",
+    "pdf-to-text",
+    "parser-pdf"
+  ],
+  "author": "l2ysho",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/l2ysho/afpp/issues"
+  },
+  "homepage": "https://github.com/l2ysho/afpp#readme",
+  "dependencies": {
+    "pdfjs-dist": "4.6.82"
+  },
+  "devDependencies": {
+    "@types/node": "22.5.5",
+    "tsx": "4.19.1",
+    "typescript": "5.6.2"
+  }
+}
