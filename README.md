@@ -19,6 +19,8 @@ But if you’ve encountered one or more of these issues:
 - buggy as shit
 - not working in esm/commonjs
 - old pdfjs-dist as peer dependency
+- no typescript support
+- parsing of encrypted pdf files (password needed)
 
 then you might find this package useful.
 

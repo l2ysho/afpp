@@ -10,11 +10,11 @@ import type {
 } from "pdfjs-dist/types/src/display/api.js";
 import { PDFPageProxy } from "pdfjs-dist/types/web/interfaces";
 
-const parsePdfFileBuffer = async (pathToFile: string) => {
-  const fileBase64 = await readFile(pathToFile, {});
+const parsePdfFileBuffer = async (data: Uint8Array, options?: ParseOptions) => {
   return import("pdfjs-dist/legacy/build/pdf.mjs").then(async (pdfjsLib) => {
     const loadingTask = pdfjsLib.getDocument({
-      data: new Uint8Array(fileBase64),
+      data,
+      password: options?.password,
     });
 
     const pdfDocument = await loadingTask.promise;
@@ -46,16 +46,26 @@ const parsePdfFileBuffer = async (pathToFile: string) => {
   });
 };
 
-//TODO check more valid types + password
-const pdf2string = async (source: string | Buffer | Uint8Array) => {
+type ParseOptions = {
+  password?: string;
+};
+
+const pdf2string = async (
+  source: string | Buffer | Uint8Array,
+  options?: ParseOptions
+) => {
   if (typeof source === "string") {
-    return parsePdfFileBuffer(source);
+    const fileBase64 = await readFile(source, {});
+    const data = new Uint8Array(fileBase64);
+    return parsePdfFileBuffer(data, options);
   }
   if (Buffer.isBuffer(source)) {
-    return;
+    const fileBase64 = await readFile(source, {});
+    const data = new Uint8Array(fileBase64);
+    return parsePdfFileBuffer(data, options);
   }
   if (source instanceof Uint8Array) {
-    return;
+    return parsePdfFileBuffer(source, options);
   }
   throw new Error(`Invalid source type: ${typeof source}`);
 };
