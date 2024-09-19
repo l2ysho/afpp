@@ -8,10 +8,12 @@
     "dist/**"
   ],
   "scripts": {
-    "test": "test",
-    "prebuild": "rm -rf dist",
     "build": "tsc -p tsconfig.json",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prebuild": "rm -rf dist",
+    "prepare": "husky",
+    "test": "test",
+    "typecheck": "tsc -p tsconfig.all.json --noEmit"
   },
   "repository": {
     "type": "git",
@@ -51,6 +53,8 @@
     "eslint-plugin-no-relative-import-paths": "1.5.5",
     "eslint-plugin-perfectionist": "2.11.0",
     "eslint-plugin-prettier": "5.2.1",
+    "husky": "9.1.6",
+    "lint-staged": "15.2.10",
     "semantic-release": "24.1.1",
     "tsx": "4.19.1",
     "typescript": "5.6.2"

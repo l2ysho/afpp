@@ -1,0 +1,8 @@
+{
+  "*.{ts,tsx,js,json,yaml,md}": [
+    "prettier --write --ignore-unknown"
+  ],
+  "*.{ts,tsx}": [
+    "eslint"
+  ]
+}
