@@ -1,12 +1,7 @@
 # afpp
 
-Another f*cking pdf parser. (alpha)
+Another f\*cking pdf parser. (alpha)
 
-## todo
-
-- [x] pdf2string
-- [ ] pdf2img
-  
 ## Why?
 
 If you are parsing pdf files in nodejs and you are satisfied with your actual solution, good for you, you don't need this.
@@ -35,10 +30,10 @@ then you might find this package useful.
 **commonjs**:
 
 ```js
-const { pdf2string } = require("afpp");
-const path = require("node:path");
+const { pdf2string } = require('afpp');
+const path = require('node:path');
 
-const pathToFile = path.join("example.pdf");
+const pathToFile = path.join('example.pdf');
 
 (async function start() {
   const pdfString = await pdf2string(pathToFile);
@@ -49,10 +44,10 @@ const pathToFile = path.join("example.pdf");
 **esm**:
 
 ```js
-import { pdf2string } from "afpp";
-import path from "node:path";
+import { pdf2string } from 'afpp';
+import path from 'node:path';
 
-const pathToFile = path.join("example.pdf");
+const pathToFile = path.join('example.pdf');
 
 (async function start() {
   const pdfString = await pdf2string(pathToFile);
