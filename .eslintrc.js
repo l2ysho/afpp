@@ -17,7 +17,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     tsconfigRootDir: __dirname,
-    project: ['./tsconfig.all.json'],
+    project: ['./tsconfig.json'],
   },
   plugins: [
     'import',
@@ -37,7 +37,6 @@ module.exports = {
     },
   },
   rules: {
-    '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/ban-types': [
       'error',
       {
@@ -47,19 +46,20 @@ module.exports = {
         },
       },
     ],
+    '@typescript-eslint/no-explicit-any': 'error',
+    'arrow-body-style': ['error', 'as-needed'],
+    'import/order': 'off',
+    'import/prefer-default-export': 'off',
     'linebreak-style': 'off',
     'no-console': 'error',
-    'object-shorthand': 'error',
-    'arrow-body-style': ['error', 'as-needed'],
+    'no-relative-import-paths/no-relative-import-paths': [
+      'warn',
+      {
+        prefix: '#afpp/',
+      },
+    ],
     'no-underscore-dangle': ['error', { allow: ['_id'] }],
-    'import/prefer-default-export': 'off',
-    // "no-relative-import-paths/no-relative-import-paths": [
-    //   "warn",
-    //   {
-    //     prefix: "#afpp/",
-    //   },
-    // ],
-    'import/order': 'off',
+    'object-shorthand': 'error',
     'perfectionist/sort-imports': [
       'error',
       {
