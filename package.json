@@ -14,7 +14,7 @@
     "prebuild": "rm -rf dist",
     "prepare": "husky",
     "test": "NODE_ENV=test npx tsx --test --test-reporter=@voxpelli/node-test-pretty-reporter test/*.test.ts",
-    "test:coverage": "NODE_ENV=test npx tsx --test --experimental-test-coverage test/*.test.ts",
+    "test:coverage": "NODE_V8_COVERAGE=coverage NODE_ENV=test npx tsx --test --experimental-test-coverage test/*.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "repository": {
