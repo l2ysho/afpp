@@ -15,7 +15,7 @@
     "prepare": "husky",
     "test": "NODE_ENV=test npx tsx --test --test-reporter @voxpelli/node-test-pretty-reporter test/*.test.ts",
     "pretest:coverage": "rm -rf coverage",
-    "test:coverage": "NODE_V8_COVERAGE=coverage NODE_ENV=test npx tsx --test --experimental-test-coverage --test-reporter lcov --test-reporter-destination=coverage/lcov.info  test/*.test.ts",
+    "test:coverage": "c8 npm test",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "repository": {
@@ -46,6 +46,7 @@
     "@typescript-eslint/eslint-plugin": "7.18.0",
     "@typescript-eslint/parser": "7.18.0",
     "@voxpelli/node-test-pretty-reporter": "1.1.2",
+    "c8": "10.1.2",
     "commitizen": "4.3.0",
     "cz-conventional-changelog": "3.3.0",
     "eslint": "8.56.0",
