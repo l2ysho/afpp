@@ -15,7 +15,7 @@
     "prepare": "husky",
     "test": "NODE_ENV=test npx tsx --test --test-reporter @voxpelli/node-test-pretty-reporter test/*.test.ts",
     "pretest:coverage": "rm -rf coverage",
-    "test:coverage": "c8 npm test",
+    "test:coverage": "c8 --reporter=lcov npm test",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "repository": {
