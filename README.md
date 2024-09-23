@@ -1,5 +1,12 @@
 # afpp
 
+![Version](https://img.shields.io/github/v/release/l2ysho/afpp)
+[![codecov](https://codecov.io/github/l2ysho/afpp/graph/badge.svg?token=2PE32I4M9K)](https://codecov.io/github/l2ysho/afpp)
+![Node](https://img.shields.io/badge/node-%3E%3D%2018.x-brightgreen.svg)
+![npm Downloads](https://img.shields.io/npm/dt/afpp.svg)
+![Repo Size](https://img.shields.io/github/repo-size/l2ysho/afpp)
+![Last Commit](https://img.shields.io/github/last-commit/l2ysho/afpp.svg)
+
 Another f\*cking pdf parser. (alpha)
 
 ## Why?
