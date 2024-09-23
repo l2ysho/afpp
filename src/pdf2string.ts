@@ -12,7 +12,6 @@ const parsePdfFileBuffer = async (options: DocumentInitParameters) =>
       ...options,
       verbosity: 0, // TODO enable for debug
     });
-
     const pdfDocument = await loadingTask.promise;
 
     const { numPages } = pdfDocument;
