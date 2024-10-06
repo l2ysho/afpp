@@ -3,7 +3,6 @@ import { readFile } from 'node:fs/promises';
 
 import { createCanvas } from 'canvas';
 import { type DocumentInitParameters } from 'pdfjs-dist/types/src/display/api.js';
-import { NodeCanvasFactory } from 'pdfjs-dist/types/src/display/node_utils';
 import { PDFPageProxy } from 'pdfjs-dist/types/web/interfaces';
 
 const parsePdfFileBuffer = async (options: DocumentInitParameters) =>
@@ -14,14 +13,6 @@ const parsePdfFileBuffer = async (options: DocumentInitParameters) =>
     });
 
     const pdfDocument = await loadingTask.promise;
-    // get a canvas factory method from pdfjs-dist
-    const { canvasFactory } = pdfDocument._transport as {
-      canvasFactory: NodeCanvasFactory;
-    };
-
-    if (!canvasFactory) {
-      throw new Error('Get canvas error, check current node version');
-    }
 
     const { numPages } = pdfDocument;
     const pageContents: Buffer[] = new Array<Buffer>(numPages).fill(
@@ -51,7 +42,7 @@ type ParseOptions = {
 };
 
 /**
- * Converts a PDF file from various input formats (Buffer, Uint8Array, string path, or URL) to a string.
+ * Converts a PDF file from various input formats (Buffer, Uint8Array, string path, or URL) to an array of image buffers.
  *
  * @async
  * @function pdf2string
