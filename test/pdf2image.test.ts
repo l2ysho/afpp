@@ -5,7 +5,7 @@ import path from 'node:path';
 
 import { describe, it } from 'node:test';
 
-import { pdf2image } from '#afpp/src';
+import { pdf2image } from '#afpp/src/index';
 
 describe('pdf2image', () => {
   describe('input != string, buffer, Uint8Array or URL  ', () => {

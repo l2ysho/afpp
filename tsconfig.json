@@ -14,10 +14,10 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
+    "baseUrl": ".",
     "paths": {
-      "#afpp/*": ["./*"]
+      "#afpp/src/*": ["src/*"]
     },
-
     "declarationDir": "dist/types",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",

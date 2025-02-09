@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "postbuild": "tsc-alias -p tsconfig.build.json",
     "commit": "git-cz",
     "lint": "eslint .",
     "prebuild": "rm -rf dist",
@@ -62,6 +63,7 @@
     "husky": "9.1.6",
     "lint-staged": "15.2.10",
     "semantic-release": "24.1.1",
+    "tsc-alias": "1.8.10",
     "tsx": "4.19.2",
     "typescript": "5.7.3"
   },
