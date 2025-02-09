@@ -8,10 +8,12 @@ import type {
 } from 'pdfjs-dist/types/src/display/api.js';
 import { PDFPageProxy } from 'pdfjs-dist/types/web/interfaces';
 
-type ParsePdfCallback<T> = (content: Buffer | string) => T;
+type ParsePdfCallback<T> = (content: Buffer | string) => Promise<T>;
 
-const defaultParsePdfCallback: ParsePdfCallback<Buffer | string> = (content) =>
-  content;
+const defaultParsePdfCallback: ParsePdfCallback<Buffer | string> = async (
+  content,
+  // eslint-disable-next-line @typescript-eslint/require-await
+) => content;
 
 const parsePdfFileBuffer = async <T = Buffer | string>(
   options: DocumentInitParameters,
@@ -46,10 +48,10 @@ const parsePdfFileBuffer = async <T = Buffer | string>(
 
             await page.render({ canvasContext: context, viewport }).promise;
             const imageBuffer = canvas.toBuffer();
-            pageContents[pageNum - 1] = callback(imageBuffer);
+            pageContents[pageNum - 1] = await callback(imageBuffer);
           } else {
             const pageText = items.map((item) => item.str || '').join(' ');
-            pageContents[pageNum - 1] = callback(pageText);
+            pageContents[pageNum - 1] = await callback(pageText);
           }
         }),
       );
