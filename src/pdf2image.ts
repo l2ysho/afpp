@@ -5,6 +5,8 @@ import { createCanvas } from 'canvas';
 import { type DocumentInitParameters } from 'pdfjs-dist/types/src/display/api.js';
 import { PDFPageProxy } from 'pdfjs-dist/types/web/interfaces';
 
+import { toBufferAsync } from '#afpp/src/utils';
+
 const parsePdfFileBuffer = async (options: DocumentInitParameters) =>
   import('pdfjs-dist/legacy/build/pdf.mjs').then(async (pdfjsLib) => {
     const loadingTask = pdfjsLib.getDocument({
@@ -28,7 +30,8 @@ const parsePdfFileBuffer = async (options: DocumentInitParameters) =>
           const context = canvas.getContext('2d');
 
           await page.render({ canvasContext: context, viewport }).promise;
-          const imageBuffer = canvas.toBuffer();
+
+          const imageBuffer = await toBufferAsync(canvas);
           pageContents[pageNum - 1] = imageBuffer;
         }),
       );

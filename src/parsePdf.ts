@@ -8,6 +8,8 @@ import type {
 } from 'pdfjs-dist/types/src/display/api.js';
 import { PDFPageProxy } from 'pdfjs-dist/types/web/interfaces';
 
+import { toBufferAsync } from '#afpp/src/utils';
+
 type ParsePdfCallback<T> = (content: Buffer | string) => Promise<T>;
 
 const defaultParsePdfCallback: ParsePdfCallback<Buffer | string> = async (
@@ -47,7 +49,9 @@ const parsePdfFileBuffer = async <T = Buffer | string>(
             const context = canvas.getContext('2d');
 
             await page.render({ canvasContext: context, viewport }).promise;
-            const imageBuffer = canvas.toBuffer();
+
+            const imageBuffer = await toBufferAsync(canvas);
+
             pageContents[pageNum - 1] = await callback(imageBuffer);
           } else {
             const pageText = items.map((item) => item.str || '').join(' ');
