@@ -2,7 +2,7 @@
   "name": "afpp",
   "version": "0.0.1",
   "description": "another f*cking pdf parser",
-  "types": "./dist/types/index.d.ts",
+  "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
   "files": [
     "dist/**"
