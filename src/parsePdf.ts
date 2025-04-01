@@ -10,19 +10,15 @@ import { PDFPageProxy } from 'pdfjs-dist/types/web/interfaces';
 
 import { toBufferAsync } from '#afpp/src/utils';
 
-type ParsePdfCallback<T> = (
+export type ParsePdfCallback<T> = (
   content: Buffer | string,
-  page: number,
-) => Promise<T>;
-
-const defaultParsePdfCallback: ParsePdfCallback<Buffer | string> = async (
-  content,
-  // eslint-disable-next-line @typescript-eslint/require-await
-) => content;
+  pageNumber: number,
+  pageCount: number,
+) => Promise<T> | T;
 
 const parsePdfFileBuffer = async <T = Buffer | string>(
   options: DocumentInitParameters,
-  callback: ParsePdfCallback<T> = defaultParsePdfCallback as ParsePdfCallback<T>,
+  callback: ParsePdfCallback<T>,
 ) =>
   import('pdfjs-dist/legacy/build/pdf.mjs').then(async (pdfjsLib) => {
     const loadingTask = pdfjsLib.getDocument({
@@ -55,10 +51,18 @@ const parsePdfFileBuffer = async <T = Buffer | string>(
 
             const imageBuffer = await toBufferAsync(canvas);
 
-            pageContents[pageNum - 1] = await callback(imageBuffer, pageNum);
+            pageContents[pageNum - 1] = await callback(
+              imageBuffer,
+              pageNum,
+              numPages,
+            );
           } else {
             const pageText = items.map((item) => item.str || '').join(' ');
-            pageContents[pageNum - 1] = await callback(pageText, pageNum);
+            pageContents[pageNum - 1] = await callback(
+              pageText,
+              pageNum,
+              numPages,
+            );
           }
         }),
       );
@@ -68,7 +72,14 @@ const parsePdfFileBuffer = async <T = Buffer | string>(
   });
 
 type ParseOptions = {
+  /**
+   * Password for encrypted pdf files.
+   */
   password?: string;
+  /**
+   * Scale of a page if content is not text.
+   */
+  scale: number;
 };
 
 /**
@@ -91,8 +102,8 @@ type ParseOptions = {
 
 export const parsePdf = async <T>(
   input: Buffer | URL | Uint8Array | string,
-  options?: ParseOptions,
-  callback: ParsePdfCallback<T> = defaultParsePdfCallback as ParsePdfCallback<T>,
+  options: ParseOptions,
+  callback: ParsePdfCallback<T>,
 ) => {
   if (typeof callback !== 'function') {
     throw new Error(`Invalid callback type: ${typeof callback}`);

@@ -9,9 +9,9 @@ import { pdf2string } from '#afpp/src/index';
 
 describe('pdf2string', () => {
   describe('input != string, buffer, Uint8Array or URL  ', () => {
-    it('promise should be rejected with specific error', () => {
+    it('promise should be rejected with specific error', async () => {
       // @ts-expect-error It should throw error because input is required
-      assert.rejects(pdf2string(), {
+      await assert.rejects(pdf2string(), {
         message: 'Invalid source type: undefined',
         name: 'Error',
       });

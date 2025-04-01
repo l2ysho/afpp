@@ -9,19 +9,22 @@ import { parsePdf } from '#afpp/src/index';
 
 describe('parsePdf', () => {
   describe('input != string, buffer, Uint8Array or URL  ', () => {
-    it('promise should be rejected with specific error', () => {
-      // @ts-expect-error It should throw error because input is required
-      assert.rejects(parsePdf(), {
-        message: 'Invalid source type: undefined',
-        name: 'Error',
-      });
+    it('promise should be rejected with specific error', async () => {
+      await assert.rejects(
+        // @ts-expect-error It should throw error because input is required
+        parsePdf(undefined, {}, (content) => content),
+        {
+          message: 'Invalid source type: undefined',
+          name: 'Error',
+        },
+      );
     });
   });
 
   describe('input = valid path to file as string', () => {
     it('should return valid string parsed from pdf', async () => {
       const input = path.join('test', 'example.pdf');
-      const data = await parsePdf(input);
+      const data = await parsePdf(input, { scale: 2 }, (content) => content);
       assert.equal(data.length, 9);
     });
   });
@@ -29,10 +32,13 @@ describe('parsePdf', () => {
   describe('input = valid path to encrypted file as string', () => {
     it('should return valid string parsed from pdf', () => {
       const input = path.join('test', 'example-encrypted.pdf');
-      assert.rejects(parsePdf(input), {
-        message: 'No password given',
-        name: 'PasswordException',
-      });
+      assert.rejects(
+        parsePdf(input, { scale: 2 }, (content) => content),
+        {
+          message: 'No password given',
+          name: 'PasswordException',
+        },
+      );
     });
   });
 
@@ -40,7 +46,11 @@ describe('parsePdf', () => {
     it('should return valid string parsed from pdf', async () => {
       const pathToFile = path.join('test', 'example.pdf');
       const input = await readFile(pathToFile, {});
-      const data = await parsePdf(input);
+      const data = await parsePdf<Buffer | string>(
+        input,
+        { scale: 2 },
+        (content) => content,
+      );
       assert.equal(data.length, 9);
     });
   });
@@ -50,24 +60,35 @@ describe('parsePdf', () => {
       const pathToFile = path.join('test', 'example.pdf');
       const fileBuffer = await readFile(pathToFile, {});
       const input = new Uint8Array(fileBuffer);
-      const data = await parsePdf(input);
+      const data = await parsePdf(input, { scale: 2 }, (content) => content);
       assert.equal(data.length, 9);
     });
     it('should return valid string parsed from encrypted pdf', async () => {
       const pathToFile = path.join('test', 'example-encrypted.pdf');
       const fileBuffer = await readFile(pathToFile, {});
       const input = new Uint8Array(fileBuffer);
-      const data = await parsePdf(input, { password: 'example' });
+      const data = await parsePdf(
+        input,
+        { password: 'example', scale: 2 },
+        (content) => content,
+      );
       assert.equal(data.length, 9);
     });
     it('should fail on invalid password for encrypted pdf', async () => {
       const pathToFile = path.join('test', 'example-encrypted.pdf');
       const fileBuffer = await readFile(pathToFile, {});
       const input = new Uint8Array(fileBuffer);
-      assert.rejects(parsePdf(input, { password: 'invalid' }), {
-        message: 'Incorrect Password',
-        name: 'PasswordException',
-      });
+      assert.rejects(
+        parsePdf(
+          input,
+          { password: 'invalid', scale: 2 },
+          (content) => content,
+        ),
+        {
+          message: 'Incorrect Password',
+          name: 'PasswordException',
+        },
+      );
     });
   });
 
@@ -75,7 +96,7 @@ describe('parsePdf', () => {
   describe('input = valid URL object', () => {
     it('should return valid string parsed from pdf', async () => {
       const url = new URL('https://pdfobject.com/pdf/sample.pdf');
-      const data = await parsePdf(url);
+      const data = await parsePdf(url, { scale: 2 }, (content) => content);
       assert.equal(data.length, 1);
     });
   });
