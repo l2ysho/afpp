@@ -16,9 +16,9 @@ export function imageDataToGrayscale(
   const pixels = imageData.data;
 
   for (let i = 0; i < pixels.length; i += 4) {
-    const r = pixels[i];
-    const g = pixels[i + 1];
-    const b = pixels[i + 2];
+    const r = pixels[i] || 0;
+    const g = pixels[i + 1] || 0;
+    const b = pixels[i + 2] || 0;
 
     // Grayscale formula: (0.3 * R) + (0.59 * G) + (0.11 * B)
     const grayscale = 0.3 * r + 0.59 * g + 0.11 * b;
