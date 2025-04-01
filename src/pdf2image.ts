@@ -25,7 +25,7 @@ const parsePdfFileBuffer = async (options: DocumentInitParameters) =>
     for (let pageNum = 1; pageNum <= numPages; pageNum += 1) {
       pagePromises.push(
         pdfDocument.getPage(pageNum).then(async (page) => {
-          const viewport = page.getViewport({ scale: 1.0 });
+          const viewport = page.getViewport({ scale: 2.0 });
           const canvas = createCanvas(viewport.width, viewport.height);
           const context = canvas.getContext('2d');
 

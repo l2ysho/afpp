@@ -44,7 +44,7 @@ const parsePdfFileBuffer = async <T = Buffer | string>(
           });
           const items = textContent.items as TextItem[];
           if (items.length === 0) {
-            const viewport = page.getViewport({ scale: 1.0 });
+            const viewport = page.getViewport({ scale: 2.0 });
             const canvas = createCanvas(viewport.width, viewport.height);
             const context = canvas.getContext('2d');
 
