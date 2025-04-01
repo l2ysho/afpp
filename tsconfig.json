@@ -18,7 +18,6 @@
     "paths": {
       "#afpp/src/*": ["src/*"]
     },
-    "declarationDir": "dist/types",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "outDir": "dist",
