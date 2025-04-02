@@ -28,7 +28,7 @@ then you might find this package useful.
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js v22.14.0
 
 ## Getting started
 
