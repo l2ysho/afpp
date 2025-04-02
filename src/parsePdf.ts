@@ -47,8 +47,7 @@ const parsePdfFileBuffer = async <T = Buffer | string>(
 
             await page.render({ canvasContext: context, viewport }).promise;
 
-            const imageBuffer = canvas.toBuffer('image/png');
-
+            const imageBuffer = await canvas.encode('png');
             pageContents[pageNum - 1] = await callback(
               imageBuffer,
               pageNum,
