@@ -9,13 +9,14 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "postbuild": "tsc-alias -p tsconfig.build.json",
     "commit": "git-cz",
     "lint": "eslint .",
+    "postbuild": "tsc-alias -p tsconfig.build.json",
     "prebuild": "rm -rf dist",
     "prepare": "husky",
-    "test": "NODE_ENV=test npx tsx --test --test-reporter @voxpelli/node-test-pretty-reporter test/*.test.ts",
     "pretest:coverage": "rm -rf coverage",
+    "test": "NODE_ENV=test npx tsx --test --test-reporter @voxpelli/node-test-pretty-reporter test/*.test.ts",
+    "test:single": "NODE_ENV=test npx tsx --test --test-reporter @voxpelli/node-test-pretty-reporter",
     "test:coverage": "c8 --reporter=lcov npm test",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
