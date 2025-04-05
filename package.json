@@ -24,6 +24,10 @@
     "type": "git",
     "url": "git+ssh://git@github.com/l2ysho/afpp.git"
   },
+  "engines": {
+    "node": "v22.14.0",
+    "npm": "10.9.2"
+  },
   "keywords": [
     "pdf",
     "parse-pdf",
