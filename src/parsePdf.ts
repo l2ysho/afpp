@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import { readFile } from 'node:fs/promises';
 
 import { createCanvas } from '@napi-rs/canvas';
@@ -31,6 +30,7 @@ const parsePdfFileBuffer = async <T = Buffer | string>(
       { length: numPages },
       () => null as unknown as T,
     );
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     const pagePromises: Promise<PDFPageProxy | void>[] = [];
 
     for (let pageNum = 1; pageNum <= numPages; pageNum += 1) {
@@ -48,18 +48,22 @@ const parsePdfFileBuffer = async <T = Buffer | string>(
             await page.render({ canvasContext: context, viewport }).promise;
 
             const imageBuffer = await canvas.encode('png');
+            // eslint-disable-next-line promise/no-callback-in-promise
             pageContents[pageNum - 1] = await callback(
               imageBuffer,
               pageNum,
               numPages,
             );
+            return page;
           } else {
             const pageText = items.map((item) => item.str || '').join(' ');
+            // eslint-disable-next-line promise/no-callback-in-promise
             pageContents[pageNum - 1] = await callback(
               pageText,
               pageNum,
               numPages,
             );
+            return page;
           }
         }),
       );
@@ -68,7 +72,7 @@ const parsePdfFileBuffer = async <T = Buffer | string>(
     return pageContents;
   });
 
-type ParseOptions = {
+interface ParseOptions {
   /**
    * Password for encrypted pdf files.
    */
@@ -77,7 +81,7 @@ type ParseOptions = {
    * Scale of a page if content is not text.
    */
   scale: number;
-};
+}
 
 /**
  * Converts a PDF file from various input formats (Buffer, Uint8Array, string path, or URL). Pages are returned in mixed array of strings (text content) and buffers (image content) with in callback function.
@@ -98,7 +102,7 @@ type ParseOptions = {
  */
 
 export const parsePdf = async <T>(
-  input: Buffer | URL | Uint8Array | string,
+  input: Buffer | string | Uint8Array | URL,
   options: ParseOptions,
   callback: ParsePdfCallback<T>,
 ) => {

@@ -16,6 +16,8 @@ const parsePdfFileBuffer = async (options: DocumentInitParameters) =>
 
     const { numPages } = pdfDocument;
     const pageContents: string[] = new Array<string>(numPages).fill('');
+
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     const pagePromises: Promise<PDFPageProxy | void>[] = [];
 
     for (let pageNum = 1; pageNum <= numPages; pageNum += 1) {
@@ -32,6 +34,7 @@ const parsePdfFileBuffer = async (options: DocumentInitParameters) =>
             const pageText = items.map((item) => item.str || '').join(' ');
             pageContents[pageNum - 1] = pageText;
           }
+          return;
         }),
       );
     }
@@ -39,9 +42,9 @@ const parsePdfFileBuffer = async (options: DocumentInitParameters) =>
     return pageContents;
   });
 
-type ParseOptions = {
+interface ParseOptions {
   password?: string;
-};
+}
 
 /**
  * Converts a PDF file from various input formats (Buffer, Uint8Array, string path, or URL) to a string.
@@ -60,7 +63,7 @@ type ParseOptions = {
  * @throws {Error} Throws an error if the input type is invalid.
  */
 export const pdf2string = async (
-  input: Buffer | URL | Uint8Array | string,
+  input: Buffer | string | Uint8Array | URL,
   options?: ParseOptions,
 ) => {
   if (typeof input === 'string') {

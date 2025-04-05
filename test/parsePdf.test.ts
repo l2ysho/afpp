@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import assert from 'node:assert';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-
 import { describe, it } from 'node:test';
 
 import { parsePdf } from '#afpp/src/index';

@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import { readFile } from 'node:fs/promises';
 
 import { createCanvas } from '@napi-rs/canvas';
@@ -18,6 +17,7 @@ const parsePdfFileBuffer = async (options: DocumentInitParameters) =>
     const pageContents: Buffer[] = new Array<Buffer>(numPages).fill(
       Buffer.from(''),
     );
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     const pagePromises: Promise<PDFPageProxy | void>[] = [];
 
     for (let pageNum = 1; pageNum <= numPages; pageNum += 1) {
@@ -31,6 +31,7 @@ const parsePdfFileBuffer = async (options: DocumentInitParameters) =>
 
           const imageBuffer = await canvas.encode('png');
           pageContents[pageNum - 1] = imageBuffer;
+          return;
         }),
       );
     }
@@ -38,9 +39,9 @@ const parsePdfFileBuffer = async (options: DocumentInitParameters) =>
     return pageContents;
   });
 
-type ParseOptions = {
+interface ParseOptions {
   password?: string;
-};
+}
 
 /**
  * Converts a PDF file from various input formats (Buffer, Uint8Array, string path, or URL) to an array of image buffers.
@@ -59,7 +60,7 @@ type ParseOptions = {
  * @throws {Error} Throws an error if the input type is invalid.
  */
 export const pdf2image = async (
-  input: Buffer | URL | Uint8Array | string,
+  input: Buffer | string | Uint8Array | URL,
   options?: ParseOptions,
 ) => {
   if (typeof input === 'string') {
