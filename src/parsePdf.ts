@@ -1,11 +1,14 @@
 import { readFile } from 'node:fs/promises';
 
 import { createCanvas } from '@napi-rs/canvas';
+import pLimit from 'p-limit';
 import type {
   DocumentInitParameters,
   TextItem,
 } from 'pdfjs-dist/types/src/display/api.js';
 import { PDFPageProxy } from 'pdfjs-dist/types/web/interfaces';
+
+const promiseLimit = pLimit(1);
 
 export type ParsePdfCallback<T> = (
   content: Buffer | string,
@@ -35,37 +38,39 @@ const parsePdfFileBuffer = async <T = Buffer | string>(
 
     for (let pageNum = 1; pageNum <= numPages; pageNum += 1) {
       pagePromises.push(
-        pdfDocument.getPage(pageNum).then(async (page) => {
-          const textContent = await page.getTextContent({
-            includeMarkedContent: false,
-          });
-          const items = textContent.items as TextItem[];
-          if (items.length === 0) {
-            const viewport = page.getViewport({ scale: 2.0 });
-            const canvas = createCanvas(viewport.width, viewport.height);
-            const context = canvas.getContext('2d');
+        promiseLimit(() =>
+          pdfDocument.getPage(pageNum).then(async (page) => {
+            const textContent = await page.getTextContent({
+              includeMarkedContent: false,
+            });
+            const items = textContent.items as TextItem[];
+            if (items.length === 0) {
+              const viewport = page.getViewport({ scale: 2.0 });
+              const canvas = createCanvas(viewport.width, viewport.height);
+              const context = canvas.getContext('2d');
 
-            await page.render({ canvasContext: context, viewport }).promise;
+              await page.render({ canvasContext: context, viewport }).promise;
 
-            const imageBuffer = await canvas.encode('png');
-            // eslint-disable-next-line promise/no-callback-in-promise
-            pageContents[pageNum - 1] = await callback(
-              imageBuffer,
-              pageNum,
-              numPages,
-            );
-            return page;
-          } else {
-            const pageText = items.map((item) => item.str || '').join(' ');
-            // eslint-disable-next-line promise/no-callback-in-promise
-            pageContents[pageNum - 1] = await callback(
-              pageText,
-              pageNum,
-              numPages,
-            );
-            return page;
-          }
-        }),
+              const imageBuffer = await canvas.encode('png');
+              // eslint-disable-next-line promise/no-callback-in-promise
+              pageContents[pageNum - 1] = await callback(
+                imageBuffer,
+                pageNum,
+                numPages,
+              );
+              return page;
+            } else {
+              const pageText = items.map((item) => item.str || '').join(' ');
+              // eslint-disable-next-line promise/no-callback-in-promise
+              pageContents[pageNum - 1] = await callback(
+                pageText,
+                pageNum,
+                numPages,
+              );
+              return page;
+            }
+          }),
+        ),
       );
     }
     await Promise.all(pagePromises);

@@ -1,6 +1,7 @@
 # afpp
 
 ![Version](https://img.shields.io/github/v/release/l2ysho/afpp)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/l2ysho/afpp/release.yml)
 [![codecov](https://codecov.io/github/l2ysho/afpp/graph/badge.svg?token=2PE32I4M9K)](https://codecov.io/github/l2ysho/afpp)
 ![Node](https://img.shields.io/badge/node-%3E%3D%2018.x-brightgreen.svg)
 ![npm Downloads](https://img.shields.io/npm/dt/afpp.svg)
