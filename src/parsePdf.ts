@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 
-import { createCanvas } from '@napi-rs/canvas';
+import { Canvas } from '@napi-rs/canvas';
 import pLimit from 'p-limit';
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import type {
@@ -9,6 +9,12 @@ import type {
 } from 'pdfjs-dist/types/src/display/api.js';
 import { PDFPageProxy } from 'pdfjs-dist/types/web/interfaces';
 
+export interface CanvasFactory {
+  createCanvas: (width: number, height: number) => Canvas;
+  destroyCanvas: (canvas: Canvas) => void;
+  resetCanvas: (canvas: Canvas, width: number, height: number) => void;
+}
+
 export type PageProcessor<T> = (
   content: Buffer | string,
   pageNumber: number,
@@ -16,7 +22,6 @@ export type PageProcessor<T> = (
 ) => Promise<T> | T;
 
 type ImageEncoding = 'avif' | 'jpeg' | 'png' | 'webp';
-
 interface ParseOptions {
   /**
    * Concurrency level for page processing.
@@ -41,6 +46,7 @@ interface ParseOptions {
 
 const processPdfPage = async <T>(
   page: PDFPageProxy,
+  canvasFactory: CanvasFactory,
   pageNumber: number,
   pageCount: number,
   scale: number,
@@ -54,11 +60,14 @@ const processPdfPage = async <T>(
 
   if (items.length === 0) {
     const viewport = page.getViewport({ scale });
-    const canvas = createCanvas(viewport.width, viewport.height);
+
+    const canvas = canvasFactory.createCanvas(viewport.width, viewport.height);
+    // console.log(createCanvas, canvas);
     const context = canvas.getContext('2d');
     await page.render({ canvasContext: context, viewport }).promise;
     //@ts-expect-error this should be fixed in release
     const imageBuffer = await canvas.encode(encoding);
+    canvasFactory.destroyCanvas(canvas);
     return callback(imageBuffer, pageNumber, pageCount);
   }
 
@@ -83,9 +92,11 @@ const parsePdfFileBuffer = async <T>(
     const pageNum = i + 1;
     return limit(async () => {
       const page = await pdfDocument.getPage(pageNum);
+      const canvasFactory = pdfDocument.canvasFactory as CanvasFactory;
 
       const result = await processPdfPage(
         page,
+        canvasFactory,
         pageNum,
         numPages,
         scale,
