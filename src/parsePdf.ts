@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 
-import { Canvas } from '@napi-rs/canvas';
+import { Canvas, CanvasRenderingContext2D } from '@napi-rs/canvas';
 import pLimit from 'p-limit';
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import type {
@@ -9,10 +9,15 @@ import type {
 } from 'pdfjs-dist/types/src/display/api.js';
 import { PDFPageProxy } from 'pdfjs-dist/types/web/interfaces';
 
-export interface CanvasFactory {
-  createCanvas: (width: number, height: number) => Canvas;
-  destroyCanvas: (canvas: Canvas) => void;
-  resetCanvas: (canvas: Canvas, width: number, height: number) => void;
+enum PROCESSING_TYPE {
+  IMAGE = 'IMAGE',
+  MIXED = 'MIXED',
+  TEXT = 'TEXT',
+}
+
+export interface CanvasAndContext {
+  canvas: Canvas;
+  context: CanvasRenderingContext2D;
 }
 
 export type PageProcessor<T> = (
@@ -21,7 +26,17 @@ export type PageProcessor<T> = (
   pageCount: number,
 ) => Promise<T> | T;
 
+export interface PdfCanvasFactory {
+  create(width: number, height: number): CanvasAndContext;
+  destroy(canvasAndContext: CanvasAndContext): void;
+  reset(
+    canvasAndContext: CanvasAndContext,
+    width: number,
+    height: number,
+  ): void;
+}
 type ImageEncoding = 'avif' | 'jpeg' | 'png' | 'webp';
+
 interface ParseOptions {
   /**
    * Concurrency level for page processing.
@@ -45,8 +60,35 @@ interface ParseOptions {
 }
 
 const processPdfPage = async <T>(
+  type: PROCESSING_TYPE,
   page: PDFPageProxy,
-  canvasFactory: CanvasFactory,
+  canvasFactory: PdfCanvasFactory,
+  pageNumber: number,
+  pageCount: number,
+  scale: number,
+  encoding: ImageEncoding,
+  callback: PageProcessor<T>,
+): Promise<T> => {
+  switch (type) {
+    case PROCESSING_TYPE.MIXED:
+      return processPdfPageTypeMixed(
+        page,
+        canvasFactory,
+        pageNumber,
+        pageCount,
+        scale,
+        encoding,
+        callback,
+      );
+
+    default:
+      throw new Error(`Invalid processing type: ${type}`);
+  }
+};
+
+const processPdfPageTypeMixed = async <T>(
+  page: PDFPageProxy,
+  canvasFactory: PdfCanvasFactory,
   pageNumber: number,
   pageCount: number,
   scale: number,
@@ -61,13 +103,17 @@ const processPdfPage = async <T>(
   if (items.length === 0) {
     const viewport = page.getViewport({ scale });
 
-    const canvas = canvasFactory.createCanvas(viewport.width, viewport.height);
-    // console.log(createCanvas, canvas);
-    const context = canvas.getContext('2d');
-    await page.render({ canvasContext: context, viewport }).promise;
+    const canvasAndContext = canvasFactory.create(
+      viewport.width,
+      viewport.height,
+    );
+
+    // const context = canvas.getContext('2d');
+    await page.render({ canvasContext: canvasAndContext.context, viewport })
+      .promise;
     //@ts-expect-error this should be fixed in release
-    const imageBuffer = await canvas.encode(encoding);
-    canvasFactory.destroyCanvas(canvas);
+    const imageBuffer = await canvasAndContext.canvas.encode(encoding);
+    canvasFactory.destroy(canvasAndContext);
     return callback(imageBuffer, pageNumber, pageCount);
   }
 
@@ -76,6 +122,7 @@ const processPdfPage = async <T>(
 };
 
 const parsePdfFileBuffer = async <T>(
+  type: PROCESSING_TYPE,
   options: DocumentInitParameters,
   scale: number,
   concurrency: number,
@@ -92,9 +139,10 @@ const parsePdfFileBuffer = async <T>(
     const pageNum = i + 1;
     return limit(async () => {
       const page = await pdfDocument.getPage(pageNum);
-      const canvasFactory = pdfDocument.canvasFactory as CanvasFactory;
+      const canvasFactory = pdfDocument.canvasFactory as PdfCanvasFactory;
 
       const result = await processPdfPage(
+        type,
         page,
         canvasFactory,
         pageNum,
@@ -154,6 +202,7 @@ export const parsePdf = async <T>(
   if (typeof input === 'string') {
     const fileBuffer = await readFile(input);
     return parsePdfFileBuffer(
+      PROCESSING_TYPE.MIXED,
       { data: new Uint8Array(fileBuffer), ...baseOptions },
       scale,
       concurrency,
@@ -164,6 +213,7 @@ export const parsePdf = async <T>(
 
   if (Buffer.isBuffer(input)) {
     return parsePdfFileBuffer(
+      PROCESSING_TYPE.MIXED,
       { data: new Uint8Array(input), ...baseOptions },
       scale,
       concurrency,
@@ -174,6 +224,7 @@ export const parsePdf = async <T>(
 
   if (input instanceof Uint8Array) {
     return parsePdfFileBuffer(
+      PROCESSING_TYPE.MIXED,
       { data: input, ...baseOptions },
       scale,
       concurrency,
@@ -184,6 +235,7 @@ export const parsePdf = async <T>(
 
   if (input instanceof URL) {
     return parsePdfFileBuffer(
+      PROCESSING_TYPE.MIXED,
       { url: input, ...baseOptions },
       scale,
       concurrency,
