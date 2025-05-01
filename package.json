@@ -25,8 +25,8 @@
     "url": "git+ssh://git@github.com/l2ysho/afpp.git"
   },
   "engines": {
-    "node": "v22.15.0",
-    "npm": "10.9.2"
+    "node": ">=22.14.0",
+    "npm": ">=10.9.2"
   },
   "keywords": [
     "pdf",

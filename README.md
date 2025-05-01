@@ -8,57 +8,68 @@
 ![Repo Size](https://img.shields.io/github/repo-size/l2ysho/afpp)
 ![Last Commit](https://img.shields.io/github/last-commit/l2ysho/afpp.svg)
 
-Another f\*cking pdf parser. (alpha)
+Another f\*cking pdf parser. Because parse pdf in node.js should be easy. Live long and parse pdf. 🖖
 
 ## Why?
 
-If you are parsing pdf files in nodejs and you are satisfied with your actual solution, good for you, you don't need this.
+There are plenty of PDF-related packages for Node.js. They work… until they don’t.
 
-But if you’ve encountered one or more of these issues:
+Afpp was built to solve the headaches I ran into while trying to parse PDFs in Node.js:
 
-- package size (+30mb)
-- blocking event loop
-- performance issues
-- buggy as shit
-- not working in esm/commonjs
-- old pdfjs-dist as peer dependency
-- no typescript support
-- parsing of encrypted pdf files (password needed)
-
-then you might find this package useful.
+- 📦 Do I need a package with 30+ MB just to read a PDF?
+- 🧵 Why is the event loop blocked?
+- 🐏 Is that a memory leak I smell?
+- 🐌 Should reading a PDF really be this performance-heavy?
+- 🐞 Why is everything so buggy?
+- 🎨 Why does it crash because there’s no canvas in Node.js?
+- 🧱 Why does canvas require native C++/Python dependencies to build?
+- 🪟 Why does it complain about the missing window object?
+- 🪄 Why do I need ImageMagick for this?!
+- 👻 What the hell is Ghostscript, and why does it keep failing?
+- ❌ Where’s the TypeScript support?
+- 🧓 Why are the dependencies older than my dev career?
+- 🔐 Why does everything work… until I try an encrypted PDF?
+- 🕯️ Why does every OS need its own special setup ritual?
 
 ## Prerequisites
 
--- Node.js v22.14.0
+- Node.js >= v22.14.0
+
+## 📦 Installation
+
+You can install `afpp` via npm, Yarn, or pnpm.
+
+### npm
+
+```bash
+npm install afpp
+```
+
+### Yarn
+
+```bash
+yarn add afpp
+```
+
+### pnpm
+
+```bash
+pnpm add afpp
+```
 
 ## Getting started
 
-`npm install afpp`
-
-**commonjs**:
+Lets get the text from the pdf. You can use various sources.
 
 ```js
 const { pdf2string } = require('afpp');
 const path = require('node:path');
 
-const pathToFile = path.join('example.pdf');
+(async function main() {
+  const pathToFile = path.join('example1.pdf');
 
-(async function start() {
   const pdfString = await pdf2string(pathToFile);
-  console.log(pdfString);
-})();
-```
 
-**esm**:
-
-```js
-import { pdf2string } from 'afpp';
-import path from 'node:path';
-
-const pathToFile = path.join('example.pdf');
-
-(async function start() {
-  const pdfString = await pdf2string(pathToFile);
   console.log(pdfString);
 })();
 ```
