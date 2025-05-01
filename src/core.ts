@@ -20,7 +20,6 @@ export interface AfppParseOptions {
    * Concurrency level for page processing.
    */
   concurrency?: number;
-
   /**
    * Image encoding format when rendering non-text pages. Defaults to 'png'.
    */
@@ -132,7 +131,7 @@ const processPdfPageTypeImage = async (
 
 const validateParameters = async (
   input: Buffer | string | Uint8Array | URL,
-  options?: ParseOptions,
+  options?: AfppParseOptions,
 ) => {
   const documentInitParameters: DocumentInitParameters = {};
 
@@ -168,7 +167,14 @@ const validateParameters = async (
 };
 
 export async function parsePdfFile(
-  type: PROCESSING_TYPE.IMAGE | PROCESSING_TYPE.TEXT,
+  type: PROCESSING_TYPE.IMAGE,
+  input: Buffer | string | Uint8Array | URL,
+  options?: AfppParseOptions,
+  callback?: undefined,
+): Promise<Buffer[]>;
+
+export async function parsePdfFile(
+  type: PROCESSING_TYPE.TEXT,
   input: Buffer | string | Uint8Array | URL,
   options?: AfppParseOptions,
   callback?: undefined,
@@ -186,7 +192,7 @@ export async function parsePdfFile<T>(
   input: Buffer | string | Uint8Array | URL,
   options?: AfppParseOptions,
   callback?: PageProcessor<T>,
-): Promise<string[] | T[]> {
+): Promise<Buffer[] | string[] | T[]> {
   const { concurrency, documentInitParameters, encoding, scale } =
     await validateParameters(input, options);
 
@@ -194,12 +200,13 @@ export async function parsePdfFile<T>(
   const loadingTask = getDocument(documentInitParameters);
   const pdfDocument = await loadingTask.promise;
   const { numPages } = pdfDocument;
-  const results: string[] | T[] = new Array(numPages);
 
   if (type === PROCESSING_TYPE.MIXED) {
     if (!callback || typeof callback !== 'function') {
       throw new Error(`Invalid callback type: ${typeof callback}`);
     }
+    const results: T[] = new Array(numPages);
+
     const pageTasks = Array.from({ length: numPages }, (_, i) => {
       const pageNum = i + 1;
       return limit(async () => {
@@ -224,6 +231,7 @@ export async function parsePdfFile<T>(
   }
 
   if (type === PROCESSING_TYPE.TEXT) {
+    const results: string[] = new Array(numPages);
     const pageTasks = Array.from({ length: numPages }, (_, i) => {
       const pageNum = i + 1;
       return limit(async () => {
@@ -237,6 +245,7 @@ export async function parsePdfFile<T>(
   }
 
   if (type === PROCESSING_TYPE.IMAGE) {
+    const results: Buffer[] = new Array(numPages);
     const pageTasks = Array.from({ length: numPages }, (_, i) => {
       const pageNum = i + 1;
       return limit(async () => {
