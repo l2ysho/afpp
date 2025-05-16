@@ -1,47 +1,8 @@
-import { readFile } from 'node:fs/promises';
-
-import { createCanvas } from '@napi-rs/canvas';
-import { type DocumentInitParameters } from 'pdfjs-dist/types/src/display/api.js';
-import { PDFPageProxy } from 'pdfjs-dist/types/web/interfaces';
-
-const parsePdfFileBuffer = async (options: DocumentInitParameters) =>
-  import('pdfjs-dist/legacy/build/pdf.mjs').then(async (pdfjsLib) => {
-    const loadingTask = pdfjsLib.getDocument({
-      ...options,
-      verbosity: 0, // TODO enable for debug
-    });
-
-    const pdfDocument = await loadingTask.promise;
-
-    const { numPages } = pdfDocument;
-    const pageContents: Buffer[] = new Array<Buffer>(numPages).fill(
-      Buffer.from(''),
-    );
-    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
-    const pagePromises: Promise<PDFPageProxy | void>[] = [];
-
-    for (let pageNum = 1; pageNum <= numPages; pageNum += 1) {
-      pagePromises.push(
-        pdfDocument.getPage(pageNum).then(async (page) => {
-          const viewport = page.getViewport({ scale: 2.0 });
-          const canvas = createCanvas(viewport.width, viewport.height);
-          const context = canvas.getContext('2d');
-
-          await page.render({ canvasContext: context, viewport }).promise;
-
-          const imageBuffer = await canvas.encode('png');
-          pageContents[pageNum - 1] = imageBuffer;
-          return;
-        }),
-      );
-    }
-    await Promise.all(pagePromises);
-    return pageContents;
-  });
-
-interface ParseOptions {
-  password?: string;
-}
+import {
+  AfppParseOptions,
+  parsePdfFile,
+  PROCESSING_TYPE,
+} from '#afpp/src/core';
 
 /**
  * Converts a PDF file from various input formats (Buffer, Uint8Array, string path, or URL) to an array of image buffers.
@@ -61,22 +22,5 @@ interface ParseOptions {
  */
 export const pdf2image = async (
   input: Buffer | string | Uint8Array | URL,
-  options?: ParseOptions,
-) => {
-  if (typeof input === 'string') {
-    const fileBuffer = await readFile(input, {});
-    const data = new Uint8Array(fileBuffer);
-    return parsePdfFileBuffer({ data, ...options });
-  }
-  if (Buffer.isBuffer(input)) {
-    const data = new Uint8Array(input);
-    return parsePdfFileBuffer({ data, ...options });
-  }
-  if (input instanceof Uint8Array) {
-    return parsePdfFileBuffer({ data: input, ...options });
-  }
-  if (input instanceof URL) {
-    return parsePdfFileBuffer({ url: input, ...options });
-  }
-  throw new Error(`Invalid source type: ${typeof input}`);
-};
+  options?: AfppParseOptions,
+) => parsePdfFile(PROCESSING_TYPE.IMAGE, input, options);

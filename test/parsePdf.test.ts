@@ -61,6 +61,14 @@ describe('parsePdf', () => {
       const data = await parsePdf(input, { scale: 2 }, (content) => content);
       assert.equal(data.length, 9);
     });
+
+    it('should return valid string parsed from pdf', async () => {
+      const pathToFile = path.join('test', 'example-img.pdf');
+      const fileBuffer = await readFile(pathToFile, {});
+      const input = new Uint8Array(fileBuffer);
+      const data = await parsePdf(input, { scale: 2 }, (content) => content);
+      assert.equal(data.length, 9);
+    });
     it('should return valid string parsed from encrypted pdf', async () => {
       const pathToFile = path.join('test', 'example-encrypted.pdf');
       const fileBuffer = await readFile(pathToFile, {});

@@ -1,63 +1,108 @@
 # afpp
 
 ![Version](https://img.shields.io/github/v/release/l2ysho/afpp)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/l2ysho/afpp/release.yml)
 [![codecov](https://codecov.io/github/l2ysho/afpp/graph/badge.svg?token=2PE32I4M9K)](https://codecov.io/github/l2ysho/afpp)
 ![Node](https://img.shields.io/badge/node-%3E%3D%2018.x-brightgreen.svg)
 ![npm Downloads](https://img.shields.io/npm/dt/afpp.svg)
 ![Repo Size](https://img.shields.io/github/repo-size/l2ysho/afpp)
 ![Last Commit](https://img.shields.io/github/last-commit/l2ysho/afpp.svg)
 
-Another f\*cking pdf parser. (alpha)
+Another f\*cking PDF parser. Because parsing PDFs in Node.js should be easy. Live long and parse PDFs. 🖖
 
 ## Why?
 
-If you are parsing pdf files in nodejs and you are satisfied with your actual solution, good for you, you don't need this.
+There are plenty of PDF-related packages for Node.js. They work… until they don’t.
 
-But if you’ve encountered one or more of these issues:
+Afpp was built to solve the headaches I ran into while trying to parse PDFs in Node.js:
 
-- package size (+30mb)
-- blocking event loop
-- performance issues
-- buggy as shit
-- not working in esm/commonjs
-- old pdfjs-dist as peer dependency
-- no typescript support
-- parsing of encrypted pdf files (password needed)
-
-then you might find this package useful.
+- 📦 Do I need a package with 30+ MB just to read a PDF?
+- 🧵 Why is the event loop blocked?
+- 🐏 Is that a memory leak I smell?
+- 🐌 Should reading a PDF really be this performance-heavy?
+- 🐞 Why is everything so buggy?
+- 🎨 Why does it complain about the lack of a canvas in Node.js?
+- 🧱 Why does canvas require native C++/Python dependencies to build?
+- 🪟 Why does it complain about the missing window object?
+- 🪄 Why do I need ImageMagick for this?!
+- 👻 What the hell is Ghostscript, and why does it keep failing?
+- ❌ Where’s the TypeScript support?
+- 🧓 Why are the dependencies older than my dev career?
+- 🔐 Why does everything work… until I try an encrypted PDF?
+- 🕯️ Why does every OS need its own special setup ritual?
 
 ## Prerequisites
 
-- Node.js v22.14.0
+- Node.js >= v22.14.0
+
+## 📦 Installation
+
+You can install `afpp` via npm, Yarn, or pnpm.
+
+### npm
+
+```bash
+npm install afpp
+```
+
+### Yarn
+
+```bash
+yarn add afpp
+```
+
+### pnpm
+
+```bash
+pnpm add afpp
+```
 
 ## Getting started
 
-`npm install afpp`
+The `afpp` library makes it simple to extract text or images from PDF files in Node.js. Whether your PDF is stored locally, hosted online, or encrypted, `afpp` provides an easy-to-use API to handle it all. All functions have common parameters and accepts string path, buffer, or URL object.
 
-**commonjs**:
+### Get text from path
 
-```js
-const { pdf2string } = require('afpp');
-const path = require('node:path');
+```ts
+import { readFile } from 'fs/promises';
+import path from 'path';
 
-const pathToFile = path.join('example.pdf');
+import { pdf2string } from 'afpp';
 
-(async function start() {
-  const pdfString = await pdf2string(pathToFile);
-  console.log(pdfString);
+(async function main() {
+  const pathToFile = path.join('..', 'test', 'example.pdf');
+  const input = await readFile(pathToFile);
+  const data = await pdf2string(input);
+
+  console.log('Extracted text:', data); // ['page 1 content', 'page 2 content', ...]
 })();
 ```
 
-**esm**:
+### Get image from URL
 
-```js
-import { pdf2string } from 'afpp';
-import path from 'node:path';
+```ts
+import { pdf2image } from 'afpp';
 
-const pathToFile = path.join('example.pdf');
+(async function main() {
+  const url = new URL('https://pdfobject.com/pdf/sample.pdf');
+  const arrayOfImages = await pdf2image(url);
 
-(async function start() {
-  const pdfString = await pdf2string(pathToFile);
-  console.log(pdfString);
+  console.log(arrayOfImages); // [imageBuffer, imageBuffer, ...]
+})();
+```
+
+### Parse pdf buffer
+
+```ts
+import { parsePdf } from 'afpp';
+
+(async function main() {
+  // Download PDF from URL
+  const response = await fetch('https://pdfobject.com/pdf/sample.pdf');
+  const buffer = Buffer.from(await response.arrayBuffer());
+
+  // Parse the PDF buffer
+  const result = await parsePdf(buffer, {}, (content) => content);
+  console.log('Parsed PDF:', result);
 })();
 ```
