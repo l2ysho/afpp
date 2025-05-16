@@ -8,7 +8,7 @@
 ![Repo Size](https://img.shields.io/github/repo-size/l2ysho/afpp)
 ![Last Commit](https://img.shields.io/github/last-commit/l2ysho/afpp.svg)
 
-Another f\*cking pdf parser. Because parse pdf in node.js should be easy. Live long and parse pdf. 🖖
+Another f\*cking PDF parser. Because parsing PDFs in Node.js should be easy. Live long and parse PDFs. 🖖
 
 ## Why?
 
@@ -21,7 +21,7 @@ Afpp was built to solve the headaches I ran into while trying to parse PDFs in N
 - 🐏 Is that a memory leak I smell?
 - 🐌 Should reading a PDF really be this performance-heavy?
 - 🐞 Why is everything so buggy?
-- 🎨 Why does it crash because there’s no canvas in Node.js?
+- 🎨 Why does it complain about the lack of a canvas in Node.js?
 - 🧱 Why does canvas require native C++/Python dependencies to build?
 - 🪟 Why does it complain about the missing window object?
 - 🪄 Why do I need ImageMagick for this?!
@@ -59,17 +59,50 @@ pnpm add afpp
 
 ## Getting started
 
-Lets get the text from the pdf. You can use various sources.
+The `afpp` library makes it simple to extract text or images from PDF files in Node.js. Whether your PDF is stored locally, hosted online, or encrypted, `afpp` provides an easy-to-use API to handle it all. All functions have common parameters and accepts string path, buffer, or URL object.
 
-```js
-const { pdf2string } = require('afpp');
-const path = require('node:path');
+### Get text from path
+
+```ts
+import { readFile } from 'fs/promises';
+import path from 'path';
+
+import { pdf2string } from 'afpp';
 
 (async function main() {
-  const pathToFile = path.join('example1.pdf');
+  const pathToFile = path.join('..', 'test', 'example.pdf');
+  const input = await readFile(pathToFile);
+  const data = await pdf2string(input);
 
-  const pdfString = await pdf2string(pathToFile);
+  console.log('Extracted text:', data); // ['page 1 content', 'page 2 content', ...]
+})();
+```
 
-  console.log(pdfString);
+### Get image from URL
+
+```ts
+import { pdf2image } from 'afpp';
+
+(async function main() {
+  const url = new URL('https://pdfobject.com/pdf/sample.pdf');
+  const arrayOfImages = await pdf2image(url);
+
+  console.log(arrayOfImages); // [imageBuffer, imageBuffer, ...]
+})();
+```
+
+### Parse pdf buffer
+
+```ts
+import { parsePdf } from 'afpp';
+
+(async function main() {
+  // Download PDF from URL
+  const response = await fetch('https://pdfobject.com/pdf/sample.pdf');
+  const buffer = Buffer.from(await response.arrayBuffer());
+
+  // Parse the PDF buffer
+  const result = await parsePdf(buffer, {}, (content) => content);
+  console.log('Parsed PDF:', result);
 })();
 ```
