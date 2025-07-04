@@ -70,6 +70,6 @@
   },
   "dependencies": {
     "p-limit": "6.2.0",
-    "pdfjs-dist": "5.2.133"
+    "pdfjs-dist": "5.3.31"
   }
 }
