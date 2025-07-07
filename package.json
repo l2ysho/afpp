@@ -55,7 +55,7 @@
     "cz-conventional-changelog": "3.3.0",
     "eslint": "9.29.0",
     "eslint-config-prettier": "10.1.5",
-    "eslint-plugin-import": "2.31.0",
+    "eslint-plugin-import": "2.32.0",
     "eslint-plugin-perfectionist": "4.11.0",
     "eslint-plugin-prettier": "5.5.1",
     "eslint-plugin-promise": "7.2.1",
