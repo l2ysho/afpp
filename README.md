@@ -7,6 +7,7 @@
 ![npm Downloads](https://img.shields.io/npm/dt/afpp.svg)
 ![Repo Size](https://img.shields.io/github/repo-size/l2ysho/afpp)
 ![Last Commit](https://img.shields.io/github/last-commit/l2ysho/afpp.svg)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 Another f\*cking PDF parser. Because parsing PDFs in Node.js should be easy. Live long and parse PDFs. 🖖
 
@@ -106,3 +107,74 @@ import { parsePdf } from 'afpp';
   console.log('Parsed PDF:', result);
 })();
 ```
+
+## Interface: AfppParseOptions
+
+Common properties of all afpp functions.
+Example usage
+
+```javascript
+const result = await parsePdf(buffer, {
+  concurrency: 5,
+  imageEncoding: 'jpeg',
+  password: 'STRONG_PASS',
+  scale: 4,
+});
+```
+
+## Properties
+
+### concurrency?
+
+> `optional` **concurrency**: `number`
+
+Concurrency level for page processing. Defaults to 1.
+Higher values may improve performance but increase memory usage.
+
+#### Default
+
+```ts
+1;
+```
+
+---
+
+### imageEncoding?
+
+> `optional` **imageEncoding**: [`ImageEncoding`](../type-aliases/ImageEncoding.md)
+
+Image encoding format when rendering non-text pages. Defaults to 'png'.
+Supported formats: 'avif', 'jpeg', 'png', 'webp'.
+
+#### Default
+
+```ts
+'png';
+```
+
+---
+
+### password?
+
+> `optional` **password**: `string`
+
+Password for encrypted pdf files.
+
+---
+
+### scale?
+
+> `optional` **scale**: `number`
+
+Scale of a page if content is not text (or pdf2image is used). Defaults to 2.0.
+Higher values increase image resolution but also memory usage.
+
+#### Default
+
+```ts
+2.0;
+```
+
+## License
+
+This project is licensed under the terms of the [MIT License](./LICENSE).

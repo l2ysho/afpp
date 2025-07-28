@@ -17,11 +17,15 @@ import { PDFPageProxy } from 'pdfjs-dist/types/web/interfaces';
 
 export interface AfppParseOptions {
   /**
-   * Concurrency level for page processing.
+   * Concurrency level for page processing. Defaults to 1.
+   * Higher values may improve performance but increase memory usage.
+   * @default 1
    */
   concurrency?: number;
   /**
    * Image encoding format when rendering non-text pages. Defaults to 'png'.
+   * Supported formats: 'avif', 'jpeg', 'png', 'webp'.
+   * @default 'png'
    */
   imageEncoding?: ImageEncoding;
 
@@ -31,7 +35,9 @@ export interface AfppParseOptions {
   password?: string;
 
   /**
-   * Scale of a page if content is not text.
+   * Scale of a page if content is not text. Defaults to 2.0.
+   * Higher values increase image resolution but also memory usage.
+   * @default 2.0
    */
   scale?: number;
 }
