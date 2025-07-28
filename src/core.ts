@@ -81,8 +81,11 @@ const processPdfPageTypeMixed = async <T>(
       viewport.height,
     );
 
-    await page.render({ canvasContext: canvasAndContext.context, viewport })
-      .promise;
+    await page.render({
+      canvas: canvasAndContext.canvas,
+      canvasContext: canvasAndContext.context,
+      viewport,
+    }).promise;
     //@ts-expect-error this should be fixed in release
     const imageBuffer = await canvasAndContext.canvas.encode(encoding);
     canvasFactory.destroy(canvasAndContext);
@@ -121,8 +124,11 @@ const processPdfPageTypeImage = async (
     viewport.height,
   );
 
-  await page.render({ canvasContext: canvasAndContext.context, viewport })
-    .promise;
+  await page.render({
+    canvas: canvasAndContext.canvas,
+    canvasContext: canvasAndContext.context,
+    viewport,
+  }).promise;
   //@ts-expect-error this should be fixed in release
   const imageBuffer = await canvasAndContext.canvas.encode(encoding);
   canvasFactory.destroy(canvasAndContext);
