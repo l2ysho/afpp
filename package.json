@@ -69,7 +69,7 @@
     "typescript-eslint": "8.41.0"
   },
   "dependencies": {
-    "p-limit": "7.0.0",
+    "p-limit": "7.1.1",
     "pdfjs-dist": "5.4.149"
   }
 }
