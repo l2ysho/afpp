@@ -46,7 +46,7 @@
   },
   "homepage": "https://github.com/l2ysho/afpp#readme",
   "devDependencies": {
-    "@commitlint/cli": "19.8.1",
+    "@commitlint/cli": "20.0.0",
     "@commitlint/config-conventional": "19.8.1",
     "@types/node": "24.4.0",
     "@voxpelli/node-test-pretty-reporter": "1.1.2",
