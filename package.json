@@ -48,7 +48,7 @@
   "devDependencies": {
     "@commitlint/cli": "20.1.0",
     "@commitlint/config-conventional": "20.0.0",
-    "@types/node": "24.8.1",
+    "@types/node": "24.9.1",
     "@voxpelli/node-test-pretty-reporter": "1.1.2",
     "c8": "10.1.3",
     "commitizen": "4.3.1",
