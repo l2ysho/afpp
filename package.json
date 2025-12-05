@@ -64,7 +64,7 @@
     "prettier": "3.7.3",
     "semantic-release": "25.0.2",
     "tsc-alias": "1.8.16",
-    "tsx": "4.20.6",
+    "tsx": "4.21.0",
     "typescript": "5.9.3",
     "typescript-eslint": "8.48.0"
   },
