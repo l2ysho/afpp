@@ -1,119 +1,126 @@
 # afpp
 
-![Version](https://img.shields.io/github/v/release/l2ysho/afpp)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/l2ysho/afpp/release.yml)
-[![codecov](https://codecov.io/github/l2ysho/afpp/graph/badge.svg?token=2PE32I4M9K)](https://codecov.io/github/l2ysho/afpp)
-![Node](https://img.shields.io/badge/node-%3E%3D%2022.14-brightgreen.svg)
-![npm Downloads](https://img.shields.io/npm/dt/afpp.svg)
-![Repo Size](https://img.shields.io/github/repo-size/l2ysho/afpp)
-![Last Commit](https://img.shields.io/github/last-commit/l2ysho/afpp.svg)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
+&#x20; &#x20;
 
-Another f\*cking PDF parser. Because parsing PDFs in Node.js should be easy. Live long and parse PDFs. 🖖
+> **afpp** — A modern, dependency-light PDF parser for Node.js.
+>
+> Built for performance, reliability, and developer sanity.
 
-## Why?
+---
 
-There are plenty of PDF-related packages for Node.js. They work… until they don’t.
+## Overview
 
-Afpp was built to solve the headaches I ran into while trying to parse PDFs in Node.js:
+`afpp` (Another PDF Parser, Properly) is a Node.js library for extracting text and images from PDF files without heavyweight native dependencies, event-loop blocking, or fragile runtime assumptions.
 
-- 📦 Do I need a package with 30+ MB just to read a PDF?
-- 🧵 Why is the event loop blocked?
-- 🐏 Is that a memory leak I smell?
-- 🐌 Should reading a PDF really be this performance-heavy?
-- 🐞 Why is everything so buggy?
-- 🎨 Why does it complain about the lack of a canvas in Node.js?
-- 🧱 Why does canvas require native C++/Python dependencies to build?
-- 🪟 Why does it complain about the missing window object?
-- 🪄 Why do I need ImageMagick for this?!
-- 👻 What the hell is Ghostscript, and why does it keep failing?
-- ❌ Where’s the TypeScript support?
-- 🧓 Why are the dependencies older than my dev career?
-- 🔐 Why does everything work… until I try an encrypted PDF?
-- 🕯️ Why does every OS need its own special setup ritual?
+The project was created to address recurring problems encountered with existing PDF tooling in the Node.js ecosystem:
 
-## Prerequisites
+- Excessive bundle sizes and transitive dependencies
+- Native build steps (canvas, ImageMagick, Ghostscript)
+- Browser-specific assumptions (`window`, DOM, canvas)
+- Poor TypeScript support
+- Unreliable handling of encrypted PDFs
+- Performance and memory inefficiencies
 
-- Node.js >= v22.14.0
+`afpp` focuses on **predictable behavior**, **explicit APIs**, and **production-ready defaults**.
 
-## 📦 Installation
+---
 
-You can install `afpp` via npm, Yarn, or pnpm.
+## Key Features
 
-### npm
+- Zero native build dependencies
+- Fully asynchronous, non-blocking architecture
+- First-class TypeScript support
+- Supports local files, buffers, and remote URLs
+- Handles encrypted PDFs
+- Configurable concurrency and rendering scale
+- Minimal and auditable dependency graph
+
+---
+
+## Requirements
+
+- **Node.js** >= 22.14.0
+
+---
+
+## Installation
+
+Install using your preferred package manager:
 
 ```bash
 npm install afpp
-```
-
-### Yarn
-
-```bash
+# or
 yarn add afpp
-```
-
-### pnpm
-
-```bash
+# or
 pnpm add afpp
 ```
 
-## Getting started
+---
 
-The `afpp` library makes it simple to extract text or images from PDF files in Node.js. Whether your PDF is stored locally, hosted online, or encrypted, `afpp` provides an easy-to-use API to handle it all. All functions have common parameters and accepts string path, buffer, or URL object.
+## Quick Start
 
-### Get text from path
+All parsing functions accept the same input types:
+
+- `string` (file path)
+- `Buffer`
+- `URL`
+
+### Extract Text from a PDF
 
 ```ts
 import { readFile } from 'fs/promises';
 import path from 'path';
-
 import { pdf2string } from 'afpp';
 
-(async function main() {
-  const pathToFile = path.join('..', 'test', 'example.pdf');
-  const input = await readFile(pathToFile);
-  const data = await pdf2string(input);
+(async () => {
+  const filePath = path.join('..', 'test', 'example.pdf');
+  const buffer = await readFile(filePath);
 
-  console.log('Extracted text:', data); // ['page 1 content', 'page 2 content', ...]
+  const pages = await pdf2string(buffer);
+  console.log(pages); // ['Page 1 text', 'Page 2 text', ...]
 })();
 ```
 
-### Get image from URL
+---
+
+### Render PDF Pages as Images
 
 ```ts
 import { pdf2image } from 'afpp';
 
-(async function main() {
+(async () => {
   const url = new URL('https://pdfobject.com/pdf/sample.pdf');
-  const arrayOfImages = await pdf2image(url);
+  const images = await pdf2image(url);
 
-  console.log(arrayOfImages); // [imageBuffer, imageBuffer, ...]
+  console.log(images); // [Buffer, Buffer, ...]
 })();
 ```
 
-### Parse pdf buffer
+---
+
+### Low-Level Parsing API
+
+For advanced use cases, `parsePdf` exposes page-level control and transformation.
 
 ```ts
 import { parsePdf } from 'afpp';
 
-(async function main() {
-  // Download PDF from URL
+(async () => {
   const response = await fetch('https://pdfobject.com/pdf/sample.pdf');
   const buffer = Buffer.from(await response.arrayBuffer());
 
-  // Parse the PDF buffer
-  const result = await parsePdf(buffer, {}, (content) => content);
-  console.log('Parsed PDF:', result);
+  const result = await parsePdf(buffer, {}, (pageContent) => pageContent);
+  console.log(result);
 })();
 ```
 
-## Interface: AfppParseOptions
+---
 
-Common properties of all afpp functions.
-Example usage
+## Configuration
 
-```javascript
+All public APIs accept a shared options object.
+
+```ts
 const result = await parsePdf(buffer, {
   concurrency: 5,
   imageEncoding: 'jpeg',
@@ -122,59 +129,26 @@ const result = await parsePdf(buffer, {
 });
 ```
 
-## Properties
+### AfppParseOptions
 
-### concurrency?
-
-> `optional` **concurrency**: `number`
-
-Concurrency level for page processing. Defaults to 1.
-Higher values may improve performance but increase memory usage.
-
-#### Default
-
-```ts
-1;
-```
+| Option          | Type                                  | Default | Description                           |
+| --------------- | ------------------------------------- | ------- | ------------------------------------- |
+| `concurrency`   | `number`                              | `1`     | Number of pages processed in parallel |
+| `imageEncoding` | `'png' \| 'jpeg' \| 'webp' \| 'avif'` | `'png'` | Output format for rendered images     |
+| `password`      | `string`                              | —       | Password for encrypted PDFs           |
+| `scale`         | `number`                              | `2.0`   | Rendering scale for non-text pages    |
 
 ---
 
-### imageEncoding?
+## Design Principles
 
-> `optional` **imageEncoding**: [`ImageEncoding`](../type-aliases/ImageEncoding.md)
-
-Image encoding format when rendering non-text pages. Defaults to 'png'.
-Supported formats: 'avif', 'jpeg', 'png', 'webp'.
-
-#### Default
-
-```ts
-'png';
-```
+- **Node-first**: No browser globals or DOM assumptions
+- **Explicit over implicit**: No magic configuration
+- **Fail fast**: Clear errors instead of silent corruption
+- **Production-oriented**: Optimized for long-running processes
 
 ---
-
-### password?
-
-> `optional` **password**: `string`
-
-Password for encrypted pdf files.
-
----
-
-### scale?
-
-> `optional` **scale**: `number`
-
-Scale of a page if content is not text (or pdf2image is used). Defaults to 2.0.
-Higher values increase image resolution but also memory usage.
-
-#### Default
-
-```ts
-2.0;
-```
 
 ## License
 
-This project is licensed under the terms of the [MIT License](./LICENSE).
+MIT © Richard Solár
