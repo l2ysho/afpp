@@ -29,7 +29,12 @@ export default tseslint.config(
       'perfectionist/sort-imports': [
         'error',
         {
-          customGroups: {},
+          customGroups: [
+            {
+              elementNamePattern: '^#afpp/.*',
+              groupName: 'internal',
+            },
+          ],
           groups: [
             'builtin', // Built-in imports (come from NodeJS native) go first
             'external', // <- External imports
@@ -38,8 +43,7 @@ export default tseslint.config(
             'index', // <- index imports
             'unknown', // <- unknown
           ],
-          internalPattern: ['^#afpp/.*'],
-          newlinesBetween: 'always',
+          newlinesBetween: 1,
           order: 'asc',
           type: 'natural',
         },
