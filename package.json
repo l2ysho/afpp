@@ -1,6 +1,6 @@
 {
   "name": "afpp",
-  "version": "0.0.1",
+  "version": "2.1.7",
   "description": "another f*cking pdf parser",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
