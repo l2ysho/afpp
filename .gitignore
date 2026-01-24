@@ -131,3 +131,6 @@ dist
 
 # mac related
 .DS_Store
+
+# examples output
+examples/output/
