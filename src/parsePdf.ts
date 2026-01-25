@@ -14,7 +14,7 @@ import {
  * @param {Buffer|Uint8Array|string|URL} input - The PDF source, which can be a file path, URL, Buffer, or Uint8Array.
  * @param {Object} [options] - Optional parsing options for customizing the PDF parsing process.
  * @param {string} [options.password] - The password for encrypted PDF files, if required.
- * @param {number} [options.scale=2.0] - Scale factor for rendering pages (affects image resolution).
+ * @param {number} [options.scale=1] - Scale factor for rendering pages (affects image resolution).
  * @param {number} [options.concurrency=1] - Number of pages to process in parallel.
  * @param {'png' | 'jpeg' | 'webp' | 'avif'} [options.imageEncoding='png'] - Image format for rendered PDF pages.
  * @param {function} callback - callback function to add another layer of processing, default callback returns content of page withouth any added processing.

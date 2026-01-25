@@ -82,7 +82,7 @@ All functions accept the following input types:
 | --------------- | ------------------------------------- | ------- | -------------------------------------- |
 | `password`      | `string`                              | -       | Password for encrypted PDFs            |
 | `concurrency`   | `number`                              | `1`     | Number of pages processed in parallel  |
-| `scale`         | `number`                              | `2.0`   | Image rendering resolution (1.0 - 4.0) |
+| `scale`         | `number`                              | `1`     | Image rendering resolution (1.0 - 4.0) |
 | `imageEncoding` | `'png' \| 'jpeg' \| 'webp' \| 'avif'` | `'png'` | Output image format                    |
 
 ## Output Directory

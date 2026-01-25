@@ -8,7 +8,7 @@
  * Available options:
  * - password: string - for encrypted PDFs
  * - concurrency: number - parallel page processing (default: 1)
- * - scale: number - image rendering resolution (default: 2.0)
+ * - scale: number - image rendering resolution (default: 1)
  * - imageEncoding: 'png' | 'jpeg' | 'webp' | 'avif' - output format (default: 'png')
  */
 
@@ -36,7 +36,7 @@ async function batchProcessing() {
   const options = {
     concurrency: 4,
     imageEncoding: 'webp' as const,
-    scale: 2.0,
+    scale: 2,
   };
 
   for (const pdfFile of pdfFiles) {
@@ -124,7 +124,7 @@ async function fullTextExtraction() {
     concurrency: 4, // Process 4 pages in parallel
     imageEncoding: 'png', // Format for any image pages
     password: PASSWORD, // Decrypt the PDF
-    scale: 2.0, // For any image-based pages
+    scale: 2, // For any image-based pages
   });
 
   console.log(`Extracted ${pages.length} pages`);
@@ -166,7 +166,7 @@ async function productionConfiguration() {
   const productionOptions = {
     concurrency: 8, // Maximize parallel processing
     imageEncoding: 'webp' as const, // Best compression
-    scale: 2.0, // Good quality without excessive memory
+    scale: 2, // Good quality without excessive memory
   };
 
   const start = Date.now();

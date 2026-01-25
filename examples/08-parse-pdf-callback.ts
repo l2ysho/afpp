@@ -83,7 +83,7 @@ async function complexTransformation() {
 
   const pages = await parsePdf<ProcessedPage>(
     PDF_PATH,
-    { imageEncoding: 'png', scale: 2.0 },
+    { imageEncoding: 'png', scale: 2 },
     (content, pageNumber, pageCount) => {
       const isText = typeof content === 'string';
 
@@ -128,7 +128,7 @@ async function detectContentType() {
 
   const results = await parsePdf<PageInfo>(
     IMAGE_PDF_PATH,
-    { scale: 2.0 },
+    { scale: 2 },
     (content, pageNumber, pageCount) => {
       const isText = typeof content === 'string';
       return {

@@ -35,9 +35,9 @@ export interface AfppParseOptions {
   password?: string;
 
   /**
-   * Scale of a page if content is not text. Defaults to 2.0.
+   * Scale of a page if content is not text. Defaults to 1.
    * Higher values increase image resolution but also memory usage.
-   * @default 2.0
+   * @default 1
    */
   scale?: number;
 }
@@ -167,7 +167,7 @@ const validateParameters = async (
   documentInitParameters.password = options?.password;
   documentInitParameters.verbosity = VerbosityLevel.ERRORS;
 
-  const scale = options?.scale ?? 2.0;
+  const scale = options?.scale ?? 1;
   const concurrency = options?.concurrency ?? 1;
   const encoding = options?.imageEncoding ?? 'png';
 

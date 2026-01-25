@@ -141,7 +141,7 @@ const result = await parsePdf(buffer, {
 | `concurrency`   | `number`                              | `1`     | Number of pages processed in parallel |
 | `imageEncoding` | `'png' \| 'jpeg' \| 'webp' \| 'avif'` | `'png'` | Output format for rendered images     |
 | `password`      | `string`                              | —       | Password for encrypted PDFs           |
-| `scale`         | `number`                              | `2.0`   | Rendering scale for non-text pages    |
+| `scale`         | `number`                              | `1`     | Rendering scale for non-text pages    |
 
 ---
 
