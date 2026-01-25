@@ -1,3 +1,9 @@
+## [2.2.1](https://github.com/l2ysho/afpp/compare/v2.2.0...v2.2.1) (2026-01-25)
+
+### Performance Improvements
+
+- **render:** reduces default render scale ([45763d9](https://github.com/l2ysho/afpp/commit/45763d923cb9d7b9e24269cc20f2b444f6f876e4))
+
 # [2.2.0](https://github.com/l2ysho/afpp/compare/v2.1.7...v2.2.0) (2026-01-24)
 
 ### Bug Fixes
