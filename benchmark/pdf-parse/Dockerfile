@@ -18,6 +18,7 @@ RUN npm init -y && npm install pdf-parse tsx
 
 # Copy test files and benchmark
 COPY test ./test
+COPY benchmark/utils.ts ./benchmark/utils.ts
 COPY benchmark/pdf-parse ./benchmark/pdf-parse
 
 # Create output directory
@@ -25,6 +26,9 @@ RUN mkdir -p benchmark/pdf-parse/output
 
 # Default number of runs
 ENV BENCHMARK_RUNS=10
+
+# Enable GC exposure for accurate memory measurements
+ENV NODE_OPTIONS="--expose-gc"
 
 # Run benchmark with optional argument for number of runs
 ENTRYPOINT ["npx", "tsx", "benchmark/pdf-parse/run.ts"]

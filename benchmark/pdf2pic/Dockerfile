@@ -24,6 +24,7 @@ RUN npm init -y && npm install pdf2pic tsx
 
 # Copy test files and benchmark
 COPY test ./test
+COPY benchmark/utils.ts ./benchmark/utils.ts
 COPY benchmark/pdf2pic ./benchmark/pdf2pic
 
 # Create output directory
@@ -31,6 +32,9 @@ RUN mkdir -p benchmark/pdf2pic/output
 
 # Default number of runs
 ENV BENCHMARK_RUNS=10
+
+# Enable GC exposure for accurate memory measurements
+ENV NODE_OPTIONS="--expose-gc"
 
 # Run benchmark with optional argument for number of runs
 ENTRYPOINT ["npx", "tsx", "benchmark/pdf2pic/run.ts"]
