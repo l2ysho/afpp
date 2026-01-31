@@ -45,17 +45,19 @@ interface ConvertResult {
 
 async function convertPdfToImages(pdfPath: string): Promise<ConvertResult[]> {
   // density: 72 matches scale:1 in pdfjs-based tools (72 DPI is PDF standard)
-  // width: 595 matches A4 page width at 72 DPI (same as pdfjs output)
+  // width/height: 595x841 matches pdfjs output dimensions exactly
+  // Note: pdf2pic uses GraphicsMagick/Ghostscript which outputs grayscale for
+  // text-only PDFs, while pdfjs-based tools output RGBA. This is expected behavior.
   const options = {
     density: 72,
     format: 'png',
-    preserveAspectRatio: true,
+    height: 841,
     width: 595,
   };
 
   const convert = fromPath(pdfPath, options);
 
-  // Convert all pages (1-9 based on example.pdf)
+  // Convert all 9 pages of example.pdf
   return await convert.bulk([1, 2, 3, 4, 5, 6, 7, 8, 9], {
     responseType: 'buffer',
   });

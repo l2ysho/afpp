@@ -28,6 +28,7 @@ run_benchmark() {
   local image=$2
   local dockerfile=$3
   local output_dir=$4
+  local stats_file="/tmp/docker_stats_$$.txt"
 
   echo "=== Building $name benchmark ==="
   docker build -t "$image" -f "$dockerfile" .
@@ -43,48 +44,63 @@ run_benchmark() {
     -v "$(pwd)/$output_dir:/app/$output_dir" \
     "$image")
 
-  # Track peak memory in background
+  # Collect docker stats in background using polling
+  # We poll every 0.5s with --no-stream to get proper line output
+  (
+    while docker inspect "$container_id" --format='{{.State.Running}}' 2>/dev/null | grep -q true; do
+      docker stats "$container_id" --no-stream --format '{{.MemUsage}}' 2>/dev/null >> "$stats_file"
+      sleep 0.5
+    done
+  ) &
+  local stats_pid=$!
+
+  # Follow container logs in real-time (blocks until container exits)
+  docker logs -f "$container_id"
+
+  # Stop stats collection
+  kill $stats_pid 2>/dev/null || true
+  wait $stats_pid 2>/dev/null || true
+
+  # Parse stats file to calculate peak and average
   local peak_mem=0
-  local mem_samples=()
-  while docker inspect "$container_id" --format='{{.State.Running}}' 2>/dev/null | grep -q true; do
-    # Get memory usage in bytes from docker stats
+  local sum=0
+  local count=0
+
+  while IFS= read -r line; do
+    # Extract memory value (e.g., "150.1MiB / 7.953GiB" -> "150.1")
     local mem
-    mem=$(docker stats "$container_id" --no-stream --format '{{.MemUsage}}' 2>/dev/null | awk '{print $1}' | sed 's/MiB//' | sed 's/GiB/*1024/' | bc 2>/dev/null || echo "0")
-    if [[ "$mem" != "0" && "$mem" != "" ]]; then
-      mem_samples+=("$mem")
+    mem=$(echo "$line" | awk '{print $1}' | sed 's/MiB//' | sed 's/GiB/*1024/' | bc 2>/dev/null || echo "")
+    if [[ -n "$mem" && "$mem" != "0" ]]; then
+      count=$((count + 1))
+      sum=$(echo "$sum + $mem" | bc)
       if (( $(echo "$mem > $peak_mem" | bc -l) )); then
         peak_mem=$mem
       fi
     fi
-    sleep 0.1
-  done
+  done < "$stats_file"
 
-  # Get container logs
-  docker logs "$container_id"
-
-  # Calculate average memory
+  # Calculate average
   local avg_mem=0
-  if [[ ${#mem_samples[@]} -gt 0 ]]; then
-    local sum=0
-    for m in "${mem_samples[@]}"; do
-      sum=$(echo "$sum + $m" | bc)
-    done
-    avg_mem=$(echo "scale=2; $sum / ${#mem_samples[@]}" | bc)
+  if [[ $count -gt 0 ]]; then
+    avg_mem=$(echo "scale=2; $sum / $count" | bc)
   fi
+
+  # Cleanup stats file
+  rm -f "$stats_file"
 
   # Save Docker memory stats
   echo ""
   echo "=== Docker Memory Stats for $name ==="
   echo "  Peak memory: ${peak_mem} MiB"
   echo "  Avg memory: ${avg_mem} MiB"
-  echo "  Samples: ${#mem_samples[@]}"
+  echo "  Samples: ${count}"
 
   # Append Docker stats to results.json
   local results_file="$output_dir/results.json"
   if [[ -f "$results_file" ]]; then
     # Use jq if available, otherwise use node
     if command -v jq &> /dev/null; then
-      jq --arg peak "$peak_mem" --arg avg "$avg_mem" --arg samples "${#mem_samples[@]}" \
+      jq --arg peak "$peak_mem" --arg avg "$avg_mem" --arg samples "$count" \
         '. + {dockerMemory: {peakMiB: ($peak | tonumber), avgMiB: ($avg | tonumber), samples: ($samples | tonumber)}}' \
         "$results_file" > "${results_file}.tmp" && mv "${results_file}.tmp" "$results_file"
     else
@@ -94,7 +110,7 @@ run_benchmark() {
         data.dockerMemory = {
           peakMiB: parseFloat('$peak_mem') || 0,
           avgMiB: parseFloat('$avg_mem') || 0,
-          samples: parseInt('${#mem_samples[@]}') || 0
+          samples: parseInt('$count') || 0
         };
         fs.writeFileSync('$results_file', JSON.stringify(data, null, 2));
       "
@@ -102,7 +118,7 @@ run_benchmark() {
     echo "  Docker memory stats added to $results_file"
   fi
 
-  # Cleanup
+  # Cleanup container
   docker rm "$container_id" > /dev/null 2>&1 || true
   echo ""
 }

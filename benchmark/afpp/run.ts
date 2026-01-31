@@ -46,7 +46,7 @@ async function main() {
       saveOutput: shouldSaveOutput(),
     },
     {
-      operation: async () => pdf2image(PDF_PATH, { concurrency: 4, scale: 1 }),
+      operation: async () => pdf2image(PDF_PATH, { concurrency: 1, scale: 1 }),
       saveOutput: async (images: Buffer[]) => {
         for (let i = 0; i < images.length; i++) {
           await writeFile(join(OUTPUT_DIR, `page-${i + 1}.png`), images[i]);
