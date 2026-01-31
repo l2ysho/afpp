@@ -14,7 +14,7 @@ FROM node:22-slim
 WORKDIR /app
 
 # Install afpp from npm
-RUN npm init -y && npm install afpp tsx
+RUN npm init -y && npm install afpp
 
 # Copy test files and benchmark
 COPY test ./test
@@ -27,9 +27,9 @@ RUN mkdir -p benchmark/afpp/output
 # Default number of runs
 ENV BENCHMARK_RUNS=10
 
-# Enable GC exposure for accurate memory measurements
-ENV NODE_OPTIONS="--expose-gc"
+# Enable GC exposure and native TypeScript support for lower memory overhead
+ENV NODE_OPTIONS="--expose-gc --experimental-strip-types --disable-warning=ExperimentalWarning"
 
 # Run benchmark with optional argument for number of runs
-ENTRYPOINT ["npx", "tsx", "benchmark/afpp/run.ts"]
+ENTRYPOINT ["node", "benchmark/afpp/run.ts"]
 CMD []

@@ -255,6 +255,10 @@ export async function saveResults(
   const outputPath = join(outputDir, 'results.json');
   await writeFile(outputPath, JSON.stringify(result, null, 2));
   console.log(`\nResults saved to ${outputPath}`);
+
+  const mdPath = join(outputDir, 'output.md');
+  await writeFile(mdPath, generateMarkdown(result));
+  console.log(`Markdown saved to ${mdPath}`);
 }
 
 /**
@@ -352,6 +356,42 @@ function calculateSummary(results: RunResult[]): OperationSummary {
     minTimeMs: round2(Math.min(...times)),
     p95TimeMs: round2(percentile(times, 95)),
   };
+}
+
+/**
+ * Generate markdown summary of benchmark results
+ */
+function generateMarkdown(result: BenchmarkResult): string {
+  const { config, environment, leakDetection, summary } = result;
+  const leakStatus = leakDetection.leakDetected ? 'Yes' : 'No';
+  const timestamp = new Date(result.timestamp).toISOString().split('T')[0];
+
+  return `## ${config.name}
+
+> Last run: ${timestamp} | Runs: ${config.runs} | Node: ${environment.node} | Platform: ${environment.platform}/${environment.arch}
+
+### Performance
+
+| Metric | Value |
+|--------|-------|
+| Avg | ${summary.avgTimeMs} ms |
+| Median | ${summary.medianTimeMs} ms |
+| P95 | ${summary.p95TimeMs} ms |
+| Min | ${summary.minTimeMs} ms |
+| Max | ${summary.maxTimeMs} ms |
+
+### Memory
+
+| Metric | Value |
+|--------|-------|
+| Initial RSS | ${leakDetection.initialRssMb} MB |
+| Final RSS | ${leakDetection.finalRssMb} MB |
+| Peak RSS | ${leakDetection.peakRssMb} MB |
+| Growth Rate | ${leakDetection.growthRatePerRun} MB/run |
+| Leak Detected | ${leakStatus} |
+
+${leakDetection.leakDetected ? `**Warning:** ${leakDetection.leakSummary}` : ''}
+`;
 }
 
 /**

@@ -19,8 +19,8 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# Install pdf2pic and tsx
-RUN npm init -y && npm install pdf2pic tsx
+# Install pdf2pic
+RUN npm init -y && npm install pdf2pic
 
 # Copy test files and benchmark
 COPY test ./test
@@ -33,9 +33,9 @@ RUN mkdir -p benchmark/pdf2pic/output
 # Default number of runs
 ENV BENCHMARK_RUNS=10
 
-# Enable GC exposure for accurate memory measurements
-ENV NODE_OPTIONS="--expose-gc"
+# Enable GC exposure and native TypeScript support for lower memory overhead
+ENV NODE_OPTIONS="--expose-gc --experimental-strip-types --disable-warning=ExperimentalWarning"
 
 # Run benchmark with optional argument for number of runs
-ENTRYPOINT ["npx", "tsx", "benchmark/pdf2pic/run.ts"]
+ENTRYPOINT ["node", "benchmark/pdf2pic/run.ts"]
 CMD []

@@ -13,8 +13,8 @@ FROM node:22-slim
 
 WORKDIR /app
 
-# Install pdf-parse and tsx
-RUN npm init -y && npm install pdf-parse tsx
+# Install pdf-parse
+RUN npm init -y && npm install pdf-parse
 
 # Copy test files and benchmark
 COPY test ./test
@@ -27,9 +27,9 @@ RUN mkdir -p benchmark/pdf-parse/output
 # Default number of runs
 ENV BENCHMARK_RUNS=10
 
-# Enable GC exposure for accurate memory measurements
-ENV NODE_OPTIONS="--expose-gc"
+# Enable GC exposure and native TypeScript support for lower memory overhead
+ENV NODE_OPTIONS="--expose-gc --experimental-strip-types --disable-warning=ExperimentalWarning"
 
 # Run benchmark with optional argument for number of runs
-ENTRYPOINT ["npx", "tsx", "benchmark/pdf-parse/run.ts"]
+ENTRYPOINT ["node", "benchmark/pdf-parse/run.ts"]
 CMD []

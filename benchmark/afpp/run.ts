@@ -17,7 +17,8 @@
  */
 
 import { writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 // @ts-expect-error afpp is installed in docker
 import { pdf2image } from 'afpp';
@@ -28,8 +29,9 @@ import {
   runBenchmark,
   saveResults,
   shouldSaveOutput,
-} from '../utils';
+} from '../utils.ts';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = join(__dirname, 'output');
 const PDF_PATH = join(__dirname, '../../test/example.pdf');
 
@@ -44,7 +46,7 @@ async function main() {
       saveOutput: shouldSaveOutput(),
     },
     {
-      operation: async () => pdf2image(PDF_PATH, { concurency: 8, scale: 0.1 }),
+      operation: async () => pdf2image(PDF_PATH, { concurrency: 4, scale: 1 }),
       saveOutput: async (images: Buffer[]) => {
         for (let i = 0; i < images.length; i++) {
           await writeFile(join(OUTPUT_DIR, `page-${i + 1}.png`), images[i]);
