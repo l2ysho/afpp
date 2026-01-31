@@ -44,10 +44,13 @@ interface ConvertResult {
 }
 
 async function convertPdfToImages(pdfPath: string): Promise<ConvertResult[]> {
+  // density: 72 matches scale:1 in pdfjs-based tools (72 DPI is PDF standard)
+  // width: 595 matches A4 page width at 72 DPI (same as pdfjs output)
   const options = {
-    density: 300,
+    density: 72,
     format: 'png',
     preserveAspectRatio: true,
+    width: 595,
   };
 
   const convert = fromPath(pdfPath, options);
