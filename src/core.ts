@@ -103,7 +103,13 @@ const processPdfPageTypeMixed = async <T>(
     }
   }
 
-  const pageText = items.map((item) => item.str || '').join(' ');
+  let pageText = '';
+  for (const item of items) {
+    if (item.str) {
+      if (pageText) pageText += ' ';
+      pageText += item.str;
+    }
+  }
   return callback(pageText, pageNumber, pageCount);
 };
 
@@ -116,7 +122,14 @@ const processPdfPageTypeText = async (page: PDFPageProxy) => {
   if (items.length === 0) {
     return '';
   } else {
-    return items.map((item) => item.str || '').join(' ');
+    let pageText = '';
+    for (const item of items) {
+      if (item.str) {
+        if (pageText) pageText += ' ';
+        pageText += item.str;
+      }
+    }
+    return pageText;
   }
 };
 
@@ -174,6 +187,10 @@ const validateParameters = async (
 
   documentInitParameters.password = options?.password;
   documentInitParameters.verbosity = VerbosityLevel.ERRORS;
+  // Performance optimizations for local file processing
+  documentInitParameters.disableAutoFetch = true; // Don't prefetch - we have full data
+  documentInitParameters.disableStream = true; // Don't stream - we have full data
+  documentInitParameters.disableRange = true; // Don't use range requests - we have full data
 
   const scale = options?.scale ?? 1.0;
   const concurrency = options?.concurrency ?? 1;
