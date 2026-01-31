@@ -13,7 +13,17 @@ const OUTPUT_FILE = join(__dirname, 'BENCHMARK.md');
 
 interface BenchmarkData {
   name: string;
-  result: BenchmarkResult | null;
+  result: BenchmarkResultWithDocker | null;
+}
+
+interface BenchmarkResultWithDocker extends BenchmarkResult {
+  dockerMemory?: DockerMemory;
+}
+
+interface DockerMemory {
+  avgMiB: number;
+  peakMiB: number;
+  samples: number;
 }
 
 function generateMarkdown(benchmarks: BenchmarkData[]): string {
@@ -55,9 +65,9 @@ Comparison of PDF processing libraries performance and memory usage.
     }
   }
 
-  // Memory comparison table
+  // Memory comparison table (Node.js RSS)
   md += `
-### Memory
+### Memory (Node.js RSS)
 
 | Library | Initial RSS | Final RSS | Peak RSS | Growth Rate | Leak Detected |
 |---------|-------------|-----------|----------|-------------|---------------|
@@ -70,6 +80,28 @@ Comparison of PDF processing libraries performance and memory usage.
       md += `| ${name} | ${l.initialRssMb} MB | ${l.finalRssMb} MB | ${l.peakRssMb} MB | ${l.growthRatePerRun} MB/run | ${leak} |\n`;
     } else {
       md += `| ${name} | - | - | - | - | - |\n`;
+    }
+  }
+
+  // Docker memory comparison table
+  const hasDockerMemory = benchmarks.some((b) => b.result?.dockerMemory);
+  if (hasDockerMemory) {
+    md += `
+### Memory (Docker Container)
+
+| Library | Peak | Avg | Samples |
+|---------|------|-----|---------|
+`;
+
+    for (const { name, result } of benchmarks) {
+      if (result?.dockerMemory) {
+        const d = result.dockerMemory;
+        md += `| ${name} | ${d.peakMiB} MiB | ${d.avgMiB} MiB | ${d.samples} |\n`;
+      } else if (result) {
+        md += `| ${name} | - | - | - |\n`;
+      } else {
+        md += `| ${name} | - | - | - |\n`;
+      }
     }
   }
 
@@ -112,6 +144,11 @@ Comparison of PDF processing libraries performance and memory usage.
       md += `> **Warning:** ${result.leakDetection.leakSummary}\n\n`;
     }
 
+    const dockerMemoryRows = result.dockerMemory
+      ? `| Docker Peak | ${result.dockerMemory.peakMiB} MiB |
+| Docker Avg | ${result.dockerMemory.avgMiB} MiB |`
+      : '';
+
     md += `<details>
 <summary>Memory details</summary>
 
@@ -125,6 +162,7 @@ Comparison of PDF processing libraries performance and memory usage.
 | Early Avg RSS | ${result.leakDetection.earlyAvgRssMb} MB |
 | Late Avg RSS | ${result.leakDetection.lateAvgRssMb} MB |
 | Late vs Early | ${result.leakDetection.lateVsEarlyDeltaMb} MB |
+${dockerMemoryRows}
 
 </details>
 
@@ -150,7 +188,8 @@ BENCHMARK_RUNS=100 ./benchmark/afpp/run.sh
 ## Notes
 
 - All benchmarks run in Docker containers for consistent environments
-- Memory measurements use RSS (Resident Set Size)
+- **Node.js RSS**: Memory measured from inside the process using \`process.memoryUsage().rss\`
+- **Docker Memory**: Total container memory measured externally via \`docker stats\`
 - Leak detection compares early vs late run memory usage
 - GC is forced between runs (\`--expose-gc\`) for accurate measurements
 `;
