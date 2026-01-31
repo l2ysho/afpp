@@ -44,6 +44,7 @@ async function main() {
       outputDir: OUTPUT_DIR,
       runs,
       saveOutput: shouldSaveOutput(),
+      warmupRuns: 20,
     },
     {
       operation: async () => pdf2image(PDF_PATH, { concurrency: 1, scale: 1 }),

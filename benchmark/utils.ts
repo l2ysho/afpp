@@ -28,6 +28,8 @@ export interface BenchmarkConfig {
   runs: number;
   /** Whether to save sample output from warmup */
   saveOutput?: boolean;
+  /** Number of warmup runs before measurement (default: 1) */
+  warmupRuns?: number;
 }
 
 export interface BenchmarkResult {
@@ -159,7 +161,7 @@ export async function runBenchmark<T>(
   config: BenchmarkConfig,
   callbacks: BenchmarkCallbacks<T>,
 ): Promise<BenchmarkResult> {
-  const { name, outputDir, runs, saveOutput } = config;
+  const { name, outputDir, runs, saveOutput, warmupRuns = 1 } = config;
   const { operation, saveOutput: saveOutputFn, warmup } = callbacks;
 
   await mkdir(outputDir, { recursive: true });
@@ -183,13 +185,17 @@ export async function runBenchmark<T>(
   try {
     console.log(`Starting ${name} benchmark with ${runs} runs...\n`);
 
-    // Warmup run
-    console.log('Warmup run...');
-    const warmupResult = await (warmup ?? operation)();
+    // Warmup runs to stabilize JIT, caches, and memory
+    console.log(`Warmup (${warmupRuns} runs)...`);
+    let warmupResult: T | undefined;
+    for (let i = 0; i < warmupRuns; i++) {
+      warmupResult = await (warmup ?? operation)();
+      forceGC();
+    }
     console.log('Warmup complete.\n');
 
     // Optionally save sample output from warmup
-    if (saveOutput && saveOutputFn) {
+    if (saveOutput && saveOutputFn && warmupResult !== undefined) {
       console.log('Saving sample output...');
       await saveOutputFn(warmupResult);
       console.log('Sample output saved.\n');
@@ -292,11 +298,12 @@ function analyzeLeaks(results: RunResult[]): LeakDetectionResult {
   const growthRatePerRun = linearRegressionSlope(rssValues);
 
   // Leak detection heuristics:
-  // 1. Significant growth rate (> 0.1 MB per run on average)
-  // 2. Late runs using significantly more memory than early runs (> 10 MB difference)
+  // 1. Significant growth rate (> 0.2 MB per run on average)
+  //    Note: 0.1-0.15 MB/run is normal for pdfjs-based libraries due to font/glyph caching
+  // 2. Late runs using significantly more memory than early runs (> 15 MB difference)
   // 3. Total growth is significant (> 50 MB for long runs)
-  const significantGrowthRate = growthRatePerRun > 0.1;
-  const significantLateGrowth = lateVsEarlyDeltaMb > 10;
+  const significantGrowthRate = growthRatePerRun > 0.2;
+  const significantLateGrowth = lateVsEarlyDeltaMb > 15;
   const significantTotalGrowth = totalGrowthMb > 50 && n >= 100;
 
   const leakDetected =

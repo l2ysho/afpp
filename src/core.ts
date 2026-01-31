@@ -35,9 +35,11 @@ export interface AfppParseOptions {
   password?: string;
 
   /**
-   * Scale of a page if content is not text. Defaults to 2.0.
-   * Higher values increase image resolution but also memory usage.
-   * @default 2.0
+   * Scale factor for image rendering. Defaults to 1.0.
+   * - 1.0: Standard quality (72 DPI equivalent)
+   * - 2.0: High quality (144 DPI equivalent, 4x memory)
+   * - 3.0: Print quality (216 DPI equivalent, 9x memory)
+   * @default 1.0
    */
   scale?: number;
 }
@@ -87,15 +89,18 @@ const processPdfPageTypeMixed = async <T>(
       viewport.height,
     );
 
-    await page.render({
-      canvas: canvasAndContext.canvas,
-      canvasContext: canvasAndContext.context,
-      viewport,
-    }).promise;
-    //@ts-expect-error this should be fixed in release
-    const imageBuffer = await canvasAndContext.canvas.encode(encoding);
-    canvasFactory.destroy(canvasAndContext);
-    return callback(imageBuffer, pageNumber, pageCount);
+    try {
+      await page.render({
+        canvas: canvasAndContext.canvas,
+        canvasContext: canvasAndContext.context,
+        viewport,
+      }).promise;
+      //@ts-expect-error this should be fixed in release
+      const imageBuffer = await canvasAndContext.canvas.encode(encoding);
+      return callback(imageBuffer, pageNumber, pageCount);
+    } finally {
+      canvasFactory.destroy(canvasAndContext);
+    }
   }
 
   const pageText = items.map((item) => item.str || '').join(' ');
@@ -130,15 +135,18 @@ const processPdfPageTypeImage = async (
     viewport.height,
   );
 
-  await page.render({
-    canvas: canvasAndContext.canvas,
-    canvasContext: canvasAndContext.context,
-    viewport,
-  }).promise;
-  //@ts-expect-error this should be fixed in release
-  const imageBuffer = await canvasAndContext.canvas.encode(encoding);
-  canvasFactory.destroy(canvasAndContext);
-  return imageBuffer;
+  try {
+    await page.render({
+      canvas: canvasAndContext.canvas,
+      canvasContext: canvasAndContext.context,
+      viewport,
+    }).promise;
+    //@ts-expect-error this should be fixed in release
+    const imageBuffer = await canvasAndContext.canvas.encode(encoding);
+    return imageBuffer;
+  } finally {
+    canvasFactory.destroy(canvasAndContext);
+  }
 };
 
 const validateParameters = async (
@@ -167,7 +175,7 @@ const validateParameters = async (
   documentInitParameters.password = options?.password;
   documentInitParameters.verbosity = VerbosityLevel.ERRORS;
 
-  const scale = options?.scale ?? 2.0;
+  const scale = options?.scale ?? 1.0;
   const concurrency = options?.concurrency ?? 1;
   const encoding = options?.imageEncoding ?? 'png';
 
@@ -211,72 +219,80 @@ export async function parsePdfFile<T>(
   const limit = pLimit(concurrency);
   const loadingTask = getDocument(documentInitParameters);
   const pdfDocument = await loadingTask.promise;
-  const { numPages } = pdfDocument;
 
-  if (type === PROCESSING_TYPE.MIXED) {
-    if (!callback || typeof callback !== 'function') {
-      throw new Error(`Invalid callback type: ${typeof callback}`);
+  try {
+    const { numPages } = pdfDocument;
+
+    if (type === PROCESSING_TYPE.MIXED) {
+      if (!callback || typeof callback !== 'function') {
+        throw new Error(`Invalid callback type: ${typeof callback}`);
+      }
+      const results: T[] = new Array(numPages);
+
+      const pageTasks = Array.from({ length: numPages }, (_, i) => {
+        const pageNum = i + 1;
+        return limit(async () => {
+          const page = await pdfDocument.getPage(pageNum);
+          const canvasFactory = pdfDocument.canvasFactory as PdfCanvasFactory;
+
+          const result = await processPdfPageTypeMixed(
+            page,
+            canvasFactory,
+            pageNum,
+            numPages,
+            scale,
+            encoding,
+            callback,
+          );
+          results[i] = result;
+        });
+      });
+
+      await Promise.all(pageTasks);
+      return results;
     }
-    const results: T[] = new Array(numPages);
 
-    const pageTasks = Array.from({ length: numPages }, (_, i) => {
-      const pageNum = i + 1;
-      return limit(async () => {
-        const page = await pdfDocument.getPage(pageNum);
-        const canvasFactory = pdfDocument.canvasFactory as PdfCanvasFactory;
-
-        const result = await processPdfPageTypeMixed(
-          page,
-          canvasFactory,
-          pageNum,
-          numPages,
-          scale,
-          encoding,
-          callback,
-        );
-        results[i] = result;
+    if (type === PROCESSING_TYPE.TEXT) {
+      const results: string[] = new Array(numPages);
+      const pageTasks = Array.from({ length: numPages }, (_, i) => {
+        const pageNum = i + 1;
+        return limit(async () => {
+          const page = await pdfDocument.getPage(pageNum);
+          results[i] = await processPdfPageTypeText(page);
+        });
       });
-    });
 
-    await Promise.all(pageTasks);
-    return results;
-  }
+      await Promise.all(pageTasks);
+      return results;
+    }
 
-  if (type === PROCESSING_TYPE.TEXT) {
-    const results: string[] = new Array(numPages);
-    const pageTasks = Array.from({ length: numPages }, (_, i) => {
-      const pageNum = i + 1;
-      return limit(async () => {
-        const page = await pdfDocument.getPage(pageNum);
-        results[i] = await processPdfPageTypeText(page);
+    if (type === PROCESSING_TYPE.IMAGE) {
+      const results: Buffer[] = new Array(numPages);
+      const pageTasks = Array.from({ length: numPages }, (_, i) => {
+        const pageNum = i + 1;
+        return limit(async () => {
+          const page = await pdfDocument.getPage(pageNum);
+          const canvasFactory = pdfDocument.canvasFactory as PdfCanvasFactory;
+          results[i] = await processPdfPageTypeImage(
+            page,
+            canvasFactory,
+            pageNum,
+            numPages,
+            scale,
+            encoding,
+          );
+        });
       });
-    });
 
-    await Promise.all(pageTasks);
-    return results;
+      await Promise.all(pageTasks);
+      return results;
+    }
+
+    throw new Error('Invalid PROCESSING_TYPE');
+  } finally {
+    // Clean up pdfjs resources to prevent memory leaks
+    pdfDocument.cleanup();
+    await pdfDocument.destroy();
+    loadingTask.destroy();
   }
-
-  if (type === PROCESSING_TYPE.IMAGE) {
-    const results: Buffer[] = new Array(numPages);
-    const pageTasks = Array.from({ length: numPages }, (_, i) => {
-      const pageNum = i + 1;
-      return limit(async () => {
-        const page = await pdfDocument.getPage(pageNum);
-        const canvasFactory = pdfDocument.canvasFactory as PdfCanvasFactory;
-        results[i] = await processPdfPageTypeImage(
-          page,
-          canvasFactory,
-          pageNum,
-          numPages,
-          scale,
-          encoding,
-        );
-      });
-    });
-
-    await Promise.all(pageTasks);
-    return results;
-  }
-
-  throw new Error('Invalid PROCESSING_TYPE');
 }

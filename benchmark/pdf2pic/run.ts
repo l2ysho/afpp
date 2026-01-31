@@ -72,6 +72,7 @@ async function main() {
       outputDir: OUTPUT_DIR,
       runs,
       saveOutput: shouldSaveOutput(),
+      warmupRuns: 20,
     },
     {
       operation: () => convertPdfToImages(PDF_PATH),
