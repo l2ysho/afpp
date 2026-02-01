@@ -5,11 +5,15 @@
 {
   "format_on_save": "on",
   "formatter": "prettier",
-  "lsp": {
-    "biome": {
-      "settings": {
-        "enabled": false
-      }
+  "languages": {
+    "TypeScript": {
+      "language_servers": ["typescript-language-server", "oxlint", "!biome"]
+    },
+    "TSX": {
+      "language_servers": ["typescript-language-server", "oxlint", "!biome"]
+    },
+    "JavaScript": {
+      "language_servers": ["typescript-language-server", "oxlint", "!biome"]
     }
   }
 }
