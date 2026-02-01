@@ -134,3 +134,6 @@ dist
 
 # examples output
 examples/output/
+
+# benchmark output
+benchmark/*/output/

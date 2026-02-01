@@ -23,8 +23,7 @@ export default tseslint.config(
       'import/prefer-default-export': 'off',
       'linebreak-style': 'off',
       'no-console': 'error',
-
-      'no-underscore-dangle': ['error', { allow: ['_id'] }],
+      'no-underscore-dangle': 'off',
       'object-shorthand': 'error',
       'perfectionist/sort-imports': [
         'error',
