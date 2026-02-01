@@ -8,32 +8,35 @@ Comparison of PDF processing libraries performance and memory usage.
 
 | Library   | Avg       | Median    | P95       | Min       | Max       |
 | --------- | --------- | --------- | --------- | --------- | --------- |
-| afpp      | 175.1 ms  | 174.05 ms | 181.26 ms | 169.79 ms | 201.37 ms |
-| pdf-parse | 288.86 ms | 286.82 ms | 300.66 ms | 272.52 ms | 356.98 ms |
-| pdf2pic   | 140.54 ms | 139.51 ms | 149.91 ms | 133.62 ms | 154.97 ms |
+| afpp      | 150.39 ms | 148.51 ms | 159.54 ms | 145.31 ms | 159.54 ms |
+| afpp-auto | -         | -         | -         | -         | -         |
+| pdf-parse | 250.15 ms | 245.4 ms  | 275.7 ms  | 239.85 ms | 275.7 ms  |
+| pdf2pic   | 130.39 ms | 128.69 ms | 168.57 ms | 113.18 ms | 168.57 ms |
 
 ### Memory (Node.js RSS)
 
 | Library   | Initial RSS | Final RSS | Peak RSS  | Growth Rate | Leak Detected |
 | --------- | ----------- | --------- | --------- | ----------- | ------------- |
-| afpp      | 163.64 MB   | 183.84 MB | 183.84 MB | 0.16 MB/run | Yes           |
-| pdf-parse | 182.26 MB   | 194.2 MB  | 194.2 MB  | 0.05 MB/run | No            |
-| pdf2pic   | 85.13 MB    | 86.93 MB  | 86.93 MB  | 0.01 MB/run | No            |
+| afpp      | 163.11 MB   | 168.64 MB | 168.64 MB | 0.17 MB/run | No            |
+| afpp-auto | -           | -         | -         | -           | -             |
+| pdf-parse | 181.35 MB   | 188.41 MB | 188.41 MB | 0.34 MB/run | Yes           |
+| pdf2pic   | 86.05 MB    | 86.95 MB  | 86.95 MB  | 0.06 MB/run | No            |
 
 ### Memory (Docker Container)
 
 | Library   | Peak      | Avg        | Samples |
 | --------- | --------- | ---------- | ------- |
-| afpp      | 212.3 MiB | 141.29 MiB | 10      |
-| pdf-parse | 152.5 MiB | 144.55 MiB | 17      |
-| pdf2pic   | 270.3 MiB | 198.71 MiB | 8       |
+| afpp      | 211.5 MiB | 200.65 MiB | 2       |
+| afpp-auto | -         | -          | -       |
+| pdf-parse | 148.1 MiB | 139.96 MiB | 3       |
+| pdf2pic   | 259 MiB   | 222.05 MiB | 2       |
 
 ## Environment
 
 | Property | Value       |
 | -------- | ----------- |
-| Date     | 2026-01-31  |
-| Runs     | 100         |
+| Date     | 2026-02-01  |
+| Runs     | 10          |
 | Node     | v22.22.0    |
 | Platform | linux/arm64 |
 | CPUs     | 10          |
@@ -43,43 +46,47 @@ Comparison of PDF processing libraries performance and memory usage.
 
 ### afpp
 
-> **Warning:** Potential memory leak detected: continuous growth of 0.16 MB/run, late runs use 15.86 MB more than early runs.
-
 <details>
 <summary>Memory details</summary>
 
 | Metric        | Value       |
 | ------------- | ----------- |
-| Initial RSS   | 163.64 MB   |
-| Final RSS     | 183.84 MB   |
-| Peak RSS      | 183.84 MB   |
-| Total Growth  | 20.2 MB     |
-| Growth Rate   | 0.16 MB/run |
-| Early Avg RSS | 167.52 MB   |
-| Late Avg RSS  | 183.39 MB   |
-| Late vs Early | 15.86 MB    |
-| Docker Peak   | 212.3 MiB   |
-| Docker Avg    | 141.29 MiB  |
+| Initial RSS   | 163.11 MB   |
+| Final RSS     | 168.64 MB   |
+| Peak RSS      | 168.64 MB   |
+| Total Growth  | 5.53 MB     |
+| Growth Rate   | 0.17 MB/run |
+| Early Avg RSS | 166.99 MB   |
+| Late Avg RSS  | 168.64 MB   |
+| Late vs Early | 1.65 MB     |
+| Docker Peak   | 211.5 MiB   |
+| Docker Avg    | 200.65 MiB  |
 
 </details>
 
+### afpp-auto
+
+_No results yet. Run `./benchmark/afpp-auto/run.sh` to generate._
+
 ### pdf-parse
+
+> **Warning:** Potential memory leak detected: continuous growth of 0.34 MB/run.
 
 <details>
 <summary>Memory details</summary>
 
 | Metric        | Value       |
 | ------------- | ----------- |
-| Initial RSS   | 182.26 MB   |
-| Final RSS     | 194.2 MB    |
-| Peak RSS      | 194.2 MB    |
-| Total Growth  | 11.94 MB    |
-| Growth Rate   | 0.05 MB/run |
-| Early Avg RSS | 187.28 MB   |
-| Late Avg RSS  | 192.63 MB   |
-| Late vs Early | 5.35 MB     |
-| Docker Peak   | 152.5 MiB   |
-| Docker Avg    | 144.55 MiB  |
+| Initial RSS   | 181.35 MB   |
+| Final RSS     | 188.41 MB   |
+| Peak RSS      | 188.41 MB   |
+| Total Growth  | 7.06 MB     |
+| Growth Rate   | 0.34 MB/run |
+| Early Avg RSS | 184.92 MB   |
+| Late Avg RSS  | 188.41 MB   |
+| Late vs Early | 3.49 MB     |
+| Docker Peak   | 148.1 MiB   |
+| Docker Avg    | 139.96 MiB  |
 
 </details>
 
@@ -90,16 +97,16 @@ Comparison of PDF processing libraries performance and memory usage.
 
 | Metric        | Value       |
 | ------------- | ----------- |
-| Initial RSS   | 85.13 MB    |
-| Final RSS     | 86.93 MB    |
-| Peak RSS      | 86.93 MB    |
-| Total Growth  | 1.8 MB      |
-| Growth Rate   | 0.01 MB/run |
-| Early Avg RSS | 85.95 MB    |
-| Late Avg RSS  | 86.91 MB    |
-| Late vs Early | 0.95 MB     |
-| Docker Peak   | 270.3 MiB   |
-| Docker Avg    | 198.71 MiB  |
+| Initial RSS   | 86.05 MB    |
+| Final RSS     | 86.95 MB    |
+| Peak RSS      | 86.95 MB    |
+| Total Growth  | 0.9 MB      |
+| Growth Rate   | 0.06 MB/run |
+| Early Avg RSS | 86.18 MB    |
+| Late Avg RSS  | 86.95 MB    |
+| Late vs Early | 0.77 MB     |
+| Docker Peak   | 259 MiB     |
+| Docker Avg    | 222.05 MiB  |
 
 </details>
 

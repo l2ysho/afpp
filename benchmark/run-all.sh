@@ -125,6 +125,7 @@ run_benchmark() {
 
 # Run all benchmarks
 run_benchmark "afpp" "afpp-benchmark" "benchmark/afpp/Dockerfile" "benchmark/afpp/output"
+run_benchmark "afpp-auto" "afpp-auto-benchmark" "benchmark/afpp-auto/Dockerfile" "benchmark/afpp-auto/output"
 run_benchmark "pdf-parse" "pdf-parse-benchmark" "benchmark/pdf-parse/Dockerfile" "benchmark/pdf-parse/output"
 run_benchmark "pdf2pic" "pdf2pic-benchmark" "benchmark/pdf2pic/Dockerfile" "benchmark/pdf2pic/output"
 
@@ -132,6 +133,7 @@ echo "=== All benchmarks completed ==="
 echo ""
 echo "Results saved to:"
 echo "  - benchmark/afpp/output/results.json"
+echo "  - benchmark/afpp-auto/output/results.json"
 echo "  - benchmark/pdf-parse/output/results.json"
 echo "  - benchmark/pdf2pic/output/results.json"
 echo ""

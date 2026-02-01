@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { availableParallelism } from 'node:os';
 
 import { Canvas, CanvasRenderingContext2D } from '@napi-rs/canvas';
 import pLimit from 'p-limit';
@@ -19,9 +20,10 @@ export interface AfppParseOptions {
   /**
    * Concurrency level for page processing. Defaults to 1.
    * Higher values may improve performance but increase memory usage.
+   * Set to 'auto' to use the number of available CPU cores (capped at 8).
    * @default 1
    */
-  concurrency?: number;
+  concurrency?: number | 'auto';
   /**
    * Image encoding format when rendering non-text pages. Defaults to 'png'.
    * Supported formats: 'avif', 'jpeg', 'png', 'webp'.
@@ -193,7 +195,10 @@ const validateParameters = async (
   documentInitParameters.disableRange = true; // Don't use range requests - we have full data
 
   const scale = options?.scale ?? 1.0;
-  const concurrency = options?.concurrency ?? 1;
+  const concurrency =
+    options?.concurrency === 'auto'
+      ? Math.min(availableParallelism(), 8)
+      : (options?.concurrency ?? 1);
   const encoding = options?.imageEncoding ?? 'png';
 
   if (!['avif', 'jpeg', 'png', 'webp'].includes(encoding)) {

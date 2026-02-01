@@ -106,4 +106,16 @@ describe('parsePdf', () => {
       assert.equal(data.length, 1);
     });
   });
+
+  describe('concurrency = auto', () => {
+    it('should process pdf with auto concurrency', async () => {
+      const input = path.join('test', 'example.pdf');
+      const data = await parsePdf(
+        input,
+        { concurrency: 'auto' },
+        (content) => content,
+      );
+      assert.equal(data.length, 9);
+    });
+  });
 });

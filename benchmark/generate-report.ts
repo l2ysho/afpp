@@ -8,7 +8,7 @@ import { join } from 'node:path';
 
 import type { BenchmarkResult } from './utils';
 
-const BENCHMARKS = ['afpp', 'pdf-parse', 'pdf2pic'];
+const BENCHMARKS = ['afpp', 'afpp-auto', 'pdf-parse', 'pdf2pic'];
 const OUTPUT_FILE = join(__dirname, 'BENCHMARK.md');
 
 interface BenchmarkData {

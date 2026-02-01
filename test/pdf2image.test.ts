@@ -77,4 +77,12 @@ describe('pdf2image', () => {
       assert.equal(data.length, 1);
     });
   });
+
+  describe('concurrency = auto', () => {
+    it('should process pdf with auto concurrency', async () => {
+      const input = path.join('test', 'example.pdf');
+      const data = await pdf2image(input, { concurrency: 'auto' });
+      assert.equal(data.length, 9);
+    });
+  });
 });
