@@ -1,3 +1,18 @@
+# [2.3.0](https://github.com/l2ysho/afpp/compare/v2.2.1...v2.3.0) (2026-02-01)
+
+### Features
+
+- adds streaming PDF parsing ([3fd2c95](https://github.com/l2ysho/afpp/commit/3fd2c95e9692c7a8aa7471b8848cf61aae15d7d3))
+- **benchmark:** adds benchmark infrastructure ([dd116dd](https://github.com/l2ysho/afpp/commit/dd116dd08b7a40a9d5176ddf2ae4abc82f4d89ff))
+- **benchmark:** adds benchmarking framework ([cb68355](https://github.com/l2ysho/afpp/commit/cb68355bfe795dfac2dcdabf76c0446354eea25d))
+- **benchmark:** adds docker memory tracking ([308758b](https://github.com/l2ysho/afpp/commit/308758b41386c7a756b980db7349c1dec9a20fbd))
+- **benchmark:** improves benchmark accuracy ([9849527](https://github.com/l2ysho/afpp/commit/9849527a7befb87076fa6ae587550415607cbd7a))
+
+### Performance Improvements
+
+- **benchmark:** improves benchmark accuracy ([87bdb27](https://github.com/l2ysho/afpp/commit/87bdb27dc82d79dc61c4af13d5870c9ae2a8c758))
+- optimizes local file processing ([461f9ec](https://github.com/l2ysho/afpp/commit/461f9ec7132861fa0f9554127275ce5e913501b0))
+
 ## [2.2.1](https://github.com/l2ysho/afpp/compare/v2.2.0...v2.2.1) (2026-01-25)
 
 ### Performance Improvements
