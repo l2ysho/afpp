@@ -203,6 +203,15 @@ const validateParameters = async (
   return { concurrency, documentInitParameters, encoding, scale };
 };
 
+/**
+ * Result yielded by streaming PDF parser
+ */
+export interface StreamingResult<T> {
+  data: T;
+  pageCount: number;
+  pageNumber: number;
+}
+
 export async function parsePdfFile(
   type: PROCESSING_TYPE.IMAGE,
   input: Buffer | string | Uint8Array | URL,
@@ -308,6 +317,72 @@ export async function parsePdfFile<T>(
     throw new Error('Invalid PROCESSING_TYPE');
   } finally {
     // Clean up pdfjs resources to prevent memory leaks
+    pdfDocument.cleanup();
+    await pdfDocument.destroy();
+    loadingTask.destroy();
+  }
+}
+
+/**
+ * Streaming PDF parser that yields results as pages are processed.
+ * Useful for large PDFs where you want to process pages as they become available
+ * rather than waiting for all pages to complete.
+ *
+ * @example
+ * ```typescript
+ * for await (const { pageNumber, data } of streamPdfFile(PROCESSING_TYPE.IMAGE, './large.pdf')) {
+ *   await saveImage(data, `page-${pageNumber}.png`);
+ * }
+ * ```
+ */
+export function streamPdfFile(
+  type: PROCESSING_TYPE.IMAGE,
+  input: Buffer | string | Uint8Array | URL,
+  options?: AfppParseOptions,
+): AsyncGenerator<StreamingResult<Buffer>>;
+
+export function streamPdfFile(
+  type: PROCESSING_TYPE.TEXT,
+  input: Buffer | string | Uint8Array | URL,
+  options?: AfppParseOptions,
+): AsyncGenerator<StreamingResult<string>>;
+
+export async function* streamPdfFile(
+  type: PROCESSING_TYPE.IMAGE | PROCESSING_TYPE.TEXT,
+  input: Buffer | string | Uint8Array | URL,
+  options?: AfppParseOptions,
+): AsyncGenerator<StreamingResult<Buffer | string>> {
+  const { documentInitParameters, encoding, scale } = await validateParameters(
+    input,
+    options,
+  );
+
+  const loadingTask = getDocument(documentInitParameters);
+  const pdfDocument = await loadingTask.promise;
+
+  try {
+    const { numPages } = pdfDocument;
+
+    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+      const page = await pdfDocument.getPage(pageNum);
+
+      if (type === PROCESSING_TYPE.IMAGE) {
+        const canvasFactory = pdfDocument.canvasFactory as PdfCanvasFactory;
+        const data = await processPdfPageTypeImage(
+          page,
+          canvasFactory,
+          pageNum,
+          numPages,
+          scale,
+          encoding,
+        );
+        yield { data, pageCount: numPages, pageNumber: pageNum };
+      } else {
+        const data = await processPdfPageTypeText(page);
+        yield { data, pageCount: numPages, pageNumber: pageNum };
+      }
+    }
+  } finally {
     pdfDocument.cleanup();
     await pdfDocument.destroy();
     loadingTask.destroy();
