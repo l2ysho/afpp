@@ -16,7 +16,9 @@
  *   SAVE_IMAGES - Set to "true" to save result images to output folder
  */
 
+import { readFileSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -31,6 +33,28 @@ import {
   shouldSaveOutput,
 } from '../utils.ts';
 
+const require = createRequire(import.meta.url);
+const pdfParseEntry = require.resolve('pdf-parse');
+// Traverse up to find package.json with the package name
+let pdfParsePath = dirname(pdfParseEntry);
+while (pdfParsePath !== '/') {
+  try {
+    const pkgContent = readFileSync(
+      join(pdfParsePath, 'package.json'),
+      'utf-8',
+    );
+    if (pkgContent.includes('"name": "pdf-parse"')) {
+      break;
+    }
+  } catch {
+    // package.json doesn't exist at this level, continue up
+  }
+  pdfParsePath = dirname(pdfParsePath);
+}
+const pdfParsePkg = JSON.parse(
+  readFileSync(join(pdfParsePath, 'package.json'), 'utf-8'),
+) as { version: string };
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = join(__dirname, 'output');
 const PDF_PATH = join(__dirname, '../../test/example.pdf');
@@ -42,6 +66,7 @@ async function main() {
     {
       name: 'pdf-parse',
       outputDir: OUTPUT_DIR,
+      packageVersion: pdfParsePkg.version,
       runs,
       saveOutput: shouldSaveOutput(),
       warmupRuns: 20,

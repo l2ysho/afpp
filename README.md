@@ -168,12 +168,12 @@ const result = await parsePdf(buffer, {
 
 ### AfppParseOptions
 
-| Option          | Type                                  | Default | Description                                   |
-| --------------- | ------------------------------------- | ------- | --------------------------------------------- |
-| `concurrency`   | `number`                              | `1`     | Number of pages processed in parallel         |
-| `imageEncoding` | `'png' \| 'jpeg' \| 'webp' \| 'avif'` | `'png'` | Output format for rendered images             |
-| `password`      | `string`                              | —       | Password for encrypted PDFs                   |
-| `scale`         | `number`                              | `1.0`   | Rendering scale (1.0 = 72 DPI, 2.0 = 144 DPI) |
+| Option          | Type                                  | Default | Description                                                                |
+| --------------- | ------------------------------------- | ------- | -------------------------------------------------------------------------- |
+| `concurrency`   | `number \| 'auto'`                    | `1`     | Number of pages processed in parallel. Use `'auto'` for CPU-based scaling. |
+| `imageEncoding` | `'png' \| 'jpeg' \| 'webp' \| 'avif'` | `'png'` | Output format for rendered images                                          |
+| `password`      | `string`                              | —       | Password for encrypted PDFs                                                |
+| `scale`         | `number`                              | `1.0`   | Rendering scale (1.0 = 72 DPI, 2.0 = 144 DPI)                              |
 
 ---
 

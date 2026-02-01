@@ -24,6 +24,8 @@ export interface BenchmarkConfig {
   name: string;
   /** Directory to save output files */
   outputDir: string;
+  /** Version of the package being benchmarked */
+  packageVersion?: string;
   /** Number of benchmark runs */
   runs: number;
   /** Whether to save sample output from warmup */
@@ -35,6 +37,7 @@ export interface BenchmarkConfig {
 export interface BenchmarkResult {
   config: {
     name: string;
+    packageVersion?: string;
     runs: number;
   };
   environment: {
@@ -161,7 +164,14 @@ export async function runBenchmark<T>(
   config: BenchmarkConfig,
   callbacks: BenchmarkCallbacks<T>,
 ): Promise<BenchmarkResult> {
-  const { name, outputDir, runs, saveOutput, warmupRuns = 1 } = config;
+  const {
+    name,
+    outputDir,
+    packageVersion,
+    runs,
+    saveOutput,
+    warmupRuns = 1,
+  } = config;
   const { operation, saveOutput: saveOutputFn, warmup } = callbacks;
 
   await mkdir(outputDir, { recursive: true });
@@ -241,6 +251,7 @@ export async function runBenchmark<T>(
   return {
     config: {
       name,
+      packageVersion,
       runs: completedRuns,
     },
     environment: getEnvironment(),

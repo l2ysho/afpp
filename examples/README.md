@@ -78,12 +78,12 @@ All functions accept the following input types:
 
 ### Options
 
-| Option          | Type                                  | Default | Description                            |
-| --------------- | ------------------------------------- | ------- | -------------------------------------- |
-| `password`      | `string`                              | -       | Password for encrypted PDFs            |
-| `concurrency`   | `number`                              | `1`     | Number of pages processed in parallel  |
-| `scale`         | `number`                              | `1`     | Image rendering resolution (1.0 - 4.0) |
-| `imageEncoding` | `'png' \| 'jpeg' \| 'webp' \| 'avif'` | `'png'` | Output image format                    |
+| Option          | Type                                  | Default | Description                                                                |
+| --------------- | ------------------------------------- | ------- | -------------------------------------------------------------------------- |
+| `password`      | `string`                              | -       | Password for encrypted PDFs                                                |
+| `concurrency`   | `number \| 'auto'`                    | `1`     | Number of pages processed in parallel. Use `'auto'` for CPU-based scaling. |
+| `scale`         | `number`                              | `1`     | Image rendering resolution (1.0 - 4.0)                                     |
+| `imageEncoding` | `'png' \| 'jpeg' \| 'webp' \| 'avif'` | `'png'` | Output image format                                                        |
 
 ## Output Directory
 

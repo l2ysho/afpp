@@ -42,6 +42,7 @@ This uniform API reduces complexity and supports asynchronous workflows.
 Concurrency Model
 • Page processing is configurable via the concurrency option.
 • Default concurrency is 1 for minimal memory usage.
+• Set to 'auto' to automatically use available CPU cores (capped at 8).
 • Higher concurrency improves performance on large PDFs but increases memory usage proportionally.
 
 Text vs. Image Extraction

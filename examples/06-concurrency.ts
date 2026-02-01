@@ -5,8 +5,9 @@
  * The concurrency option controls how many pages are processed in parallel.
  * - Default: 1 (sequential processing, minimal memory)
  * - Higher values: faster processing, more memory usage
+ * - 'auto': automatically uses available CPU cores (capped at 8)
  *
- * Recommended: 4-8 for large PDFs on modern systems.
+ * Recommended: Use 'auto' for optimal performance, or 4-8 for large PDFs.
  */
 
 import { pdf2image, pdf2string } from '../dist/index.js';
@@ -38,10 +39,23 @@ async function highConcurrency() {
   console.log(`Rendered ${images.length} images in ${elapsed}ms`);
 }
 
+async function autoConcurrency() {
+  console.log('\n=== Auto Concurrency (concurrency: "auto") ===');
+
+  const start = Date.now();
+  const images = await pdf2image(PDF_PATH, {
+    concurrency: 'auto', // Automatically use available CPU cores (capped at 8)
+  });
+  const elapsed = Date.now() - start;
+
+  console.log(`Rendered ${images.length} images in ${elapsed}ms`);
+}
+
 async function main() {
   await sequentialProcessing();
   await parallelProcessing();
   await highConcurrency();
+  await autoConcurrency();
   await compareConcurrencyLevels();
 }
 

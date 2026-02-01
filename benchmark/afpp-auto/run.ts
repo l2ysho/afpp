@@ -23,6 +23,8 @@ import { fileURLToPath } from 'node:url';
 
 // @ts-expect-error afpp is installed in docker
 import { pdf2image } from 'afpp';
+// @ts-expect-error afpp is installed in docker
+import afppPkg from 'afpp/package.json' with { type: 'json' };
 
 import {
   parseRuns,
@@ -43,6 +45,7 @@ async function main() {
     {
       name: 'afpp-pdf2image-auto',
       outputDir: OUTPUT_DIR,
+      packageVersion: afppPkg.version,
       runs,
       saveOutput: shouldSaveOutput(),
       warmupRuns: 20,

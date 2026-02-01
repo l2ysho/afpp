@@ -26,6 +26,12 @@ interface DockerMemory {
   samples: number;
 }
 
+function formatLibraryName(name: string, version?: string): string {
+  if (!version) return name;
+  if (name === 'afpp-auto') return `afpp@${version}(auto)`;
+  return `${name}@${version}`;
+}
+
 function generateMarkdown(benchmarks: BenchmarkData[]): string {
   const hasResults = benchmarks.filter((b) => b.result !== null);
 
@@ -57,11 +63,12 @@ Comparison of PDF processing libraries performance and memory usage.
 `;
 
   for (const { name, result } of benchmarks) {
+    const libName = formatLibraryName(name, result?.config.packageVersion);
     if (result) {
       const s = result.summary;
-      md += `| ${name} | ${s.avgTimeMs} ms | ${s.medianTimeMs} ms | ${s.p95TimeMs} ms | ${s.minTimeMs} ms | ${s.maxTimeMs} ms |\n`;
+      md += `| ${libName} | ${s.avgTimeMs} ms | ${s.medianTimeMs} ms | ${s.p95TimeMs} ms | ${s.minTimeMs} ms | ${s.maxTimeMs} ms |\n`;
     } else {
-      md += `| ${name} | - | - | - | - | - |\n`;
+      md += `| ${libName} | - | - | - | - | - |\n`;
     }
   }
 
@@ -74,12 +81,13 @@ Comparison of PDF processing libraries performance and memory usage.
 `;
 
   for (const { name, result } of benchmarks) {
+    const libName = formatLibraryName(name, result?.config.packageVersion);
     if (result) {
       const l = result.leakDetection;
       const leak = l.leakDetected ? 'Yes' : 'No';
-      md += `| ${name} | ${l.initialRssMb} MB | ${l.finalRssMb} MB | ${l.peakRssMb} MB | ${l.growthRatePerRun} MB/run | ${leak} |\n`;
+      md += `| ${libName} | ${l.initialRssMb} MB | ${l.finalRssMb} MB | ${l.peakRssMb} MB | ${l.growthRatePerRun} MB/run | ${leak} |\n`;
     } else {
-      md += `| ${name} | - | - | - | - | - |\n`;
+      md += `| ${libName} | - | - | - | - | - |\n`;
     }
   }
 
@@ -94,13 +102,12 @@ Comparison of PDF processing libraries performance and memory usage.
 `;
 
     for (const { name, result } of benchmarks) {
+      const libName = formatLibraryName(name, result?.config.packageVersion);
       if (result?.dockerMemory) {
         const d = result.dockerMemory;
-        md += `| ${name} | ${d.peakMiB} MiB | ${d.avgMiB} MiB | ${d.samples} |\n`;
-      } else if (result) {
-        md += `| ${name} | - | - | - |\n`;
+        md += `| ${libName} | ${d.peakMiB} MiB | ${d.avgMiB} MiB | ${d.samples} |\n`;
       } else {
-        md += `| ${name} | - | - | - |\n`;
+        md += `| ${libName} | - | - | - |\n`;
       }
     }
   }
@@ -133,7 +140,8 @@ Comparison of PDF processing libraries performance and memory usage.
 `;
 
   for (const { name, result } of benchmarks) {
-    md += `### ${name}\n\n`;
+    const libName = formatLibraryName(name, result?.config.packageVersion);
+    md += `### ${libName}\n\n`;
 
     if (!result) {
       md += `_No results yet. Run \`./benchmark/${name}/run.sh\` to generate._\n\n`;

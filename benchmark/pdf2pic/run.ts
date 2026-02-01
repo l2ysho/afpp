@@ -22,6 +22,8 @@ import { fileURLToPath } from 'node:url';
 
 // @ts-expect-error pdf2pic is installed in docker
 import { fromPath } from 'pdf2pic';
+// @ts-expect-error pdf2pic is installed in docker
+import pdf2picPkg from 'pdf2pic/package.json' with { type: 'json' };
 
 import {
   parseRuns,
@@ -70,6 +72,7 @@ async function main() {
     {
       name: 'pdf2pic',
       outputDir: OUTPUT_DIR,
+      packageVersion: pdf2picPkg.version,
       runs,
       saveOutput: shouldSaveOutput(),
       warmupRuns: 20,
