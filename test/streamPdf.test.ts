@@ -102,7 +102,7 @@ describe('streamPdf2image', () => {
         sizes.push(data.length);
         break;
       }
-
+      // @ts-expect-error supress in tests
       assert.ok(sizes[1] > sizes[0], 'Scale 2 should produce larger image');
     });
 
