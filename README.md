@@ -75,6 +75,7 @@ All parsing functions accept the same input types:
 ```ts
 import { readFile } from 'fs/promises';
 import path from 'path';
+
 import { pdf2string } from 'afpp';
 
 (async () => {
@@ -109,6 +110,7 @@ For large PDFs, use streaming functions to process pages incrementally without l
 
 ```ts
 import { writeFile } from 'fs/promises';
+
 import { streamPdf2image, streamPdf2string } from 'afpp';
 
 // Stream images - process each page as it's rendered

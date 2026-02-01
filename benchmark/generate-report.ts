@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* oxlint-disable no-console */
 /**
  * Generates BENCHMARK.md with comparison tables from all benchmark results
  */

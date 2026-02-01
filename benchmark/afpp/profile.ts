@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* oxlint-disable no-console */
 /**
  * Memory profiling script for AFPP
  *
@@ -77,7 +77,6 @@ async function main() {
   console.log('\n--- Final ---\n');
   forceGC();
   // Wait a bit for any async cleanup
-  // eslint-disable-next-line
   await new Promise((r) => setTimeout(r, 1000));
   forceGC();
   printMemory('Final');

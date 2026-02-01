@@ -43,7 +43,6 @@ describe('streamPdf2image', () => {
 
       await assert.rejects(
         async () => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           for await (const _ of streamPdf2image(input)) {
             // Should not reach here
           }

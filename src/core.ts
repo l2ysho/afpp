@@ -1,9 +1,3 @@
-export enum PROCESSING_TYPE {
-  IMAGE = 'IMAGE',
-  MIXED = 'MIXED',
-  TEXT = 'TEXT',
-}
-
 import { readFile } from 'node:fs/promises';
 
 import { Canvas, CanvasRenderingContext2D } from '@napi-rs/canvas';
@@ -14,6 +8,12 @@ import type {
   TextItem,
 } from 'pdfjs-dist/types/src/display/api.js';
 import { PDFPageProxy } from 'pdfjs-dist/types/web/interfaces';
+
+export enum PROCESSING_TYPE {
+  IMAGE = 'IMAGE',
+  MIXED = 'MIXED',
+  TEXT = 'TEXT',
+}
 
 export interface AfppParseOptions {
   /**
@@ -218,21 +218,18 @@ export async function parsePdfFile(
   options?: AfppParseOptions,
   callback?: undefined,
 ): Promise<Buffer[]>;
-
 export async function parsePdfFile(
   type: PROCESSING_TYPE.TEXT,
   input: Buffer | string | Uint8Array | URL,
   options?: AfppParseOptions,
   callback?: undefined,
 ): Promise<string[]>;
-
 export async function parsePdfFile<T>(
   type: PROCESSING_TYPE.MIXED,
   input: Buffer | string | Uint8Array | URL,
   options: AfppParseOptions,
   callback: PageProcessor<T>,
 ): Promise<T[]>;
-
 export async function parsePdfFile<T>(
   type: PROCESSING_TYPE,
   input: Buffer | string | Uint8Array | URL,
@@ -253,7 +250,7 @@ export async function parsePdfFile<T>(
       if (!callback || typeof callback !== 'function') {
         throw new Error(`Invalid callback type: ${typeof callback}`);
       }
-      const results: T[] = new Array(numPages);
+      const results: T[] = Array.from({ length: numPages });
 
       const pageTasks = Array.from({ length: numPages }, (_, i) => {
         const pageNum = i + 1;
@@ -279,7 +276,7 @@ export async function parsePdfFile<T>(
     }
 
     if (type === PROCESSING_TYPE.TEXT) {
-      const results: string[] = new Array(numPages);
+      const results: string[] = Array.from({ length: numPages });
       const pageTasks = Array.from({ length: numPages }, (_, i) => {
         const pageNum = i + 1;
         return limit(async () => {
@@ -293,7 +290,7 @@ export async function parsePdfFile<T>(
     }
 
     if (type === PROCESSING_TYPE.IMAGE) {
-      const results: Buffer[] = new Array(numPages);
+      const results: Buffer[] = Array.from({ length: numPages });
       const pageTasks = Array.from({ length: numPages }, (_, i) => {
         const pageNum = i + 1;
         return limit(async () => {
@@ -340,13 +337,11 @@ export function streamPdfFile(
   input: Buffer | string | Uint8Array | URL,
   options?: AfppParseOptions,
 ): AsyncGenerator<StreamingResult<Buffer>>;
-
 export function streamPdfFile(
   type: PROCESSING_TYPE.TEXT,
   input: Buffer | string | Uint8Array | URL,
   options?: AfppParseOptions,
 ): AsyncGenerator<StreamingResult<string>>;
-
 export async function* streamPdfFile(
   type: PROCESSING_TYPE.IMAGE | PROCESSING_TYPE.TEXT,
   input: Buffer | string | Uint8Array | URL,
