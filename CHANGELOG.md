@@ -1,3 +1,9 @@
+# [2.4.0](https://github.com/l2ysho/afpp/compare/v2.3.0...v2.4.0) (2026-02-01)
+
+### Features
+
+- adds auto concurrency to afpp ([15efa38](https://github.com/l2ysho/afpp/commit/15efa388701fbc885f7174920a249cc98dfa53b2))
+
 # [2.3.0](https://github.com/l2ysho/afpp/compare/v2.2.1...v2.3.0) (2026-02-01)
 
 ### Features
