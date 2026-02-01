@@ -103,6 +103,36 @@ import { pdf2image } from 'afpp';
 
 ---
 
+### Streaming API (Large PDFs)
+
+For large PDFs, use streaming functions to process pages incrementally without loading all results into memory:
+
+```ts
+import { writeFile } from 'fs/promises';
+import { streamPdf2image, streamPdf2string } from 'afpp';
+
+// Stream images - process each page as it's rendered
+for await (const { pageNumber, pageCount, data } of streamPdf2image(
+  './large.pdf',
+)) {
+  await writeFile(`page-${pageNumber}.png`, data);
+  console.log(`Processed ${pageNumber}/${pageCount}`);
+}
+
+// Stream text - process each page as it's extracted
+for await (const { pageNumber, data } of streamPdf2string('./large.pdf')) {
+  console.log(`Page ${pageNumber}: ${data.substring(0, 100)}...`);
+}
+```
+
+**Benefits:**
+
+- Lower peak memory usage
+- Faster time-to-first-result
+- Built-in progress tracking via `pageNumber` and `pageCount`
+
+---
+
 ### Low-Level Parsing API
 
 For advanced use cases, `parsePdf` exposes page-level control and transformation.
@@ -136,12 +166,12 @@ const result = await parsePdf(buffer, {
 
 ### AfppParseOptions
 
-| Option          | Type                                  | Default | Description                           |
-| --------------- | ------------------------------------- | ------- | ------------------------------------- |
-| `concurrency`   | `number`                              | `1`     | Number of pages processed in parallel |
-| `imageEncoding` | `'png' \| 'jpeg' \| 'webp' \| 'avif'` | `'png'` | Output format for rendered images     |
-| `password`      | `string`                              | —       | Password for encrypted PDFs           |
-| `scale`         | `number`                              | `2.0`   | Rendering scale for non-text pages    |
+| Option          | Type                                  | Default | Description                                   |
+| --------------- | ------------------------------------- | ------- | --------------------------------------------- |
+| `concurrency`   | `number`                              | `1`     | Number of pages processed in parallel         |
+| `imageEncoding` | `'png' \| 'jpeg' \| 'webp' \| 'avif'` | `'png'` | Output format for rendered images             |
+| `password`      | `string`                              | —       | Password for encrypted PDFs                   |
+| `scale`         | `number`                              | `1.0`   | Rendering scale (1.0 = 72 DPI, 2.0 = 144 DPI) |
 
 ---
 
