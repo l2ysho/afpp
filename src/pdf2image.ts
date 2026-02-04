@@ -8,15 +8,14 @@ import {
  * Converts a PDF file from various input formats (Buffer, Uint8Array, string path, or URL) to an array of image buffers.
  *
  * @async
- * @function pdf2string
+ * @function pdf2image
  *
  * @param {Buffer|Uint8Array|string|URL} input - The PDF source, which can be a file path, URL, Buffer, or Uint8Array.
- * @param {Object} [options] - Optional parsing options for customizing the PDF parsing process.
- * @param {string} [options.password] - The password for encrypted PDF files, if required.
+ * @param {AfppParseOptions} [options] - Optional parsing options for customizing the PDF parsing process.
  *
- * @since — v1.0.0
+ * @since v1.0.0
  *
- * @returns {Promise<string>} - A promise that resolves to the string representation of the PDF content.
+ * @returns {Promise<Buffer[]>} - A promise that resolves to an array of image buffers.
  *
  * @throws {Error} Throws an error if the input type is invalid.
  */

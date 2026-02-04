@@ -6,22 +6,18 @@ import {
 } from '#afpp/src/core';
 
 /**
- * Converts a PDF file from various input formats (Buffer, Uint8Array, string path, or URL). Pages are returned in mixed array of strings (text content) and buffers (image content) with in callback function.
+ * Converts a PDF file from various input formats (Buffer, Uint8Array, string path, or URL). Pages are returned in mixed array of strings (text content) and buffers (image content) via callback function.
  *
  * @async
- * @function pdf2string
+ * @function parsePdf
  *
  * @param {Buffer|Uint8Array|string|URL} input - The PDF source, which can be a file path, URL, Buffer, or Uint8Array.
- * @param {Object} [options] - Optional parsing options for customizing the PDF parsing process.
- * @param {string} [options.password] - The password for encrypted PDF files, if required.
- * @param {number} [options.scale=1] - Scale factor for rendering pages (affects image resolution).
- * @param {number} [options.concurrency=1] - Number of pages to process in parallel.
- * @param {'png' | 'jpeg' | 'webp' | 'avif'} [options.imageEncoding='png'] - Image format for rendered PDF pages.
- * @param {function} callback - callback function to add another layer of processing, default callback returns content of page withouth any added processing.
+ * @param {AfppParseOptions} options - Parsing options for customizing the PDF parsing process.
+ * @param {PageProcessor<T>} callback - Callback function to process each page's content.
  *
- * @since — v1.0.0
+ * @since v1.0.0
  *
- * @returns {Promise<string>} - A promise that resolves to the string representation of the PDF content.
+ * @returns {Promise<T[]>} - A promise that resolves to an array of processed page results.
  *
  * @throws {Error} Throws an error if the input type is invalid.
  */

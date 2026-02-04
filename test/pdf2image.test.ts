@@ -25,9 +25,9 @@ describe('pdf2image', () => {
   });
 
   describe('input = valid path to encrypted file as string', () => {
-    it('should return valid string parsed from pdf', () => {
+    it('should return valid string parsed from pdf', async () => {
       const input = path.join('test', 'example-encrypted.pdf');
-      assert.rejects(pdf2image(input), {
+      await assert.rejects(pdf2image(input), {
         message: 'No password given',
         name: 'PasswordException',
       });
@@ -62,7 +62,7 @@ describe('pdf2image', () => {
       const pathToFile = path.join('test', 'example-encrypted.pdf');
       const fileBuffer = await readFile(pathToFile, {});
       const input = new Uint8Array(fileBuffer);
-      assert.rejects(pdf2image(input, { password: 'invalid' }), {
+      await assert.rejects(pdf2image(input, { password: 'invalid' }), {
         message: 'Incorrect Password',
         name: 'PasswordException',
       });
