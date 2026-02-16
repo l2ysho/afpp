@@ -12,7 +12,7 @@ import {
  * @function parsePdf
  *
  * @param {Buffer|Uint8Array|string|URL} input - The PDF source, which can be a file path, URL, Buffer, or Uint8Array.
- * @param {AfppParseOptions} options - Parsing options for customizing the PDF parsing process.
+ * @param {AfppParseOptions} [options] - Parsing options for customizing the PDF parsing process.
  * @param {PageProcessor<T>} callback - Callback function to process each page's content.
  *
  * @since v1.0.0
@@ -21,10 +21,23 @@ import {
  *
  * @throws {Error} Throws an error if the input type is invalid.
  */
-
-export const parsePdf = async <T>(
+export async function parsePdf<T>(
   input: Buffer | string | Uint8Array | URL,
   options: AfppParseOptions,
   callback: PageProcessor<T>,
-): Promise<T[]> =>
-  parsePdfFile(PROCESSING_TYPE.MIXED, input, options, callback);
+): Promise<T[]>;
+export async function parsePdf<T>(
+  input: Buffer | string | Uint8Array | URL,
+  callback: PageProcessor<T>,
+): Promise<T[]>;
+export async function parsePdf<T>(
+  input: Buffer | string | Uint8Array | URL,
+  optionsOrCallback: AfppParseOptions | PageProcessor<T>,
+  callback?: PageProcessor<T>,
+): Promise<T[]> {
+  const options =
+    typeof optionsOrCallback === 'function' ? {} : optionsOrCallback;
+  const cb =
+    typeof optionsOrCallback === 'function' ? optionsOrCallback : callback!;
+  return parsePdfFile(PROCESSING_TYPE.MIXED, input, options, cb);
+}

@@ -107,6 +107,14 @@ describe('parsePdf', () => {
     });
   });
 
+  describe('options parameter is optional', () => {
+    it('should work without options parameter', async () => {
+      const input = path.join('test', 'example.pdf');
+      const data = await parsePdf(input, (content) => content);
+      assert.equal(data.length, 9);
+    });
+  });
+
   describe('concurrency = auto', () => {
     it('should process pdf with auto concurrency', async () => {
       const input = path.join('test', 'example.pdf');
