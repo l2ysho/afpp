@@ -199,6 +199,16 @@ const validateParameters = async (
     options?.concurrency === 'auto'
       ? Math.min(availableParallelism(), 8)
       : (options?.concurrency ?? 1);
+
+  if (
+    typeof concurrency === 'number' &&
+    (!Number.isInteger(concurrency) || concurrency < 1)
+  ) {
+    throw new Error(
+      `Invalid concurrency value: ${concurrency}. Must be a positive integer or 'auto'.`,
+    );
+  }
+
   const encoding = options?.imageEncoding ?? 'png';
 
   if (!['avif', 'jpeg', 'png', 'webp'].includes(encoding)) {
