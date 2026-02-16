@@ -280,6 +280,7 @@ export async function parsePdfFile<T>(
             callback,
           );
           results[i] = result;
+          page.cleanup();
         });
       });
 
@@ -294,6 +295,7 @@ export async function parsePdfFile<T>(
         return limit(async () => {
           const page = await pdfDocument.getPage(pageNum);
           results[i] = await processPdfPageTypeText(page);
+          page.cleanup();
         });
       });
 
@@ -316,6 +318,7 @@ export async function parsePdfFile<T>(
             scale,
             encoding,
           );
+          page.cleanup();
         });
       });
 
@@ -388,6 +391,8 @@ export async function* streamPdfFile(
         const data = await processPdfPageTypeText(page);
         yield { data, pageCount: numPages, pageNumber: pageNum };
       }
+
+      page.cleanup();
     }
   } finally {
     pdfDocument.cleanup();
