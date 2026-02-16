@@ -69,6 +69,14 @@ export interface PdfCanvasFactory {
   ): void;
 }
 
+const extractText = (items: TextItem[]): string => {
+  const parts: string[] = [];
+  for (const item of items) {
+    if (item.str) parts.push(item.str);
+  }
+  return parts.join(' ');
+};
+
 const processPdfPageTypeMixed = async <T>(
   page: PDFPageProxy,
   canvasFactory: PdfCanvasFactory,
@@ -105,14 +113,7 @@ const processPdfPageTypeMixed = async <T>(
     }
   }
 
-  let pageText = '';
-  for (const item of items) {
-    if (item.str) {
-      if (pageText) pageText += ' ';
-      pageText += item.str;
-    }
-  }
-  return callback(pageText, pageNumber, pageCount);
+  return callback(extractText(items), pageNumber, pageCount);
 };
 
 const processPdfPageTypeText = async (page: PDFPageProxy) => {
@@ -121,18 +122,7 @@ const processPdfPageTypeText = async (page: PDFPageProxy) => {
   });
   const items = textContent.items as TextItem[];
 
-  if (items.length === 0) {
-    return '';
-  } else {
-    let pageText = '';
-    for (const item of items) {
-      if (item.str) {
-        if (pageText) pageText += ' ';
-        pageText += item.str;
-      }
-    }
-    return pageText;
-  }
+  return extractText(items);
 };
 
 const processPdfPageTypeImage = async (
