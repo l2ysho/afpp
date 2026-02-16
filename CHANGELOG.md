@@ -1,3 +1,9 @@
+## [2.4.1](https://github.com/l2ysho/afpp/compare/v2.4.0...v2.4.1) (2026-02-16)
+
+### Bug Fixes
+
+- **core:** add concurrency parameter validation ([4bb46c4](https://github.com/l2ysho/afpp/commit/4bb46c4fbf154a38e8954ad77df593621d935b5a))
+
 # [2.4.0](https://github.com/l2ysho/afpp/compare/v2.3.0...v2.4.0) (2026-02-01)
 
 ### Features
