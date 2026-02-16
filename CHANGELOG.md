@@ -1,3 +1,9 @@
+## [2.4.2](https://github.com/l2ysho/afpp/compare/v2.4.1...v2.4.2) (2026-02-16)
+
+### Bug Fixes
+
+- **core:** add scale parameter validation ([4b5ac3e](https://github.com/l2ysho/afpp/commit/4b5ac3e1f936dc2f4d6af08586c0ff8df1ece3be))
+
 ## [2.4.1](https://github.com/l2ysho/afpp/compare/v2.4.0...v2.4.1) (2026-02-16)
 
 ### Bug Fixes
