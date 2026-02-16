@@ -1,3 +1,14 @@
+## [2.4.3](https://github.com/l2ysho/afpp/compare/v2.4.2...v2.4.3) (2026-02-16)
+
+### Bug Fixes
+
+- **api:** make parsePdf options parameter optional ([485d83d](https://github.com/l2ysho/afpp/commit/485d83d29f2b2d7563308ef75622b01f95769a96))
+- **core:** add page-level cleanup to prevent memory accumulation ([e9bf643](https://github.com/l2ysho/afpp/commit/e9bf6433400455fea2c657302f1ded73fbb66a9c))
+
+### Performance Improvements
+
+- **core:** fix O(n^2) text extraction and deduplicate logic ([e32065d](https://github.com/l2ysho/afpp/commit/e32065db3f0163ea146ee3b372f3ad29f945809b))
+
 ## [2.4.2](https://github.com/l2ysho/afpp/compare/v2.4.1...v2.4.2) (2026-02-16)
 
 ### Bug Fixes
