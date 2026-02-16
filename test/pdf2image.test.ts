@@ -78,6 +78,52 @@ describe('pdf2image', () => {
     });
   });
 
+  describe('scale validation', () => {
+    it('should reject scale above 10', async () => {
+      const input = path.join('test', 'example.pdf');
+      await assert.rejects(pdf2image(input, { scale: 100 }), {
+        message:
+          'Invalid scale value: 100. Must be a number between 0.1 and 10.',
+        name: 'Error',
+      });
+    });
+
+    it('should reject scale below 0.1', async () => {
+      const input = path.join('test', 'example.pdf');
+      await assert.rejects(pdf2image(input, { scale: 0.01 }), {
+        message:
+          'Invalid scale value: 0.01. Must be a number between 0.1 and 10.',
+        name: 'Error',
+      });
+    });
+
+    it('should reject scale of 0', async () => {
+      const input = path.join('test', 'example.pdf');
+      await assert.rejects(pdf2image(input, { scale: 0 }), {
+        message: 'Invalid scale value: 0. Must be a number between 0.1 and 10.',
+        name: 'Error',
+      });
+    });
+
+    it('should reject negative scale', async () => {
+      const input = path.join('test', 'example.pdf');
+      await assert.rejects(pdf2image(input, { scale: -1 }), {
+        message:
+          'Invalid scale value: -1. Must be a number between 0.1 and 10.',
+        name: 'Error',
+      });
+    });
+
+    it('should reject NaN scale', async () => {
+      const input = path.join('test', 'example.pdf');
+      await assert.rejects(pdf2image(input, { scale: NaN }), {
+        message:
+          'Invalid scale value: NaN. Must be a number between 0.1 and 10.',
+        name: 'Error',
+      });
+    });
+  });
+
   describe('concurrency = auto', () => {
     it('should process pdf with auto concurrency', async () => {
       const input = path.join('test', 'example.pdf');

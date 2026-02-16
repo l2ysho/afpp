@@ -195,6 +195,13 @@ const validateParameters = async (
   documentInitParameters.disableRange = true; // Don't use range requests - we have full data
 
   const scale = options?.scale ?? 1.0;
+
+  if (Number.isNaN(scale) || scale < 0.1 || scale > 10) {
+    throw new Error(
+      `Invalid scale value: ${scale}. Must be a number between 0.1 and 10.`,
+    );
+  }
+
   const concurrency =
     options?.concurrency === 'auto'
       ? Math.min(availableParallelism(), 8)
