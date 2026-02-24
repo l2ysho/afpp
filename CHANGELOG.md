@@ -1,3 +1,9 @@
+## [2.4.4](https://github.com/l2ysho/afpp/compare/v2.4.3...v2.4.4) (2026-02-24)
+
+### Performance Improvements
+
+- **canvas:** implement canvas pooling ([15b31c9](https://github.com/l2ysho/afpp/commit/15b31c93959614c513dfa53faef190cbe89648e4))
+
 ## [2.4.3](https://github.com/l2ysho/afpp/compare/v2.4.2...v2.4.3) (2026-02-16)
 
 ### Bug Fixes
