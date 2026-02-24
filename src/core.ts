@@ -1,7 +1,11 @@
 import { readFile } from 'node:fs/promises';
 import { availableParallelism } from 'node:os';
 
-import { Canvas, CanvasRenderingContext2D } from '@napi-rs/canvas';
+import {
+  Canvas,
+  CanvasRenderingContext2D,
+  createCanvas,
+} from '@napi-rs/canvas';
 import pLimit from 'p-limit';
 import { getDocument, VerbosityLevel } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import type {
@@ -67,6 +71,43 @@ export interface PdfCanvasFactory {
     width: number,
     height: number,
   ): void;
+}
+
+class PooledCanvasFactory implements PdfCanvasFactory {
+  private readonly pool: CanvasAndContext[] = [];
+  private readonly maxSize: number;
+
+  constructor(maxSize: number) {
+    this.maxSize = maxSize;
+  }
+
+  create(width: number, height: number): CanvasAndContext {
+    const existing = this.pool.pop();
+    if (existing) {
+      this.reset(existing, width, height);
+      return existing;
+    }
+    const canvas = createCanvas(width, height);
+    const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+    return { canvas, context };
+  }
+
+  reset(
+    canvasAndContext: CanvasAndContext,
+    width: number,
+    height: number,
+  ): void {
+    canvasAndContext.canvas.width = width;
+    canvasAndContext.canvas.height = height;
+    // Resizing implicitly clears the canvas in @napi-rs/canvas
+  }
+
+  destroy(canvasAndContext: CanvasAndContext): void {
+    if (this.pool.length < this.maxSize) {
+      this.pool.push(canvasAndContext);
+    }
+    // Otherwise let it GC — pool is at capacity
+  }
 }
 
 const extractText = (items: TextItem[]): string => {
@@ -251,6 +292,15 @@ export async function parsePdfFile<T>(
   const { concurrency, documentInitParameters, encoding, scale } =
     await validateParameters(input, options);
 
+  const pooledFactory =
+    type !== PROCESSING_TYPE.TEXT
+      ? new PooledCanvasFactory(concurrency)
+      : undefined;
+  if (pooledFactory) {
+    // @ts-expect-error - PooledCanvasFactory is structurally compatible with pdfjs BaseCanvasFactory
+    documentInitParameters.canvasFactory = pooledFactory;
+  }
+
   const limit = pLimit(concurrency);
   const loadingTask = getDocument(documentInitParameters);
   const pdfDocument = await loadingTask.promise;
@@ -268,7 +318,8 @@ export async function parsePdfFile<T>(
         const pageNum = i + 1;
         return limit(async () => {
           const page = await pdfDocument.getPage(pageNum);
-          const canvasFactory = pdfDocument.canvasFactory as PdfCanvasFactory;
+          const canvasFactory =
+            pooledFactory ?? (pdfDocument.canvasFactory as PdfCanvasFactory);
 
           const result = await processPdfPageTypeMixed(
             page,
@@ -309,7 +360,8 @@ export async function parsePdfFile<T>(
         const pageNum = i + 1;
         return limit(async () => {
           const page = await pdfDocument.getPage(pageNum);
-          const canvasFactory = pdfDocument.canvasFactory as PdfCanvasFactory;
+          const canvasFactory =
+            pooledFactory ?? (pdfDocument.canvasFactory as PdfCanvasFactory);
           results[i] = await processPdfPageTypeImage(
             page,
             canvasFactory,
@@ -367,6 +419,13 @@ export async function* streamPdfFile(
     options,
   );
 
+  const pooledFactory =
+    type === PROCESSING_TYPE.IMAGE ? new PooledCanvasFactory(1) : undefined;
+  if (pooledFactory) {
+    // @ts-expect-error - PooledCanvasFactory is structurally compatible with pdfjs BaseCanvasFactory
+    documentInitParameters.canvasFactory = pooledFactory;
+  }
+
   const loadingTask = getDocument(documentInitParameters);
   const pdfDocument = await loadingTask.promise;
 
@@ -377,7 +436,8 @@ export async function* streamPdfFile(
       const page = await pdfDocument.getPage(pageNum);
 
       if (type === PROCESSING_TYPE.IMAGE) {
-        const canvasFactory = pdfDocument.canvasFactory as PdfCanvasFactory;
+        const canvasFactory =
+          pooledFactory ?? (pdfDocument.canvasFactory as PdfCanvasFactory);
         const data = await processPdfPageTypeImage(
           page,
           canvasFactory,
