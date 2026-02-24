@@ -139,6 +139,24 @@ for await (const { pageNumber, data } of streamPdf2string('./large.pdf')) {
 
 ---
 
+### Extract PDF Metadata
+
+```ts
+import { getPdfMetadata } from 'afpp';
+
+const metadata = await getPdfMetadata('./document.pdf');
+console.log(metadata.pageCount); // e.g. 9
+console.log(metadata.isEncrypted); // false
+console.log(metadata.title); // 'My Document' or undefined
+console.log(metadata.creationDate); // Date object or undefined
+
+// Encrypted PDF
+const meta = await getPdfMetadata('./secure.pdf', { password: 'secret' });
+console.log(meta.isEncrypted); // true
+```
+
+---
+
 ### Low-Level Parsing API
 
 For advanced use cases, `parsePdf` exposes page-level control and transformation.
@@ -178,6 +196,22 @@ const result = await parsePdf(buffer, {
 | `imageEncoding` | `'png' \| 'jpeg' \| 'webp' \| 'avif'` | `'png'` | Output format for rendered images                                          |
 | `password`      | `string`                              | —       | Password for encrypted PDFs                                                |
 | `scale`         | `number`                              | `1.0`   | Rendering scale (1.0 = 72 DPI, 2.0 = 144 DPI)                              |
+
+### PdfMetadata
+
+Returned by `getPdfMetadata`. All fields except `pageCount` and `isEncrypted` are optional — absent metadata fields are `undefined`, never empty strings.
+
+| Field              | Type      | Description                                      |
+| ------------------ | --------- | ------------------------------------------------ |
+| `pageCount`        | `number`  | Total number of pages                            |
+| `isEncrypted`      | `boolean` | Whether the document required a password to open |
+| `title`            | `string?` | Document title                                   |
+| `author`           | `string?` | Document author                                  |
+| `subject`          | `string?` | Document subject                                 |
+| `creator`          | `string?` | Application that created the document            |
+| `producer`         | `string?` | PDF producer application                         |
+| `creationDate`     | `Date?`   | Document creation date                           |
+| `modificationDate` | `Date?`   | Document last modification date                  |
 
 ---
 
