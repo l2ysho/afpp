@@ -1,3 +1,9 @@
+# [2.5.0](https://github.com/l2ysho/afpp/compare/v2.4.4...v2.5.0) (2026-02-24)
+
+### Features
+
+- **pdf-metadata:** add api to extract pdf metadata ([0c8166a](https://github.com/l2ysho/afpp/commit/0c8166abf956b1e38d15dbf0b8196e7385e38e65))
+
 ## [2.4.4](https://github.com/l2ysho/afpp/compare/v2.4.3...v2.4.4) (2026-02-24)
 
 ### Performance Improvements
