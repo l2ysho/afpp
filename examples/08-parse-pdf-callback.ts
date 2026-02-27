@@ -142,7 +142,9 @@ async function detectContentType() {
 
   results.forEach((info) => {
     console.log(
-      `Page ${info.pageNumber}: ${info.type} (${info.contentLength} ${info.type === 'text' ? 'chars' : 'bytes'})`,
+      `Page ${info.pageNumber}: ${info.type} (${info.contentLength} ${
+        info.type === 'text' ? 'chars' : 'bytes'
+      })`,
     );
   });
 }

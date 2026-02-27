@@ -2,18 +2,39 @@
   "name": "afpp",
   "version": "2.5.0",
   "description": "Async Fast PDF Parser for Node.js — dependency-light, TypeScript-first, production-ready.",
-  "types": "./dist/index.d.ts",
-  "main": "./dist/index.js",
+  "keywords": [
+    "parse-pdf",
+    "parser-pdf",
+    "pdf",
+    "pdf-parser",
+    "pdf-to-text",
+    "pdf.js",
+    "pdf2json",
+    "pdf2text",
+    "pdfreader"
+  ],
+  "homepage": "https://github.com/l2ysho/afpp#readme",
+  "bugs": {
+    "url": "https://github.com/l2ysho/afpp/issues"
+  },
+  "license": "MIT",
+  "author": "l2ysho",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/l2ysho/afpp.git"
+  },
   "files": [
     "dist/**",
     "README.md",
     "LICENSE"
   ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "commit": "git-cz",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
     "lint": "oxlint .",
     "lint:fix": "oxlint . --fix",
     "postbuild": "tsc-alias -p tsconfig.build.json",
@@ -26,35 +47,13 @@
     "benchmark:cleanup": "npx tsx benchmark/cleanup.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/l2ysho/afpp.git"
+  "dependencies": {
+    "p-limit": "7.3.0",
+    "pdfjs-dist": "5.4.624"
   },
-  "engines": {
-    "node": ">=22.14.0",
-    "npm": ">=10.9.2"
-  },
-  "keywords": [
-    "pdf",
-    "parse-pdf",
-    "pdf-parser",
-    "pdf.js",
-    "pdf2text",
-    "pdf2json",
-    "pdfreader",
-    "pdf-to-text",
-    "parser-pdf"
-  ],
-  "author": "l2ysho",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/l2ysho/afpp/issues"
-  },
-  "homepage": "https://github.com/l2ysho/afpp#readme",
   "devDependencies": {
     "@commitlint/cli": "20.4.2",
     "@commitlint/config-conventional": "20.4.2",
-    "@ianvs/prettier-plugin-sort-imports": "4.7.1",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
     "@types/node": "25.3.0",
@@ -64,15 +63,15 @@
     "cz-conventional-changelog": "3.3.0",
     "husky": "9.1.7",
     "lint-staged": "16.2.7",
+    "oxfmt": "0.35.0",
     "oxlint": "1.49.0",
-    "prettier": "3.8.1",
     "semantic-release": "25.0.3",
     "tsc-alias": "1.8.16",
     "tsx": "4.21.0",
     "typescript": "5.9.3"
   },
-  "dependencies": {
-    "p-limit": "7.3.0",
-    "pdfjs-dist": "5.4.624"
+  "engines": {
+    "node": ">=22.14.0",
+    "npm": ">=10.9.2"
   }
 }

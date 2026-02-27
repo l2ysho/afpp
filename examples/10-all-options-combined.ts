@@ -112,7 +112,9 @@ async function fullParsePdf() {
   console.log(`Processed ${results.length} pages:`);
   results.forEach((r) => {
     console.log(
-      `  Page ${r.pageNumber}: ${r.type} (${r.size} ${r.type === 'text' ? 'chars' : 'bytes'})`,
+      `  Page ${r.pageNumber}: ${r.type} (${r.size} ${
+        r.type === 'text' ? 'chars' : 'bytes'
+      })`,
     );
   });
 }
