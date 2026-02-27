@@ -4,7 +4,13 @@
 // see the documentation: https://zed.dev/docs/configuring-zed#settings-files
 {
   "format_on_save": "on",
-  "formatter": "prettier",
+  "formatter": {
+    "external": {
+      "command": "./node_modules/.bin/oxfmt",
+      "arguments": ["--stdin-filepath", "{buffer_path}"]
+    }
+  },
+  "language_servers": ["!biome"],
   "languages": {
     "TypeScript": {
       "language_servers": ["typescript-language-server", "oxlint", "!biome"]

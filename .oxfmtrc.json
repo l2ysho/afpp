@@ -5,6 +5,7 @@
   "singleQuote": true,
   "trailingComma": "all",
   "arrowParens": "always",
+  "sortPackageJson": true,
   "sortImports": {
     "newlinesBetween": true,
     "groups": [

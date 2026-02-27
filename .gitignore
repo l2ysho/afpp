@@ -137,3 +137,5 @@ examples/output/
 
 # benchmark output
 benchmark/*/output/
+
+!.zed
