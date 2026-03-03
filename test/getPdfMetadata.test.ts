@@ -71,6 +71,15 @@ describe('getPdfMetadata', () => {
     });
   });
 
+  describe('input = valid URL object', () => {
+    it('should return metadata from URL', async () => {
+      const url = new URL('https://pdfobject.com/pdf/sample.pdf');
+      const metadata = await getPdfMetadata(url);
+      assert.ok(metadata.pageCount >= 1);
+      assert.equal(metadata.isEncrypted, false);
+    });
+  });
+
   describe('metadata fields', () => {
     it('optional string fields should be undefined or non-empty string (never empty string)', async () => {
       const input = path.join('test', 'example.pdf');

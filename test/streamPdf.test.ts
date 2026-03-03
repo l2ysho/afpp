@@ -6,6 +6,25 @@ import { describe, it } from 'node:test';
 import { streamPdf2image, streamPdf2string } from '#afpp/src/index';
 
 describe('streamPdf2image', () => {
+  describe('input != string, buffer, Uint8Array or URL', () => {
+    it('promise should be rejected with specific error', async () => {
+      await assert.rejects(
+        async () => {
+          for await (const _ of streamPdf2image(
+            // @ts-expect-error testing invalid input
+            undefined,
+          )) {
+            // Should not reach here
+          }
+        },
+        {
+          message: 'Invalid source type: undefined',
+          name: 'Error',
+        },
+      );
+    });
+  });
+
   describe('input = valid path to file as string', () => {
     it('should yield all pages in order', async () => {
       const input = path.join('test', 'example.pdf');
@@ -125,6 +144,24 @@ describe('streamPdf2image', () => {
         assert.equal(data[1], 0x50);
         break;
       }
+
+      for await (const { data } of streamPdf2image(input, {
+        imageEncoding: 'avif',
+      })) {
+        // AVIF ftyp box: bytes 4-7 are 'ftyp' (0x66 0x74 0x79 0x70)
+        assert.equal(data[4], 0x66);
+        assert.equal(data[5], 0x74);
+        break;
+      }
+
+      for await (const { data } of streamPdf2image(input, {
+        imageEncoding: 'webp',
+      })) {
+        // WebP: starts with RIFF (0x52 0x49 0x46 0x46)
+        assert.equal(data[0], 0x52);
+        assert.equal(data[1], 0x49);
+        break;
+      }
     });
   });
 
@@ -144,6 +181,56 @@ describe('streamPdf2image', () => {
 });
 
 describe('streamPdf2string', () => {
+  describe('input != string, buffer, Uint8Array or URL', () => {
+    it('promise should be rejected with specific error', async () => {
+      await assert.rejects(
+        async () => {
+          for await (const _ of streamPdf2string(
+            // @ts-expect-error testing invalid input
+            undefined,
+          )) {
+            // Should not reach here
+          }
+        },
+        {
+          message: 'Invalid source type: undefined',
+          name: 'Error',
+        },
+      );
+    });
+  });
+
+  describe('input = valid path to encrypted file as string', () => {
+    it('should yield all pages with correct password', async () => {
+      const input = path.join('test', 'example-encrypted.pdf');
+      const pages: number[] = [];
+
+      for await (const { pageNumber } of streamPdf2string(input, {
+        password: 'example',
+      })) {
+        pages.push(pageNumber);
+      }
+
+      assert.equal(pages.length, 9);
+    });
+
+    it('should reject without password', async () => {
+      const input = path.join('test', 'example-encrypted.pdf');
+
+      await assert.rejects(
+        async () => {
+          for await (const _ of streamPdf2string(input)) {
+            // Should not reach here
+          }
+        },
+        {
+          message: 'No password given',
+          name: 'PasswordException',
+        },
+      );
+    });
+  });
+
   describe('input = valid path to file as string', () => {
     it('should yield all pages in order', async () => {
       const input = path.join('test', 'example.pdf');

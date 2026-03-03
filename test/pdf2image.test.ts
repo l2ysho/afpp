@@ -131,4 +131,67 @@ describe('pdf2image', () => {
       assert.equal(data.length, 9);
     });
   });
+
+  describe('concurrency validation', () => {
+    it('should reject concurrency of 0', async () => {
+      const input = path.join('test', 'example.pdf');
+      await assert.rejects(pdf2image(input, { concurrency: 0 }), {
+        message:
+          "Invalid concurrency value: 0. Must be a positive integer or 'auto'.",
+        name: 'Error',
+      });
+    });
+
+    it('should reject negative concurrency', async () => {
+      const input = path.join('test', 'example.pdf');
+      await assert.rejects(pdf2image(input, { concurrency: -1 }), {
+        message:
+          "Invalid concurrency value: -1. Must be a positive integer or 'auto'.",
+        name: 'Error',
+      });
+    });
+
+    it('should reject non-integer concurrency', async () => {
+      const input = path.join('test', 'example.pdf');
+      await assert.rejects(pdf2image(input, { concurrency: 1.5 }), {
+        message:
+          "Invalid concurrency value: 1.5. Must be a positive integer or 'auto'.",
+        name: 'Error',
+      });
+    });
+  });
+
+  describe('imageEncoding validation', () => {
+    it('should reject unsupported encoding', async () => {
+      const input = path.join('test', 'example.pdf');
+      await assert.rejects(
+        // @ts-expect-error testing invalid value
+        pdf2image(input, { imageEncoding: 'bmp' }),
+        {
+          message: "Unsupported image encoding format: 'bmp'",
+          name: 'Error',
+        },
+      );
+    });
+  });
+
+  describe('imageEncoding formats', () => {
+    it('should produce avif output', async () => {
+      const input = path.join('test', 'example.pdf');
+      const data = await pdf2image(input, { imageEncoding: 'avif' });
+      assert.equal(data.length, 9);
+      // AVIF starts with ftyp box: bytes 4-7 are 0x66 0x74 0x79 0x70 ('ftyp')
+      assert.equal(data[0]![4], 0x66);
+      assert.equal(data[0]![5], 0x74);
+    });
+
+    it('should produce webp output', async () => {
+      const input = path.join('test', 'example.pdf');
+      const data = await pdf2image(input, { imageEncoding: 'webp' });
+      assert.equal(data.length, 9);
+      // WebP: starts with RIFF (0x52 0x49 0x46 0x46)
+      assert.equal(data[0]![0], 0x52);
+      assert.equal(data[0]![1], 0x49);
+    });
+  });
 });
