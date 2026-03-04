@@ -1,3 +1,10 @@
+## [2.5.1](https://github.com/l2ysho/afpp/compare/v2.5.0...v2.5.1) (2026-03-04)
+
+### Bug Fixes
+
+- import PDFPageProxy from api.d.ts instead of removed web/interfaces ([f939179](https://github.com/l2ysho/afpp/commit/f93917971a781b6ab69f5cd364ce02e26d8f31c7))
+- **tests:** add missing test coverage for validation and edge cases ([220f6b3](https://github.com/l2ysho/afpp/commit/220f6b3adbbb22dbd2363a74bbea0cb2d94c70f9))
+
 # [2.5.0](https://github.com/l2ysho/afpp/compare/v2.4.4...v2.5.0) (2026-02-24)
 
 ### Features

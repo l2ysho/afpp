@@ -1,6 +1,6 @@
 {
   "name": "afpp",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "Async Fast PDF Parser for Node.js — dependency-light, TypeScript-first, production-ready.",
   "keywords": [
     "parse-pdf",
