@@ -10,9 +10,9 @@ import pLimit from 'p-limit';
 import { getDocument, VerbosityLevel } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import type {
   DocumentInitParameters,
+  PDFPageProxy,
   TextItem,
 } from 'pdfjs-dist/types/src/display/api.js';
-import { PDFPageProxy } from 'pdfjs-dist/types/web/interfaces';
 
 export enum PROCESSING_TYPE {
   IMAGE = 'IMAGE',
