@@ -24,7 +24,7 @@ docker run --rm -v $(pwd)/benchmark/afpp/output:/app/benchmark/afpp/output afpp-
 
 ## Output
 
-Results are saved to `benchmark/output/results.json` with the following structure:
+Results are saved to `benchmark/afpp/output/results.json` with the following structure:
 
 ```json
 {

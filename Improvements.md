@@ -390,13 +390,13 @@ await pdf2imageWithCallback(largePdf, {
 
 ## Summary
 
-| Improvement           | Impact         | Complexity | Breaking Change      | Status      |
-| --------------------- | -------------- | ---------- | -------------------- | ----------- |
-| Auto-tune Concurrency | 3-4x speedup   | Low        | No (better default)  | Pending     |
-| Canvas Pooling        | 15-20% speedup | Medium     | No                   | Pending     |
-| JPEG Default          | 20-30% speedup | Low        | Yes (output format)  | Pending     |
-| Reduce Scale          | 30-50% speedup | Low        | Yes (output quality) | Implemented |
-| Stream Processing     | Memory savings | Medium     | No (new API)         | Pending     |
+| Improvement           | Impact         | Complexity | Breaking Change      | Status               |
+| --------------------- | -------------- | ---------- | -------------------- | -------------------- |
+| Auto-tune Concurrency | 3-4x speedup   | Low        | No (better default)  | Implemented (v2.4.0) |
+| Canvas Pooling        | 15-20% speedup | Medium     | No                   | Implemented (v2.4.4) |
+| JPEG Default          | 20-30% speedup | Low        | Yes (output format)  | Pending              |
+| Reduce Scale          | 30-50% speedup | Low        | Yes (output quality) | Implemented          |
+| Stream Processing     | Memory savings | Medium     | No (new API)         | Implemented (v2.3.0) |
 
 ### Recommended Implementation Order
 

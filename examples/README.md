@@ -10,6 +10,8 @@ Before running the examples, make sure to build the library:
 npm run build
 ```
 
+Examples import from the compiled `dist/` folder. If you change source files, re-run the build.
+
 ## Running Examples
 
 Run any example from the repository root:
@@ -78,12 +80,12 @@ All functions accept the following input types:
 
 ### Options
 
-| Option          | Type                                  | Default | Description                                                                |
-| --------------- | ------------------------------------- | ------- | -------------------------------------------------------------------------- |
-| `password`      | `string`                              | -       | Password for encrypted PDFs                                                |
-| `concurrency`   | `number \| 'auto'`                    | `1`     | Number of pages processed in parallel. Use `'auto'` for CPU-based scaling. |
-| `scale`         | `number`                              | `1`     | Image rendering resolution (1.0 - 4.0)                                     |
-| `imageEncoding` | `'png' \| 'jpeg' \| 'webp' \| 'avif'` | `'png'` | Output image format                                                        |
+| Option          | Type                                  | Default | Description                                                                                   |
+| --------------- | ------------------------------------- | ------- | --------------------------------------------------------------------------------------------- |
+| `password`      | `string`                              | -       | Password for encrypted PDFs                                                                   |
+| `concurrency`   | `number \| 'auto'`                    | `1`     | Number of pages processed in parallel. Use `'auto'` for CPU-based scaling.                    |
+| `scale`         | `number`                              | `1`     | Image rendering resolution. Valid range: 0.1–10. (1.0 = 72 DPI, 2.0 = 144 DPI, 3.0 = 216 DPI) |
+| `imageEncoding` | `'png' \| 'jpeg' \| 'webp' \| 'avif'` | `'png'` | Output image format                                                                           |
 
 ## Output Directory
 

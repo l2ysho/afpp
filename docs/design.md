@@ -13,16 +13,16 @@ Design Goals 1. Minimal dependencies
 
 ⸻
 
-Avoiding Native Dependencies
+Minimizing Native Dependencies
 
-Many Node.js PDF solutions depend on native build steps or external system binaries (such as canvas, ImageMagick, or Ghostscript). These introduce:
+Many Node.js PDF solutions depend on manual native build steps or external system binaries (such as ImageMagick or Ghostscript). These introduce:
 • Installation complexity (C/C++ compilation, OS libraries)
 • CI/CD instability
 • OS-specific behavior
 • Runtime failures in restricted or containerized environments
 
-afpp deliberately avoids these dependencies, relying solely on pure JavaScript/Node.js solutions to:
-• Keep installation simple
+afpp avoids manual build steps by using `@napi-rs/canvas`, which ships prebuilt platform-specific binaries. No compilation is required at install time. Note that image rendering does rely on these native binaries — `@napi-rs/canvas` is not pure JavaScript — but installation remains simple and transparent to the user:
+• Keep installation simple (no compiler toolchain needed)
 • Maintain predictable behavior across environments
 • Ensure compatibility with modern Node.js versions (>=22.14.0)
 
@@ -47,7 +47,7 @@ Concurrency Model
 
 Text vs. Image Extraction
 • Text is extracted directly from the PDF object model.
-• Non-text content (images or complex layouts) is rendered internally using Node.js-native APIs, without any external binaries.
+• Non-text content (images or complex layouts) is rendered internally using `@napi-rs/canvas` (prebuilt native binaries, no external tools or manual compilation required).
 • Image encoding is configurable (png, jpeg, webp, avif) for flexible output.
 
 Encrypted PDFs
@@ -74,7 +74,7 @@ Trade-offs & Constraints
 Summary
 
 afpp is a dependency-light, asynchronous, TypeScript-first PDF parser. Key differentiators include:
-• No native build steps or system binaries
+• No manual build steps — prebuilt binaries via `@napi-rs/canvas`
 • Consistent cross-platform behavior
 • Configurable concurrency and image rendering
 • First-class TypeScript support

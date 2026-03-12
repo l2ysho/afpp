@@ -15,7 +15,7 @@
 
 ## Overview
 
-`afpp` (Another PDF Parser, Properly) is a Node.js library for extracting text and images from PDF files without heavyweight native dependencies, event-loop blocking, or fragile runtime assumptions.
+`afpp` (Another PDF Parser, Properly) is a Node.js library for extracting text and images from PDF files without manual native build steps, event-loop blocking, or fragile runtime assumptions.
 
 The project was created to address recurring problems encountered with existing PDF tooling in the Node.js ecosystem:
 
@@ -32,7 +32,7 @@ The project was created to address recurring problems encountered with existing 
 
 ## Key Features
 
-- Zero native build dependencies
+- No manual build step required — prebuilt native binaries are bundled automatically via `@napi-rs/canvas`
 - Fully asynchronous, non-blocking architecture
 - First-class TypeScript support
 - Supports local files, buffers, and remote URLs
@@ -68,23 +68,16 @@ All parsing functions accept the same input types:
 
 - `string` (file path)
 - `Buffer`
+- `Uint8Array`
 - `URL`
 
 ### Extract Text from a PDF
 
 ```ts
-import { readFile } from 'fs/promises';
-import path from 'path';
-
 import { pdf2string } from 'afpp';
 
-(async () => {
-  const filePath = path.join('..', 'test', 'example.pdf');
-  const buffer = await readFile(filePath);
-
-  const pages = await pdf2string(buffer);
-  console.log(pages); // ['Page 1 text', 'Page 2 text', ...]
-})();
+const pages = await pdf2string('./document.pdf');
+console.log(pages); // ['Page 1 text', 'Page 2 text', ...]
 ```
 
 ---
@@ -186,12 +179,12 @@ const result = await parsePdf(buffer, {
 
 ### AfppParseOptions
 
-| Option          | Type                                  | Default | Description                                                                |
-| --------------- | ------------------------------------- | ------- | -------------------------------------------------------------------------- |
-| `concurrency`   | `number \| 'auto'`                    | `1`     | Number of pages processed in parallel. Use `'auto'` for CPU-based scaling. |
-| `imageEncoding` | `'png' \| 'jpeg' \| 'webp' \| 'avif'` | `'png'` | Output format for rendered images                                          |
-| `password`      | `string`                              | —       | Password for encrypted PDFs                                                |
-| `scale`         | `number`                              | `1.0`   | Rendering scale (1.0 = 72 DPI, 2.0 = 144 DPI)                              |
+| Option          | Type                                  | Default | Description                                                                        |
+| --------------- | ------------------------------------- | ------- | ---------------------------------------------------------------------------------- |
+| `concurrency`   | `number \| 'auto'`                    | `1`     | Number of pages processed in parallel. Use `'auto'` for CPU-based scaling.         |
+| `imageEncoding` | `'png' \| 'jpeg' \| 'webp' \| 'avif'` | `'png'` | Output format for rendered images                                                  |
+| `password`      | `string`                              | —       | Password for encrypted PDFs                                                        |
+| `scale`         | `number`                              | `1.0`   | Rendering scale. Valid range: 0.1–10. (1.0 = 72 DPI, 2.0 = 144 DPI, 3.0 = 216 DPI) |
 
 ### PdfMetadata
 
@@ -217,6 +210,12 @@ Returned by `getPdfMetadata`. All fields except `pageCount` and `isEncrypted` ar
 - **Explicit over implicit**: No magic configuration
 - **Fail fast**: Clear errors instead of silent corruption
 - **Production-oriented**: Optimized for long-running processes
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup and pull request guidelines.
 
 ---
 

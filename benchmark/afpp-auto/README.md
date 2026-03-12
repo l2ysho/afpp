@@ -1,30 +1,36 @@
-# pdf2pic Benchmark
+# AFPP Auto Concurrency Benchmark
 
-Performance benchmarks for [pdf2pic](https://www.npmjs.com/package/pdf2pic) measuring time and memory (RSS) usage.
+Performance benchmarks for AFPP `pdf2image` with `concurrency: 'auto'`, measuring time and memory (RSS) usage.
 
 ## Running in Docker
 
 Build the Docker image:
 
 ```bash
-docker build -t pdf2pic-benchmark -f benchmark/pdf2pic/Dockerfile .
+docker build -t afpp-auto-benchmark -f benchmark/afpp-auto/Dockerfile .
 ```
 
 Run the benchmark:
 
 ```bash
-docker run --rm -v $(pwd)/benchmark/pdf2pic/output:/app/benchmark/pdf2pic/output pdf2pic-benchmark
+docker run --rm -v $(pwd)/benchmark/afpp-auto/output:/app/benchmark/afpp-auto/output afpp-auto-benchmark
 ```
 
 With custom number of runs:
 
 ```bash
-docker run --rm -v $(pwd)/benchmark/pdf2pic/output:/app/benchmark/pdf2pic/output pdf2pic-benchmark 20
+docker run --rm -v $(pwd)/benchmark/afpp-auto/output:/app/benchmark/afpp-auto/output afpp-auto-benchmark 20
+```
+
+Or use the helper script:
+
+```bash
+./benchmark/afpp-auto/run.sh [runs]
 ```
 
 ## Output
 
-Results are saved to `benchmark/pdf2pic/output/results.json` with the following structure:
+Results are saved to `benchmark/afpp-auto/output/results.json` with the following structure:
 
 ```json
 {
@@ -64,7 +70,3 @@ Results are saved to `benchmark/pdf2pic/output/results.json` with the following 
 - **rssBeforeMb**: Resident Set Size before operation (MB)
 - **rssAfterMb**: Resident Set Size after operation (MB)
 - **rssDeltaMb**: Memory change during operation (MB)
-
-## Notes
-
-pdf2pic requires GraphicsMagick and Ghostscript as system dependencies. These are installed in the Docker image.

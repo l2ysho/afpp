@@ -75,3 +75,7 @@
 ### Bug Fixes
 
 - add CONTRIBUTING.md ([238ee6f](https://github.com/l2ysho/afpp/commit/238ee6f46d7297b54982de0c38bba057089d3820))
+
+---
+
+> **Note:** This changelog begins at v2.1.7. For earlier release history, see the [GitHub Releases page](https://github.com/l2ysho/afpp/releases).
