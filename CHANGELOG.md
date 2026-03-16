@@ -1,3 +1,9 @@
+## [2.5.2](https://github.com/l2ysho/afpp/compare/v2.5.1...v2.5.2) (2026-03-16)
+
+### Bug Fixes
+
+- manual patch release [skip ci] ([729a147](https://github.com/l2ysho/afpp/commit/729a1474ac8054233f22e5ab0f3a8f170071d7ca))
+
 ## [2.5.1](https://github.com/l2ysho/afpp/compare/v2.5.0...v2.5.1) (2026-03-04)
 
 ### Bug Fixes
