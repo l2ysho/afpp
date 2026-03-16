@@ -5,6 +5,17 @@ on:
       - main
       - beta
   workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Version bump type (auto uses commit messages)'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - patch
+          - minor
+          - major
 
 permissions:
   contents: read
@@ -56,6 +67,20 @@ jobs:
         run: npm run typecheck
       - name: Build
         run: npm run build
+      - name: Force version bump
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.bump != 'auto' }}
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          BUMP="${{ github.event.inputs.bump }}"
+          if [ "$BUMP" = "major" ]; then
+            MSG="feat!: manual major release [skip ci]"
+          elif [ "$BUMP" = "minor" ]; then
+            MSG="feat: manual minor release [skip ci]"
+          else
+            MSG="fix: manual patch release [skip ci]"
+          fi
+          git commit --allow-empty -m "$MSG"
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
