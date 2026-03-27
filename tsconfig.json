@@ -14,9 +14,9 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "baseUrl": ".",
+    "types": ["node"],
     "paths": {
-      "#afpp/src/*": ["src/*"]
+      "#afpp/src/*": ["./src/*"]
     },
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
