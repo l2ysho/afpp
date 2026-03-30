@@ -1,6 +1,6 @@
 {
   "name": "afpp",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "description": "Async Fast PDF Parser for Node.js — dependency-light, TypeScript-first, production-ready.",
   "keywords": [
     "parse-pdf",
@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "p-limit": "7.3.0",
-    "pdfjs-dist": "5.5.207"
+    "pdfjs-dist": "5.6.205"
   },
   "devDependencies": {
     "@commitlint/cli": "20.5.0",
@@ -63,9 +63,9 @@
     "commitizen": "4.3.1",
     "cz-conventional-changelog": "3.3.0",
     "husky": "9.1.7",
-    "lint-staged": "16.3.3",
-    "oxfmt": "0.40.0",
-    "oxlint": "1.55.0",
+    "lint-staged": "16.4.0",
+    "oxfmt": "0.41.0",
+    "oxlint": "1.57.0",
     "semantic-release": "25.0.3",
     "tsc-alias": "1.8.16",
     "tsx": "4.21.0",
