@@ -1,3 +1,9 @@
+# [2.6.0](https://github.com/l2ysho/afpp/compare/v2.5.2...v2.6.0) (2026-03-30)
+
+### Features
+
+- **skills:** add improve-codebase-architecture skill ([66f9181](https://github.com/l2ysho/afpp/commit/66f9181996354865707fe80471e59640e6fee821))
+
 ## [2.5.2](https://github.com/l2ysho/afpp/compare/v2.5.1...v2.5.2) (2026-03-16)
 
 ### Bug Fixes
