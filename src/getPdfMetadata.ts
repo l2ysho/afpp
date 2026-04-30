@@ -1,13 +1,7 @@
-import { readFile } from 'node:fs/promises';
-
-import {
-  getDocument,
-  PDFDateString,
-  VerbosityLevel,
-} from 'pdfjs-dist/legacy/build/pdf.mjs';
-import type { DocumentInitParameters } from 'pdfjs-dist/types/src/display/api.js';
+import { getDocument, PDFDateString } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 import type { AfppParseOptions } from '#afpp/src/core';
+import { resolveInput } from '#afpp/src/resolveInput';
 
 export interface PdfMetadata {
   title?: string;
@@ -36,31 +30,7 @@ export async function getPdfMetadata(
   input: Buffer | string | Uint8Array | URL,
   options?: Pick<AfppParseOptions, 'password'>,
 ): Promise<PdfMetadata> {
-  const documentInitParameters: DocumentInitParameters = {};
-
-  switch (true) {
-    case typeof input === 'string':
-      documentInitParameters.data = new Uint8Array(
-        await readFile(input as string),
-      );
-      break;
-    case Buffer.isBuffer(input):
-      documentInitParameters.data = new Uint8Array(input as Buffer);
-      break;
-    case input instanceof Uint8Array:
-      documentInitParameters.data = input as Uint8Array;
-      break;
-    case input instanceof URL:
-      documentInitParameters.url = input as URL;
-      break;
-    default:
-      throw new Error(`Invalid source type: ${typeof input}`);
-  }
-
-  documentInitParameters.verbosity = VerbosityLevel.ERRORS;
-  documentInitParameters.disableAutoFetch = true;
-  documentInitParameters.disableStream = true;
-  documentInitParameters.disableRange = true;
+  const documentInitParameters = await resolveInput(input);
 
   let isEncrypted = false;
   const loadingTask = getDocument(documentInitParameters);

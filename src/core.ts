@@ -1,4 +1,3 @@
-import { readFile } from 'node:fs/promises';
 import { availableParallelism } from 'node:os';
 
 import {
@@ -7,12 +6,14 @@ import {
   createCanvas,
 } from '@napi-rs/canvas';
 import pLimit from 'p-limit';
-import { getDocument, VerbosityLevel } from 'pdfjs-dist/legacy/build/pdf.mjs';
+import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import type {
   DocumentInitParameters,
   PDFPageProxy,
   TextItem,
 } from 'pdfjs-dist/types/src/display/api.js';
+
+import { resolveInput } from '#afpp/src/resolveInput';
 
 export enum PROCESSING_TYPE {
   IMAGE = 'IMAGE',
@@ -199,31 +200,9 @@ const validateParameters = async (
   input: Buffer | string | Uint8Array | URL,
   options?: AfppParseOptions,
 ) => {
-  const documentInitParameters: DocumentInitParameters = {};
-
-  switch (true) {
-    case typeof input === 'string':
-      documentInitParameters.data = new Uint8Array(await readFile(input));
-      break;
-    case Buffer.isBuffer(input):
-      documentInitParameters.data = new Uint8Array(input);
-      break;
-    case input instanceof Uint8Array:
-      documentInitParameters.data = input;
-      break;
-    case input instanceof URL:
-      documentInitParameters.url = input;
-      break;
-    default:
-      throw new Error(`Invalid source type: ${typeof input}`);
-  }
+  const documentInitParameters = await resolveInput(input);
 
   documentInitParameters.password = options?.password;
-  documentInitParameters.verbosity = VerbosityLevel.ERRORS;
-  // Performance optimizations for local file processing
-  documentInitParameters.disableAutoFetch = true; // Don't prefetch - we have full data
-  documentInitParameters.disableStream = true; // Don't stream - we have full data
-  documentInitParameters.disableRange = true; // Don't use range requests - we have full data
 
   const scale = options?.scale ?? 1.0;
 
