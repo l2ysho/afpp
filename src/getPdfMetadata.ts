@@ -36,7 +36,10 @@ export async function getPdfMetadata(
   const loadingTask = getDocument(documentInitParameters);
 
   // PasswordResponses.NEED_PASSWORD = 1, INCORRECT_PASSWORD = 2
-  loadingTask.onPassword = (updateCallback: Function, reason: number) => {
+  loadingTask.onPassword = (
+    updateCallback: (password: string) => void,
+    reason: number,
+  ) => {
     isEncrypted = true;
     if (reason === 1 && options?.password) {
       updateCallback(options.password);
@@ -67,8 +70,8 @@ export async function getPdfMetadata(
       isEncrypted,
     };
   } finally {
-    pdfDocument.cleanup();
+    await pdfDocument.cleanup();
     await pdfDocument.destroy();
-    loadingTask.destroy();
+    await loadingTask.destroy();
   }
 }

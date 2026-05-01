@@ -8,7 +8,6 @@ import {
 import pLimit from 'p-limit';
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import type {
-  DocumentInitParameters,
   PDFPageProxy,
   TextItem,
 } from 'pdfjs-dist/types/src/display/api.js';
@@ -360,9 +359,9 @@ export async function parsePdfFile<T>(
     throw new Error('Invalid PROCESSING_TYPE');
   } finally {
     // Clean up pdfjs resources to prevent memory leaks
-    pdfDocument.cleanup();
+    await pdfDocument.cleanup();
     await pdfDocument.destroy();
-    loadingTask.destroy();
+    await loadingTask.destroy();
   }
 }
 
@@ -434,8 +433,8 @@ export async function* streamPdfFile(
       page.cleanup();
     }
   } finally {
-    pdfDocument.cleanup();
+    await pdfDocument.cleanup();
     await pdfDocument.destroy();
-    loadingTask.destroy();
+    await loadingTask.destroy();
   }
 }

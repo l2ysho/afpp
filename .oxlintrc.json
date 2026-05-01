@@ -2,7 +2,26 @@
   "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
   "rules": {
     "no-console": "error",
-    "arrow-body-style": "error"
+    "arrow-body-style": "error",
+    "typescript/no-floating-promises": "error",
+    "typescript/require-await": "error",
+    "typescript/no-unsafe-assignment": "warn",
+    "typescript/no-unsafe-call": "warn",
+    "typescript/no-unsafe-return": "warn"
   },
-  "ignorePatterns": ["dist", "node_modules", "coverage", "benchmark/*/output"]
+  "ignorePatterns": [
+    "dist",
+    "node_modules",
+    "coverage",
+    "examples",
+    "benchmark"
+  ],
+  "overrides": [
+    {
+      "files": ["test/**"],
+      "rules": {
+        "typescript/no-floating-promises": "off"
+      }
+    }
+  ]
 }
