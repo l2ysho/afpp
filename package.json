@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "p-limit": "7.3.0",
-    "pdfjs-dist": "5.6.205"
+    "pdfjs-dist": "5.7.284"
   },
   "devDependencies": {
     "@commitlint/cli": "20.5.2",
