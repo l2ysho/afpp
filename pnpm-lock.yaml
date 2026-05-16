@@ -64,8 +64,8 @@ importers:
         specifier: 25.0.3
         version: 25.0.3(typescript@6.0.3)
       tsc-alias:
-        specifier: 1.8.16
-        version: 1.8.16
+        specifier: 1.8.17
+        version: 1.8.17
       tsx:
         specifier: 4.21.0
         version: 4.21.0
@@ -1486,6 +1486,9 @@ packages:
   get-tsconfig@4.13.7:
     resolution: {integrity: sha512-7tN6rFgBlMgpBML5j8typ92BKFi2sFQvIdpAqLA2beia5avZDrMs0FLZiM5etShWq5irVyGcGMEA1jcDaK7A/Q==}
 
+  get-tsconfig@4.14.0:
+    resolution: {integrity: sha512-yTb+8DXzDREzgvYmh6s9vHsSVCHeC0G3PI5bEXNBHtmshPnO+S5O7qgLEOn0I5QvMy6kpZN8K1NKGyilLb93wA==}
+
   git-log-parser@1.2.1:
     resolution: {integrity: sha512-PI+sPDvHXNPl5WNOErAK05s3j0lgwUzMN6o8cyQrDaKfT3qd7TmNJKeXX+SknI5I0QhG5fVPAEwSY4tRGDtYoQ==}
 
@@ -2660,8 +2663,8 @@ packages:
     resolution: {integrity: sha512-aXJDbk6SnumuaZSANd21XAo15ucCDE38H4fkqiGsc3MhCK+wOlZvLP9cB/TvpHT0mOyWgC4Z8EwRlzqYSUzdsA==}
     engines: {node: '>= 0.4'}
 
-  tsc-alias@1.8.16:
-    resolution: {integrity: sha512-QjCyu55NFyRSBAl6+MTFwplpFcnm2Pq01rR/uxfqJoLMm6X3O14KEGtaSDZpJYaE1bJBGDjD0eSuiIWPe2T58g==}
+  tsc-alias@1.8.17:
+    resolution: {integrity: sha512-EIduCZHqbNwPm8BZYfq1aD7BQ697A4h6uSGMOFQfYGoQwfrYFTKwYfy9Bv42YxHkduVBcn9Zx0DkX111DKskyg==}
     engines: {node: '>=16.20.2'}
     hasBin: true
 
@@ -4192,6 +4195,10 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
+  get-tsconfig@4.14.0:
+    dependencies:
+      resolve-pkg-maps: 1.0.0
+
   git-log-parser@1.2.1:
     dependencies:
       argv-formatter: 1.0.0
@@ -5428,11 +5435,11 @@ snapshots:
 
   traverse@0.6.8: {}
 
-  tsc-alias@1.8.16:
+  tsc-alias@1.8.17:
     dependencies:
       chokidar: 3.6.0
       commander: 9.5.0
-      get-tsconfig: 4.13.7
+      get-tsconfig: 4.14.0
       globby: 11.1.0
       mylas: 2.1.14
       normalize-path: 3.0.0
