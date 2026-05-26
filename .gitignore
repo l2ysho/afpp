@@ -139,3 +139,4 @@ examples/output/
 benchmark/*/output/
 
 !.zed
+package-lock.json
