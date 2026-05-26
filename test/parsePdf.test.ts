@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { describe, it } from 'node:test';
 
-import { parsePdf } from '#afpp/src/index';
+import { parsePdf } from '#afpp/src/index.js';
 
 describe('parsePdf', () => {
   describe('input != string, buffer, Uint8Array or URL  ', () => {
