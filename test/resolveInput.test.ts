@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { describe, it } from 'node:test';
 
-import { resolveInput } from '#afpp/src/resolveInput';
+import { resolveInput } from '#afpp/src/resolveInput.js';
 
 describe('resolveInput', () => {
   describe('invalid input', () => {

@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { describe, it } from 'node:test';
 
-import { pdf2image } from '#afpp/src/index';
+import { pdf2image } from '#afpp/src/index.js';
 
 describe('pdf2image', () => {
   describe('input != string, buffer, Uint8Array or URL  ', () => {

@@ -2,7 +2,7 @@ import {
   AfppParseOptions,
   parsePdfFile,
   PROCESSING_TYPE,
-} from '#afpp/src/core';
+} from '#afpp/src/core.js';
 
 /**
  * Converts a PDF file from various input formats (Buffer, Uint8Array, string path, or URL) to a string.

@@ -3,7 +3,7 @@ import {
   PROCESSING_TYPE,
   StreamingResult,
   streamPdfFile,
-} from '#afpp/src/core';
+} from '#afpp/src/core.js';
 
 /**
  * Streams PDF pages as images, yielding each page as it's processed.

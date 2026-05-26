@@ -1,7 +1,7 @@
 import { getDocument, PDFDateString } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
-import type { AfppParseOptions } from '#afpp/src/core';
-import { resolveInput } from '#afpp/src/resolveInput';
+import type { AfppParseOptions } from '#afpp/src/core.js';
+import { resolveInput } from '#afpp/src/resolveInput.js';
 
 export interface PdfMetadata {
   title?: string;

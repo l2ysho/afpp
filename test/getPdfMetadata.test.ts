@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { describe, it } from 'node:test';
 
-import { getPdfMetadata } from '#afpp/src/index';
+import { getPdfMetadata } from '#afpp/src/index.js';
 
 describe('getPdfMetadata', () => {
   describe('input != string, buffer, Uint8Array or URL', () => {

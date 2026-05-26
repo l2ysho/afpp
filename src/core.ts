@@ -11,7 +11,7 @@ import type {
   TextItem,
 } from 'pdfjs-dist/types/src/display/api.js';
 
-import { resolveInput } from '#afpp/src/resolveInput';
+import { resolveInput } from '#afpp/src/resolveInput.js';
 
 function pLimit(concurrency: number) {
   const queue: Array<() => void> = [];

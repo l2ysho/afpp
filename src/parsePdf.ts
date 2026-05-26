@@ -3,7 +3,7 @@ import {
   PageProcessor,
   parsePdfFile,
   PROCESSING_TYPE,
-} from '#afpp/src/core';
+} from '#afpp/src/core.js';
 
 /**
  * Converts a PDF file from various input formats (Buffer, Uint8Array, string path, or URL). Pages are returned in mixed array of strings (text content) and buffers (image content) via callback function.
