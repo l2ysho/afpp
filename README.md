@@ -32,7 +32,7 @@ The project was created to address recurring problems encountered with existing 
 
 ## Key Features
 
-- No manual build step required — prebuilt native binaries are bundled automatically via `@napi-rs/canvas`
+- No manual build step required for text extraction; image rendering requires the optional peer dep `@napi-rs/canvas` (prebuilt native binaries, no compile step)
 - Fully asynchronous, non-blocking architecture
 - First-class TypeScript support
 - Supports local files, buffers, and remote URLs
@@ -89,12 +89,10 @@ console.log(pages); // ['Page 1 text', 'Page 2 text', ...]
 ```ts
 import { pdf2image } from 'afpp';
 
-(async () => {
-  const url = new URL('https://pdfobject.com/pdf/sample.pdf');
-  const images = await pdf2image(url);
+const url = new URL('https://pdfobject.com/pdf/sample.pdf');
+const images = await pdf2image(url);
 
-  console.log(images); // [Buffer, Buffer, ...]
-})();
+console.log(images); // [Buffer, Buffer, ...]
 ```
 
 ---
@@ -155,13 +153,11 @@ For advanced use cases, `parsePdf` exposes page-level control and transformation
 ```ts
 import { parsePdf } from 'afpp';
 
-(async () => {
-  const response = await fetch('https://pdfobject.com/pdf/sample.pdf');
-  const buffer = Buffer.from(await response.arrayBuffer());
+const response = await fetch('https://pdfobject.com/pdf/sample.pdf');
+const buffer = Buffer.from(await response.arrayBuffer());
 
-  const result = await parsePdf(buffer, {}, (pageContent) => pageContent);
-  console.log(result);
-})();
+const result = await parsePdf(buffer, {}, (pageContent) => pageContent);
+console.log(result);
 ```
 
 ---
