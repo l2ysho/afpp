@@ -5,7 +5,6 @@ import {
   CanvasRenderingContext2D,
   createCanvas,
 } from '@napi-rs/canvas';
-import pLimit from 'p-limit';
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import type {
   PDFPageProxy,
@@ -13,6 +12,29 @@ import type {
 } from 'pdfjs-dist/types/src/display/api.js';
 
 import { resolveInput } from '#afpp/src/resolveInput';
+
+function pLimit(concurrency: number) {
+  const queue: Array<() => void> = [];
+  let active = 0;
+  const next = () => {
+    if (active < concurrency && queue.length > 0) {
+      active++;
+      queue.shift()!();
+    }
+  };
+  return <T>(fn: () => Promise<T>): Promise<T> =>
+    new Promise<T>((resolve, reject) => {
+      queue.push(() => {
+        fn()
+          .then(resolve, reject)
+          .finally(() => {
+            active--;
+            next();
+          });
+      });
+      next();
+    });
+}
 
 export enum PROCESSING_TYPE {
   IMAGE = 'IMAGE',
