@@ -1,3 +1,19 @@
+# [3.0.0](https://github.com/l2ysho/afpp/compare/v2.7.0...v3.0.0) (2026-05-26)
+
+- feat!: add ESM support, drop CJS ([614a009](https://github.com/l2ysho/afpp/commit/614a009e5d99aeb21377f1856ef878a06d563334))
+
+### BREAKING CHANGES
+
+- package now ships ESM only. CJS consumers
+  (require('afpp')) must migrate to import.
+
+* Add "type": "module" and "exports" to package.json
+* Add "imports" for NodeNext subpath resolution
+* Add .js extension to all internal #afpp/src/\* specifiers
+  (required by NodeNext ESM module resolution)
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
 # [2.7.0](https://github.com/l2ysho/afpp/compare/v2.6.0...v2.7.0) (2026-05-26)
 
 ### Features
