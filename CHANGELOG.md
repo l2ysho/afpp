@@ -1,3 +1,9 @@
+# [2.7.0](https://github.com/l2ysho/afpp/compare/v2.6.0...v2.7.0) (2026-05-26)
+
+### Features
+
+- declare @napi-rs/canvas as optional peer dependency ([0a8194c](https://github.com/l2ysho/afpp/commit/0a8194cda1459fcab6a08047f6d64305c42dd1fc))
+
 # [2.6.0](https://github.com/l2ysho/afpp/compare/v2.5.2...v2.6.0) (2026-03-30)
 
 ### Features
