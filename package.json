@@ -73,6 +73,14 @@
     "tsx": "4.21.0",
     "typescript": "6.0.3"
   },
+  "peerDependencies": {
+    "@napi-rs/canvas": ">=0.1.100"
+  },
+  "peerDependenciesMeta": {
+    "@napi-rs/canvas": {
+      "optional": true
+    }
+  },
   "engines": {
     "node": ">=22.14.0",
     "npm": ">=10.9.2"
