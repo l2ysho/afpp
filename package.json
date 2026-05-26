@@ -62,7 +62,7 @@
     "@voxpelli/node-test-pretty-reporter": "1.1.2",
     "c8": "11.0.0",
     "husky": "9.1.7",
-    "lint-staged": "16.4.0",
+    "lint-staged": "17.0.5",
     "oxfmt": "0.48.0",
     "oxlint": "1.64.0",
     "oxlint-tsgolint": "0.23.0",
