@@ -49,7 +49,6 @@
     "typecheck:ts7": "tsgo -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "p-limit": "7.3.0",
     "pdfjs-dist": "5.7.284"
   },
   "devDependencies": {
