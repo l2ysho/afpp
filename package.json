@@ -49,6 +49,7 @@
     "typecheck:ts7": "tsgo -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "axios": "1.16.1",
     "p-limit": "7.3.0",
     "pdfjs-dist": "5.7.284"
   },
