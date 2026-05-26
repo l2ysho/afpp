@@ -46,6 +46,8 @@ The project was created to address recurring problems encountered with existing 
 
 - **Node.js** >= 22.14.0
 
+> **v3 breaking change:** `afpp` is now ESM-only. Replace any `require('afpp')` calls with `import ... from 'afpp'`.
+
 ---
 
 ## Installation
