@@ -6,7 +6,7 @@
  * Results are saved to benchmark/pdf2pic/output/results.json
  *
  * Usage:
- *   npx tsx benchmark/pdf2pic/run.ts [runs]
+ *   pnpm exec tsx benchmark/pdf2pic/run.ts [runs]
  *
  * Arguments:
  *   runs - Number of benchmark runs (default: 10)

@@ -4,10 +4,12 @@
  */
 
 import { readFile, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import type { BenchmarkResult } from './utils';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const BENCHMARKS = ['afpp', 'afpp-auto', 'pdf-parse', 'pdf2pic'];
 const OUTPUT_FILE = join(__dirname, 'BENCHMARK.md');
 

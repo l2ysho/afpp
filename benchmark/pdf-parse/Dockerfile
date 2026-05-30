@@ -11,10 +11,13 @@
 
 FROM node:22-slim
 
+RUN corepack enable
+
 WORKDIR /app
 
-# Install pdf-parse
-RUN npm init -y && npm install pdf-parse
+# Install pdf-parse (type=module required for ESM benchmark scripts)
+RUN echo '{"name":"benchmark","version":"1.0.0","type":"module"}' > package.json && \
+    pnpm add pdf-parse
 
 # Copy test files and benchmark
 COPY test ./test

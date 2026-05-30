@@ -11,10 +11,13 @@
 
 FROM node:22-slim
 
+RUN corepack enable
+
 WORKDIR /app
 
-# Install afpp from npm
-RUN npm init -y && npm install afpp
+# Install afpp (type=module required for ESM benchmark scripts)
+RUN echo '{"name":"benchmark","version":"1.0.0","type":"module"}' > package.json && \
+    pnpm add afpp
 
 # Copy test files and benchmark
 COPY test ./test

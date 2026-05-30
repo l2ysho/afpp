@@ -6,7 +6,7 @@
  * Results are saved to benchmark/afpp/output/results.json
  *
  * Usage:
- *   npx tsx benchmark/afpp/run.ts [runs]
+ *   pnpm exec tsx benchmark/afpp/run.ts [runs]
  *
  * Arguments:
  *   runs - Number of benchmark runs (default: 10)
@@ -16,14 +16,18 @@
  *   SAVE_IMAGES - Set to "true" to save result images to output folder
  */
 
+import { readFileSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
+import { findPackageJSON } from 'node:module';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 // @ts-expect-error afpp is installed in docker
 import { pdf2image } from 'afpp';
-// @ts-expect-error afpp is installed in docker
-import afppPkg from 'afpp/package.json' with { type: 'json' };
+
+const afppPkg = JSON.parse(
+  readFileSync(findPackageJSON('afpp', import.meta.url)!, 'utf-8'),
+) as { version: string };
 
 import {
   parseRuns,

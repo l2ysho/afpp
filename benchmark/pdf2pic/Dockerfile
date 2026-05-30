@@ -17,10 +17,13 @@ RUN apt-get update && apt-get install -y \
     ghostscript \
     && rm -rf /var/lib/apt/lists/*
 
+RUN corepack enable
+
 WORKDIR /app
 
-# Install pdf2pic
-RUN npm init -y && npm install pdf2pic
+# Install pdf2pic (type=module required for ESM benchmark scripts)
+RUN echo '{"name":"benchmark","version":"1.0.0","type":"module"}' > package.json && \
+    pnpm add pdf2pic
 
 # Copy test files and benchmark
 COPY test ./test

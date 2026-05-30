@@ -6,7 +6,7 @@
  * Results are saved to benchmark/pdf-parse/output/results.json
  *
  * Usage:
- *   npx tsx benchmark/pdf-parse/run.ts [runs]
+ *   pnpm exec tsx benchmark/pdf-parse/run.ts [runs]
  *
  * Arguments:
  *   runs - Number of benchmark runs (default: 10)

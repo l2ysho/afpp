@@ -8,6 +8,6 @@ set -e
 cd "$(dirname "$0")"
 
 # Use Node.js to generate the report (handles JSON parsing)
-npx tsx generate-report.ts
+pnpm exec tsx generate-report.ts
 
 echo "Generated BENCHMARK.md"
