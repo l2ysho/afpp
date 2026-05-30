@@ -38,7 +38,8 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -48,7 +49,6 @@
     "lint:fix": "oxlint . --fix --type-aware",
     "postbuild": "tsc-alias -p tsconfig.build.json",
     "prebuild": "rm -rf dist",
-    "preinstall": "npx only-allow pnpm",
     "prepare": "husky",
     "pretest:coverage": "rm -rf coverage",
     "test": "NODE_ENV=test npx tsx --test --test-reporter @voxpelli/node-test-pretty-reporter test/*.test.ts",
@@ -64,8 +64,6 @@
   "devDependencies": {
     "@commitlint/cli": "21.0.1",
     "@commitlint/config-conventional": "21.0.1",
-    "@semantic-release/changelog": "6.0.3",
-    "@semantic-release/git": "10.0.1",
     "@types/node": "25.9.0",
     "@typescript/native-preview": "7.0.0-dev.20260519.1",
     "@voxpelli/node-test-pretty-reporter": "1.1.2",
