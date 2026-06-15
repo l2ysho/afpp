@@ -71,7 +71,6 @@ export async function getPdfMetadata(
     };
   } finally {
     await pdfDocument.cleanup();
-    await pdfDocument.destroy();
     await loadingTask.destroy();
   }
 }

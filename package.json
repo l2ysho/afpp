@@ -59,7 +59,7 @@
     "typecheck:ts7": "tsgo -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "pdfjs-dist": "5.7.284"
+    "pdfjs-dist": "6.0.227"
   },
   "devDependencies": {
     "@commitlint/cli": "21.0.2",
@@ -79,7 +79,7 @@
     "typescript": "6.0.3"
   },
   "peerDependencies": {
-    "@napi-rs/canvas": ">=0.1.100"
+    "@napi-rs/canvas": ">=1.0.0"
   },
   "peerDependenciesMeta": {
     "@napi-rs/canvas": {
