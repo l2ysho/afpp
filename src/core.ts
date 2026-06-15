@@ -382,7 +382,6 @@ export async function parsePdfFile<T>(
   } finally {
     // Clean up pdfjs resources to prevent memory leaks
     await pdfDocument.cleanup();
-    await pdfDocument.destroy();
     await loadingTask.destroy();
   }
 }
@@ -456,7 +455,6 @@ export async function* streamPdfFile(
     }
   } finally {
     await pdfDocument.cleanup();
-    await pdfDocument.destroy();
     await loadingTask.destroy();
   }
 }
