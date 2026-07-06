@@ -63,7 +63,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "21.0.2",
-    "@commitlint/config-conventional": "21.0.2",
+    "@commitlint/config-conventional": "21.1.0",
     "@types/node": "25.9.3",
     "@typescript/native-preview": "7.0.0-dev.20260612.1",
     "@voxpelli/node-test-pretty-reporter": "1.1.2",
