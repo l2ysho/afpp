@@ -62,7 +62,7 @@
     "pdfjs-dist": "6.0.227"
   },
   "devDependencies": {
-    "@commitlint/cli": "21.1.0",
+    "@commitlint/cli": "21.2.0",
     "@commitlint/config-conventional": "21.1.0",
     "@types/node": "25.9.3",
     "@typescript/native-preview": "7.0.0-dev.20260612.1",
