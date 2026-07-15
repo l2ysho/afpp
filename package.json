@@ -59,7 +59,7 @@
     "typecheck:ts7": "tsgo -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "pdfjs-dist": "6.0.227"
+    "pdfjs-dist": "6.1.200"
   },
   "devDependencies": {
     "@commitlint/cli": "21.2.0",
