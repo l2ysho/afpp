@@ -59,11 +59,12 @@
     "typecheck:ts7": "tsgo -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "pdfjs-dist": "6.0.227"
+    "pdfjs-dist": "6.1.200"
   },
   "devDependencies": {
     "@commitlint/cli": "21.2.0",
     "@commitlint/config-conventional": "21.1.0",
+    "@napi-rs/canvas": "1.0.2",
     "@types/node": "25.9.3",
     "@typescript/native-preview": "7.0.0-dev.20260612.1",
     "@voxpelli/node-test-pretty-reporter": "1.1.2",
@@ -79,7 +80,7 @@
     "typescript": "6.0.3"
   },
   "peerDependencies": {
-    "@napi-rs/canvas": ">=1.0.0"
+    "@napi-rs/canvas": ">=1.0.2"
   },
   "peerDependenciesMeta": {
     "@napi-rs/canvas": {
