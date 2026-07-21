@@ -59,27 +59,28 @@
     "typecheck:ts7": "tsgo -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "pdfjs-dist": "6.0.227"
+    "pdfjs-dist": "6.1.200"
   },
   "devDependencies": {
-    "@commitlint/cli": "21.1.0",
-    "@commitlint/config-conventional": "21.1.0",
-    "@types/node": "25.9.3",
+    "@commitlint/cli": "21.2.0",
+    "@commitlint/config-conventional": "21.2.0",
+    "@napi-rs/canvas": "1.0.2",
+    "@types/node": "26.1.1",
     "@typescript/native-preview": "7.0.0-dev.20260612.1",
     "@voxpelli/node-test-pretty-reporter": "1.1.2",
     "c8": "11.0.0",
     "husky": "9.1.7",
     "lint-staged": "17.0.8",
-    "oxfmt": "0.56.0",
-    "oxlint": "1.71.0",
-    "oxlint-tsgolint": "0.23.0",
+    "oxfmt": "0.58.0",
+    "oxlint": "1.73.0",
+    "oxlint-tsgolint": "0.24.0",
     "semantic-release": "25.0.5",
-    "tsc-alias": "1.8.17",
-    "tsx": "4.22.4",
-    "typescript": "6.0.3"
+    "tsc-alias": "1.9.0",
+    "tsx": "4.23.0",
+    "typescript": "7.0.2"
   },
   "peerDependencies": {
-    "@napi-rs/canvas": ">=1.0.0"
+    "@napi-rs/canvas": ">=1.0.2"
   },
   "peerDependenciesMeta": {
     "@napi-rs/canvas": {
