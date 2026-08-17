@@ -76,7 +76,7 @@
     "oxlint-tsgolint": "7.0.2001",
     "semantic-release": "25.0.8",
     "tsc-alias": "1.9.1",
-    "tsx": "4.23.1",
+    "tsx": "4.23.12",
     "typescript": "7.0.2"
   },
   "peerDependencies": {
