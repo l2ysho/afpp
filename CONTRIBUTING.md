@@ -55,6 +55,24 @@ Coverage is collected automatically in CI. Local coverage may be generated if ne
 npm run test:coverage
 ```
 
+### Mutation Testing
+
+Coverage shows which lines run, not whether a test would notice if they broke.
+[Stryker](https://stryker-mutator.io) answers the second question: it changes the
+source in small ways (a `>` becomes `>=`, a `true` becomes `false`) and checks if
+a test fails. A mutant that survives points at a weak or missing assertion.
+
+```sh
+npm run test:mutation
+```
+
+The run takes a few minutes and writes a report to `reports/mutation/index.html`.
+Every pull request runs it too; the score is in the job summary and the full
+report is attached as the `mutation-report` artifact.
+
+Survived mutants are a hint, not a rule. Some are equivalent mutants, which no
+test can kill. Read the report before you change a test.
+
 ---
 
 ## Code Style & Conventions

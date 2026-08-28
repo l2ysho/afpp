@@ -33,3 +33,36 @@ jobs:
         run: pnpm typecheck
       - name: Test
         run: pnpm test
+
+  mutation:
+    name: Mutation testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 'lts/*'
+      - name: Enable corepack
+        run: corepack enable
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.0.10
+        with:
+          run_install: false
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run mutation tests
+        run: pnpm test:mutation
+      - name: Write job summary
+        if: always()
+        run: node .github/scripts/mutation-summary.mjs reports/mutation/mutation.json >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: mutation-report
+          path: reports/mutation
+          retention-days: 14
