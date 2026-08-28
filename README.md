@@ -2,6 +2,7 @@
 
 ![Version](https://img.shields.io/github/v/release/l2ysho/afpp)
 [![codecov](https://codecov.io/github/l2ysho/afpp/graph/badge.svg?token=2PE32I4M9K)](https://codecov.io/github/l2ysho/afpp)
+[![Mutation score](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fl2ysho%2Fafpp%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/l2ysho/afpp/main)
 ![Node](https://img.shields.io/badge/node-%3E%3D%2022.14.0-brightgreen.svg)
 ![npm Downloads](https://img.shields.io/npm/dt/afpp.svg)
 ![Repo Size](https://img.shields.io/github/repo-size/l2ysho/afpp)
