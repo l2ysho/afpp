@@ -81,37 +81,56 @@ describe('getPdfMetadata', () => {
   });
 
   describe('metadata fields', () => {
-    it('optional string fields should be undefined or non-empty string (never empty string)', async () => {
+    it('should read every field from the pdf info dictionary', async () => {
       const input = path.join('test', 'example.pdf');
       const metadata = await getPdfMetadata(input);
-      const optionalStringFields = [
-        'title',
-        'author',
-        'subject',
-        'creator',
-        'producer',
-      ] as const;
-      for (const field of optionalStringFields) {
-        const value = metadata[field];
-        assert.ok(
-          value === undefined ||
-            (typeof value === 'string' && value.length > 0),
-          `Field '${field}' should be undefined or non-empty string, got: ${JSON.stringify(value)}`,
-        );
-      }
+
+      assert.equal(metadata.title, 'example');
+      assert.equal(metadata.creator, 'Pages');
+      assert.equal(
+        metadata.producer,
+        'macOS Version 14.6.1 (Build 23G93) Quartz PDFContext',
+      );
+      assert.deepEqual(
+        metadata.creationDate,
+        new Date('2024-09-18T12:20:51.000Z'),
+      );
+      assert.deepEqual(
+        metadata.modificationDate,
+        new Date('2024-09-18T12:20:51.000Z'),
+      );
+      // example.pdf carries no Author and no Subject.
+      assert.equal(metadata.author, undefined);
+      assert.equal(metadata.subject, undefined);
     });
 
-    it('optional date fields should be undefined or Date instance', async () => {
-      const input = path.join('test', 'example.pdf');
+    /**
+     * example-metadata.pdf is a hand written one page pdf. Its info dictionary
+     * holds an empty `/Title`, an unparsable `/ModDate` and the two fields that
+     * example.pdf leaves out, so it covers what the other fixtures cannot.
+     */
+    it('should drop an empty string field and keep the rest', async () => {
+      const input = path.join('test', 'example-metadata.pdf');
       const metadata = await getPdfMetadata(input);
-      const optionalDateFields = ['creationDate', 'modificationDate'] as const;
-      for (const field of optionalDateFields) {
-        const value = metadata[field];
-        assert.ok(
-          value === undefined || value instanceof Date,
-          `Field '${field}' should be undefined or Date, got: ${JSON.stringify(value)}`,
-        );
-      }
+
+      assert.equal(metadata.title, undefined);
+      assert.equal(metadata.author, 'Ada Lovelace');
+      assert.equal(metadata.subject, 'Mutation testing fixture');
+      assert.equal(metadata.creator, 'afpp test suite');
+      assert.equal(metadata.producer, 'afpp test suite');
+      assert.deepEqual(
+        metadata.creationDate,
+        new Date('2024-01-01T00:00:00.000Z'),
+      );
+      assert.equal(metadata.pageCount, 1);
+      assert.equal(metadata.isEncrypted, false);
+    });
+
+    it('should drop a date the pdf spells wrong', async () => {
+      const input = path.join('test', 'example-metadata.pdf');
+      const metadata = await getPdfMetadata(input);
+
+      assert.equal(metadata.modificationDate, undefined);
     });
   });
 });
