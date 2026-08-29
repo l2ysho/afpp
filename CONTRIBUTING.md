@@ -70,10 +70,10 @@ The run takes a few minutes and writes a report to `reports/mutation/index.html`
 
 CI runs it two ways. A pull request that touches `src` or `test` runs Stryker in
 incremental mode, so it only tests the mutants your diff affects. Every Monday a
-scheduled run tests all of them and publishes the score to the
-[Stryker dashboard](https://dashboard.stryker-mutator.io/reports/github.com/l2ysho/afpp/main).
-Both write the score to the job summary and attach the full report as the
-`mutation-report` artifact.
+scheduled run tests all of them and publishes the report to
+[l2ysho.github.io/afpp](https://l2ysho.github.io/afpp/), which is also where the
+README badge reads the score from. Both write the score to the job summary and
+attach the full report as the `mutation-report` artifact.
 
 Survived mutants are a hint, not a rule. Some are equivalent mutants, which no
 test can kill. Read the report before you change a test.
