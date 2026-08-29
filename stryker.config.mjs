@@ -52,5 +52,6 @@ export default {
   reporters: ['html', 'clear-text', 'progress', 'json'],
   htmlReporter: { fileName: 'reports/mutation/index.html' },
   jsonReporter: { fileName: 'reports/mutation/mutation.json' },
-  thresholds: { break: null, high: 80, low: 60 },
+  // `break` fails the run below this score. Raise it as mutants get killed.
+  thresholds: { break: 60, high: 80, low: 60 },
 };

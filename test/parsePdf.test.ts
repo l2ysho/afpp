@@ -2,6 +2,7 @@ import assert from 'node:assert';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { describe, it } from 'node:test';
+import { setTimeout as delay } from 'node:timers/promises';
 
 import { parsePdf } from '#afpp/src/index.js';
 
@@ -124,6 +125,87 @@ describe('parsePdf', () => {
         (content) => content,
       );
       assert.equal(data.length, 9);
+    });
+  });
+
+  describe('concurrency limit', () => {
+    it('should run at most `concurrency` pages at the same time', async () => {
+      const input = path.join('test', 'example.pdf');
+      const concurrency = 2;
+      let active = 0;
+      let peak = 0;
+
+      const data = await parsePdf(input, { concurrency }, async (content) => {
+        active++;
+        peak = Math.max(peak, active);
+        // Hold the slot so that pages processed at the same time overlap here.
+        await delay(50);
+        active--;
+        return content;
+      });
+
+      assert.equal(data.length, 9);
+      // Without the limit all nine pages start at once and the peak is 9.
+      assert.equal(
+        peak,
+        concurrency,
+        `expected at most ${concurrency} pages at a time, saw ${peak}`,
+      );
+    });
+  });
+  describe('callback validation', () => {
+    it('should reject when no callback is given', async () => {
+      const input = path.join('test', 'example.pdf');
+
+      await assert.rejects(
+        // @ts-expect-error testing a missing callback
+        parsePdf(input, {}),
+        {
+          message: 'Invalid callback type: undefined',
+          name: 'Error',
+        },
+      );
+    });
+
+    it('should reject a callback that is not a function', async () => {
+      const input = path.join('test', 'example.pdf');
+
+      await assert.rejects(
+        // @ts-expect-error testing an invalid callback
+        parsePdf(input, {}, 'not a function'),
+        {
+          message: 'Invalid callback type: string',
+          name: 'Error',
+        },
+      );
+    });
+  });
+
+  describe('page content type', () => {
+    it('should hand text pages to the callback as a string', async () => {
+      const input = path.join('test', 'example.pdf');
+
+      const types = await parsePdf(input, {}, (content) =>
+        Buffer.isBuffer(content) ? 'buffer' : 'string',
+      );
+
+      assert.deepEqual(
+        types,
+        Array.from({ length: 9 }, () => 'string'),
+      );
+    });
+
+    it('should render a page without text and hand it over as a buffer', async () => {
+      const input = path.join('test', 'example-img.pdf');
+
+      const types = await parsePdf(input, {}, (content) =>
+        Buffer.isBuffer(content) ? 'buffer' : 'string',
+      );
+
+      assert.deepEqual(
+        types,
+        Array.from({ length: 9 }, () => 'buffer'),
+      );
     });
   });
 });
