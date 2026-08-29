@@ -77,4 +77,18 @@ describe('pdf2string', () => {
       assert.equal(data.length, 1);
     });
   });
+  describe('extracted text', () => {
+    it('should join the text items of a page with single spaces', async () => {
+      const input = path.join('test', 'example.pdf');
+
+      const [firstPage] = await pdf2string(input);
+
+      assert.ok(
+        firstPage!.startsWith(
+          'Lorem Ipsum "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."',
+        ),
+        `page one starts with: ${JSON.stringify(firstPage?.slice(0, 120))}`,
+      );
+    });
+  });
 });

@@ -79,6 +79,14 @@ describe('pdf2image', () => {
   });
 
   describe('scale validation', () => {
+    // Rejecting what lies outside the range never pins the bounds themselves.
+    it('should accept the lowest and the highest allowed scale', async () => {
+      const input = path.join('test', 'example-page-sizes.pdf');
+
+      assert.equal((await pdf2image(input, { scale: 0.1 })).length, 2);
+      assert.equal((await pdf2image(input, { scale: 10 })).length, 2);
+    });
+
     it('should reject scale above 10', async () => {
       const input = path.join('test', 'example.pdf');
       await assert.rejects(pdf2image(input, { scale: 100 }), {
@@ -192,6 +200,34 @@ describe('pdf2image', () => {
       // WebP: starts with RIFF (0x52 0x49 0x46 0x46)
       assert.equal(data[0]![0], 0x52);
       assert.equal(data[0]![1], 0x49);
+    });
+  });
+  describe('rendered image', () => {
+    /** Width and height live in the IHDR chunk of every png. */
+    const size = (png: Buffer) =>
+      `${png.readUInt32BE(16)}x${png.readUInt32BE(20)}`;
+
+    it('should render the page at the requested scale', async () => {
+      const input = path.join('test', 'example.pdf');
+
+      const [atOne] = await pdf2image(input, { scale: 1 });
+      const [atTwo] = await pdf2image(input, { scale: 2 });
+
+      assert.equal(size(atOne!), '595x841');
+      assert.equal(size(atTwo!), '1190x1683');
+    });
+
+    /**
+     * example-page-sizes.pdf is a hand written two page pdf whose pages have
+     * different MediaBox sizes. The canvas of the first page is pooled and
+     * handed to the second, so it has to be resized on the way.
+     */
+    it('should resize a pooled canvas for a page of another size', async () => {
+      const input = path.join('test', 'example-page-sizes.pdf');
+
+      const images = await pdf2image(input, { scale: 1 });
+
+      assert.deepEqual(images.map(size), ['200x100', '100x300']);
     });
   });
 });
