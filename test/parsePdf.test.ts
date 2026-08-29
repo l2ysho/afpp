@@ -153,4 +153,59 @@ describe('parsePdf', () => {
       );
     });
   });
+  describe('callback validation', () => {
+    it('should reject when no callback is given', async () => {
+      const input = path.join('test', 'example.pdf');
+
+      await assert.rejects(
+        // @ts-expect-error testing a missing callback
+        parsePdf(input, {}),
+        {
+          message: 'Invalid callback type: undefined',
+          name: 'Error',
+        },
+      );
+    });
+
+    it('should reject a callback that is not a function', async () => {
+      const input = path.join('test', 'example.pdf');
+
+      await assert.rejects(
+        // @ts-expect-error testing an invalid callback
+        parsePdf(input, {}, 'not a function'),
+        {
+          message: 'Invalid callback type: string',
+          name: 'Error',
+        },
+      );
+    });
+  });
+
+  describe('page content type', () => {
+    it('should hand text pages to the callback as a string', async () => {
+      const input = path.join('test', 'example.pdf');
+
+      const types = await parsePdf(input, {}, (content) =>
+        Buffer.isBuffer(content) ? 'buffer' : 'string',
+      );
+
+      assert.deepEqual(
+        types,
+        Array.from({ length: 9 }, () => 'string'),
+      );
+    });
+
+    it('should render a page without text and hand it over as a buffer', async () => {
+      const input = path.join('test', 'example-img.pdf');
+
+      const types = await parsePdf(input, {}, (content) =>
+        Buffer.isBuffer(content) ? 'buffer' : 'string',
+      );
+
+      assert.deepEqual(
+        types,
+        Array.from({ length: 9 }, () => 'buffer'),
+      );
+    });
+  });
 });
