@@ -1,0 +1,137 @@
+name: Mutation testing
+
+on:
+  pull_request:
+    branches:
+      - main
+      - beta
+    paths:
+      - 'src/**'
+      - 'test/**'
+      - 'stryker.config.mjs'
+      - 'package.json'
+  schedule:
+    # Monday 03:00 UTC.
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+# The incremental file lets a pull request test only the mutants its diff
+# touches. The scheduled run rebuilds the file from scratch and saves the cache
+# that the pull request runs read. On a cache miss the pull request simply runs
+# every mutant, which is slow but correct.
+env:
+  CACHE_KEY_PREFIX: stryker-incremental-main-
+
+jobs:
+  incremental:
+    name: Incremental (pull request)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 'lts/*'
+      - name: Enable corepack
+        run: corepack enable
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.0.10
+        with:
+          run_install: false
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Restore the incremental file
+        uses: actions/cache/restore@v6.1.0
+        with:
+          path: reports/stryker-incremental.json
+          key: ${{ env.CACHE_KEY_PREFIX }}
+          restore-keys: ${{ env.CACHE_KEY_PREFIX }}
+      - name: Run mutation tests
+        run: pnpm test:mutation --incremental
+      - name: Write job summary
+        if: always()
+        run: |
+          report=reports/mutation/mutation.json
+          if [ -f "$report" ]; then
+            node .github/scripts/mutation-summary.mjs "$report" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: mutation-report
+          path: reports/mutation
+          retention-days: 14
+
+  full:
+    name: Full (scheduled)
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 'lts/*'
+      - name: Enable corepack
+        run: corepack enable
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.0.10
+        with:
+          run_install: false
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run mutation tests
+        run: pnpm test:mutation --incremental --force
+      - name: Build the badge
+        run: node .github/scripts/mutation-badge.mjs reports/mutation/mutation.json reports/mutation/badge.json
+      - name: Write job summary
+        if: always()
+        run: |
+          report=reports/mutation/mutation.json
+          if [ -f "$report" ]; then
+            node .github/scripts/mutation-summary.mjs "$report" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: mutation-report
+          path: reports/mutation
+          retention-days: 30
+      - name: Save the incremental file
+        uses: actions/cache/save@v6.1.0
+        with:
+          path: reports/stryker-incremental.json
+          key: ${{ env.CACHE_KEY_PREFIX }}${{ github.run_id }}
+      - name: Package the report for GitHub Pages
+        uses: actions/upload-pages-artifact@v5.0.0
+        with:
+          path: reports/mutation
+
+  publish:
+    name: Publish the report
+    needs: full
+    # The github-pages environment only accepts deployments from the default
+    # branch, so a run dispatched from a branch stops here instead of failing.
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v5.0.0

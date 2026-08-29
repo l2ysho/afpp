@@ -140,3 +140,7 @@ benchmark/*/output/
 
 !.zed
 package-lock.json
+
+# mutation testing
+.stryker-tmp/
+reports/
