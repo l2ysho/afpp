@@ -68,7 +68,7 @@
     "@napi-rs/canvas": "1.0.8",
     "@stryker-mutator/core": "10.0.0",
     "@stryker-mutator/tap-runner": "10.0.0",
-    "@types/node": "26.4.0",
+    "@types/node": "26.4.1",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "@voxpelli/node-test-pretty-reporter": "1.1.2",
     "c8": "12.0.0",
