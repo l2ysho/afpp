@@ -2,6 +2,7 @@
   "branches": ["main", { "name": "beta", "prerelease": true }],
   "plugins": [
     "@semantic-release/commit-analyzer",
+    ["@semantic-release/exec", { "analyzeCommitsCmd": "echo \"$FORCE_BUMP\"" }],
     "@semantic-release/release-notes-generator",
     ["@semantic-release/npm", { "provenance": true }],
     "@semantic-release/github"
