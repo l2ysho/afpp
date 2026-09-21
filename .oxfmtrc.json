@@ -13,12 +13,6 @@
       "external",
       ["internal", "subpath"],
       ["parent", "sibling", "index"]
-    ],
-    "customGroups": [
-      {
-        "groupName": "internal",
-        "pattern": "^#afpp/.*"
-      }
     ]
   }
 }
