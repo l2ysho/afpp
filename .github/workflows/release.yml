@@ -5,6 +5,17 @@ on:
       - main
       - beta
   workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Version bump type (auto uses commit messages)'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - patch
+          - minor
+          - major
 
 permissions:
   contents: read
@@ -69,4 +80,5 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-        run: pnpm dlx semantic-release
+          FORCE_BUMP: ${{ github.event.inputs.bump != 'auto' && github.event.inputs.bump || '' }}
+        run: pnpm exec semantic-release
