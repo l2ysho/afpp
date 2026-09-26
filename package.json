@@ -77,7 +77,7 @@
     "lint-staged": "17.5.1",
     "oxfmt": "0.66.0",
     "oxlint": "1.83.0",
-    "oxlint-tsgolint": "7.0.2001",
+    "oxlint-tsgolint": "7.0.2002",
     "semantic-release": "25.0.9",
     "tsc-alias": "1.9.5",
     "tsx": "4.23.13",
