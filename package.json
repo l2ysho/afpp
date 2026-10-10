@@ -76,7 +76,7 @@
     "husky": "9.1.7",
     "lint-staged": "17.6.0",
     "oxfmt": "0.70.0",
-    "oxlint": "1.85.0",
+    "oxlint": "1.86.0",
     "oxlint-tsgolint": "7.0.2003",
     "semantic-release": "25.0.9",
     "tsc-alias": "1.9.7",
