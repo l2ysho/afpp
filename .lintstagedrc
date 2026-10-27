@@ -1,4 +1,7 @@
 {
   "*.{ts,tsx,js,json,yaml,md}": ["oxfmt --no-error-on-unmatched-pattern"],
-  "{src,test}/**/*.{ts,tsx}": ["oxlint"]
+  "{src,test}/**/*.{ts,tsx}": ["oxlint"],
+  ".github/workflows/*.{yml,yaml}": [
+    "sh -c 'command -v actionlint >/dev/null || { echo \"actionlint not installed, skipping\"; exit 0; }; actionlint \"$@\"' actionlint"
+  ]
 }
