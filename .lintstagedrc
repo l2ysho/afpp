@@ -3,5 +3,8 @@
   "{src,test}/**/*.{ts,tsx}": ["oxlint"],
   ".github/workflows/*.{yml,yaml}": [
     "sh -c 'command -v actionlint >/dev/null || { echo \"actionlint not installed, skipping\"; exit 0; }; actionlint \"$@\"' actionlint"
+  ],
+  ".github/{workflows/*.{yml,yaml},dependabot.{yml,yaml}}": [
+    "sh -c 'command -v zizmor >/dev/null || { echo \"zizmor not installed, skipping\"; exit 0; }; zizmor --offline \"$@\"' zizmor"
   ]
 }

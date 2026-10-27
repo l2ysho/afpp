@@ -48,6 +48,7 @@
     "lint": "oxlint . --type-aware",
     "lint:fix": "oxlint . --fix --type-aware",
     "lint:actions": "actionlint",
+    "lint:actions:security": "zizmor --offline .",
     "postbuild": "tsc-alias -p tsconfig.build.json",
     "prebuild": "rm -rf dist",
     "prepare": "husky",
