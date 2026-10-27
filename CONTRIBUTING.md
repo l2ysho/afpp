@@ -49,7 +49,7 @@ If tests fail locally, please do not open a pull request until they pass.
 
 ### Coverage
 
-Coverage is collected automatically in CI. Local coverage may be generated if needed:
+CI fails a pull request if coverage of `src` drops below 100% of lines, statements and functions, or 95% of branches. The thresholds are in `.c8rc.json`. Run the same check locally:
 
 ```sh
 npm run test:coverage
