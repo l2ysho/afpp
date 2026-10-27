@@ -1,0 +1,19 @@
+name: Lint workflows
+
+on:
+  pull_request:
+    branches:
+      - main
+      - beta
+
+jobs:
+  actionlint:
+    name: actionlint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+      - name: Run actionlint
+        uses: docker://rhysd/actionlint:1.7.12
+        with:
+          args: -color
