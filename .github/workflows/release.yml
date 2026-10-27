@@ -81,6 +81,6 @@ jobs:
         run: pnpm build
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FORCE_BUMP: ${{ github.event.inputs.bump != 'auto' && github.event.inputs.bump || '' }}
         run: pnpm exec semantic-release
