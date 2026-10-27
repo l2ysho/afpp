@@ -1,3 +1,5 @@
 allowBuilds:
   esbuild: true
 shellEmulator: true
+overrides:
+  qs: ^6.15.2
