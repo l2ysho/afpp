@@ -49,7 +49,7 @@ If tests fail locally, please do not open a pull request until they pass.
 
 ### Coverage
 
-Coverage is collected automatically in CI. Local coverage may be generated if needed:
+CI fails a pull request if coverage of `src` drops below 100% of lines, statements and functions, or 95% of branches. The thresholds are in `.c8rc.json`. Run the same check locally:
 
 ```sh
 npm run test:coverage
@@ -106,6 +106,8 @@ Formatting and linting are enforced automatically.
 ### Pull Requests
 
 - Keep PRs focused and minimal
+- Use a conventional commit PR title (`fix: handle empty pages`). PRs are squash-merged, so the title becomes the commit that semantic-release reads. CI checks it.
+- Each PR gets a preview build from pkg.pr.new; the bot comment shows how to install it
 - Include tests for bug fixes or new functionality
 - Update documentation if public behavior changes
 - Reference related issues where applicable

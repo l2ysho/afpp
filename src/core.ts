@@ -72,7 +72,7 @@ export interface AfppParseOptions {
   scale?: number;
 }
 
-export interface CanvasAndContext {
+interface CanvasAndContext {
   canvas: Canvas;
   context: CanvasRenderingContext2D;
 }
@@ -85,7 +85,7 @@ export type PageProcessor<T> = (
   pageCount: number,
 ) => Promise<T> | T;
 
-export interface PdfCanvasFactory {
+interface PdfCanvasFactory {
   create(width: number, height: number): CanvasAndContext;
   destroy(canvasAndContext: CanvasAndContext): void;
   reset(
