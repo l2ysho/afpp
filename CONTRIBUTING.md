@@ -106,6 +106,8 @@ Formatting and linting are enforced automatically.
 ### Pull Requests
 
 - Keep PRs focused and minimal
+- Use a conventional commit PR title (`fix: handle empty pages`). PRs are squash-merged, so the title becomes the commit that semantic-release reads. CI checks it.
+- Each PR gets a preview build from pkg.pr.new; the bot comment shows how to install it
 - Include tests for bug fixes or new functionality
 - Update documentation if public behavior changes
 - Reference related issues where applicable
