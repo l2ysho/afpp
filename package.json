@@ -36,8 +36,8 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -49,6 +49,8 @@
     "lint:fix": "oxlint . --fix --type-aware",
     "lint:actions": "actionlint",
     "lint:actions:security": "zizmor --offline .",
+    "lint:deps": "knip",
+    "lint:package": "publint --strict && attw --pack . --profile esm-only",
     "postbuild": "tsc-alias -p tsconfig.build.json",
     "prebuild": "rm -rf dist",
     "prepare": "husky",
@@ -65,10 +67,12 @@
     "pdfjs-dist": "6.4.299"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.5",
     "@commitlint/cli": "21.2.3",
     "@commitlint/config-conventional": "21.2.3",
     "@napi-rs/canvas": "1.0.11",
     "@semantic-release/exec": "7.1.0",
+    "@stryker-mutator/api": "10.0.0",
     "@stryker-mutator/core": "10.0.0",
     "@stryker-mutator/tap-runner": "10.0.0",
     "@types/node": "26.6.5",
@@ -76,10 +80,12 @@
     "@voxpelli/node-test-pretty-reporter": "1.1.2",
     "c8": "12.0.0",
     "husky": "9.1.7",
+    "knip": "6.43.0",
     "lint-staged": "17.6.0",
     "oxfmt": "0.73.0",
     "oxlint": "1.88.0",
     "oxlint-tsgolint": "7.0.2004",
+    "publint": "0.3.25",
     "semantic-release": "25.0.9",
     "tsc-alias": "1.9.7",
     "tsx": "4.23.15",

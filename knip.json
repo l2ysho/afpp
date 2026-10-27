@@ -1,0 +1,10 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": ["benchmark/**/*.ts", "examples/*.ts"],
+  "ignoreBinaries": ["actionlint", "zizmor"],
+  "ignoreDependencies": [
+    "@voxpelli/node-test-pretty-reporter",
+    "pdf-parse",
+    "pdf2pic"
+  ]
+}
