@@ -12,7 +12,9 @@ export default {
   // lets the runner execute the TypeScript sources without a build step.
   testRunner: 'tap',
   tap: {
-    testFiles: ['test/**/*.test.ts'],
+    // fast-check picks a new seed each run, which would make mutant results
+    // flip between runs and void the incremental cache.
+    testFiles: ['test/**/!(fuzz).test.ts'],
     nodeArgs: ['--import', 'tsx', '--test-reporter=tap'],
   },
 
