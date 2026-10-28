@@ -129,17 +129,17 @@ async function robustPdfProcessing() {
   }
 
   // Try each password
-  for (const password of possiblePasswords) {
+  for (const [attempt, password] of possiblePasswords.entries()) {
     try {
       const pages = await pdf2string(ENCRYPTED_PDF_PATH, { password });
-      console.log(`Success with password "${password}": ${pages.length} pages`);
+      console.log(`Success on attempt ${attempt + 1}: ${pages.length} pages`);
       return pages;
     } catch (error) {
       if (
         error instanceof Error &&
         error.message.includes('Incorrect Password')
       ) {
-        console.log(`Password "${password}" failed`);
+        console.log(`Attempt ${attempt + 1} failed`);
         continue;
       }
       throw error; // Re-throw other errors
