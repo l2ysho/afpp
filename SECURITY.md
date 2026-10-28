@@ -14,7 +14,7 @@ If you discover a security vulnerability, please do not open a public GitHub iss
 
 Instead, report it privately by one of the following means:
 
-- Open a GitHub Security Advisory (preferred)
+- Open a GitHub Security Advisory (preferred): https://github.com/l2ysho/afpp/security/advisories/new
 - Contact the maintainer directly via GitHub
 
 Please include as much detail as possible:
