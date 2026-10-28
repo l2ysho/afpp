@@ -3,3 +3,4 @@ allowBuilds:
 shellEmulator: true
 overrides:
   qs: ^6.15.2
+  zod: ^4.6.6
