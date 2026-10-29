@@ -74,6 +74,8 @@ All parsing functions accept the same input types:
 - `Uint8Array`
 - `URL`
 
+A `URL` input is fetched by the library (`http:`, `https:` and `file:` are supported). Do not pass URLs that come from untrusted users; see [Processing untrusted PDFs](#processing-untrusted-pdfs).
+
 ### Extract Text from a PDF
 
 ```ts
@@ -178,12 +180,13 @@ const result = await parsePdf(buffer, {
 
 ### AfppParseOptions
 
-| Option          | Type                                  | Default | Description                                                                        |
-| --------------- | ------------------------------------- | ------- | ---------------------------------------------------------------------------------- |
-| `concurrency`   | `number \| 'auto'`                    | `1`     | Number of pages processed in parallel. Use `'auto'` for CPU-based scaling.         |
-| `imageEncoding` | `'png' \| 'jpeg' \| 'webp' \| 'avif'` | `'png'` | Output format for rendered images                                                  |
-| `password`      | `string`                              | —       | Password for encrypted PDFs                                                        |
-| `scale`         | `number`                              | `1.0`   | Rendering scale. Valid range: 0.1–10. (1.0 = 72 DPI, 2.0 = 144 DPI, 3.0 = 216 DPI) |
+| Option            | Type                                  | Default   | Description                                                                                                                         |
+| ----------------- | ------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `concurrency`     | `number \| 'auto'`                    | `1`       | Number of pages processed in parallel. Use `'auto'` for CPU-based scaling.                                                          |
+| `imageEncoding`   | `'png' \| 'jpeg' \| 'webp' \| 'avif'` | `'png'`   | Output format for rendered images                                                                                                   |
+| `maxCanvasPixels` | `number`                              | `2 ** 27` | Largest page (width × height in pixels, after `scale`) that is rendered; larger pages reject. Embedded images above it are skipped. |
+| `password`        | `string`                              | —         | Password for encrypted PDFs                                                                                                         |
+| `scale`           | `number`                              | `1.0`     | Rendering scale. Valid range: 0.1–10. (1.0 = 72 DPI, 2.0 = 144 DPI, 3.0 = 216 DPI)                                                  |
 
 ### PdfMetadata
 
@@ -200,6 +203,19 @@ Returned by `getPdfMetadata`. All fields except `pageCount` and `isEncrypted` ar
 | `producer`         | `string?` | PDF producer application                         |
 | `creationDate`     | `Date?`   | Document creation date                           |
 | `modificationDate` | `Date?`   | Document last modification date                  |
+
+---
+
+## Processing untrusted PDFs
+
+PDFs are a complex format, and a crafted file can be built to use as much CPU and memory as possible. When you parse files uploaded by users or fetched from third parties:
+
+- **Never pass untrusted URLs.** A `URL` input is fetched from your server, so a user-supplied URL can reach internal services or read local files through `file:`. Download the file yourself with your own allow-list, size limit and timeout, then pass the `Buffer`.
+- **Limit the input size** before parsing, for example by rejecting uploads above a few tens of megabytes.
+- **Keep `maxCanvasPixels` as low as your use case allows.** It bounds the memory and CPU of rendering one page. The default fits an A3 page at `scale: 10`; lower it if you only render at small scales.
+- **Keep `concurrency` low.** Peak memory grows with each page rendered in parallel.
+- **Run parsing in isolation** for hostile input: a [worker thread](https://nodejs.org/api/worker_threads.html) with `resourceLimits`, or a child process with `--max-old-space-size`, that you terminate after a timeout. afpp has no built-in timeout, and native canvas memory is not covered by the V8 heap limit, so a container memory limit is the strongest bound.
+- **Prefer text extraction** (`pdf2string`, `streamPdf2string`) when you don't need images. It never allocates a canvas.
 
 ---
 

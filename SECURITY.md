@@ -48,11 +48,14 @@ The following are considered in scope:
 - Denial-of-service vectors via crafted input
 - Incorrect handling of encrypted PDFs
 
+Before reporting a resource-exhaustion issue, check whether it is already bounded by the hardening steps in the README's [Processing untrusted PDFs](https://github.com/l2ysho/afpp#processing-untrusted-pdfs) section, such as `maxCanvasPixels`.
+
 The following are out of scope:
 
 - Issues caused by unsupported Node.js versions
 - Vulnerabilities in upstream PDF specifications themselves
 - Misuse of the library outside documented behavior
+- Server-side request forgery through `URL` inputs: the library fetches the URLs it is given by design
 
 ---
 
