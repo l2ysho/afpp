@@ -68,7 +68,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.5",
-    "@commitlint/cli": "21.2.3",
+    "@commitlint/cli": "21.2.4",
     "@commitlint/config-conventional": "21.2.4",
     "@napi-rs/canvas": "1.0.13",
     "@semantic-release/exec": "7.1.0",
