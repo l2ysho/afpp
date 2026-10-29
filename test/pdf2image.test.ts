@@ -132,6 +132,42 @@ describe('pdf2image', () => {
     });
   });
 
+  describe('maxCanvasPixels', () => {
+    it('should reject a page larger than the default limit before allocating it', async () => {
+      const input = path.join('test', 'example-oversized-page.pdf');
+      await assert.rejects(pdf2image(input), {
+        message:
+          'Page 1 is too large to render: 20000x20000 pixels exceeds maxCanvasPixels (134217728).',
+        name: 'Error',
+      });
+    });
+
+    it('should reject a page larger than a custom limit', async () => {
+      const input = path.join('test', 'example.pdf');
+      await assert.rejects(pdf2image(input, { maxCanvasPixels: 1000 }), {
+        message:
+          'Page 1 is too large to render: 596x842 pixels exceeds maxCanvasPixels (1000).',
+        name: 'Error',
+      });
+    });
+
+    it('should render a page exactly at the limit', async () => {
+      const input = path.join('test', 'example.pdf');
+      const data = await pdf2image(input, { maxCanvasPixels: 596 * 842 });
+      assert.equal(data.length, 9);
+    });
+
+    for (const value of [0, -1, 1.5, NaN]) {
+      it(`should reject maxCanvasPixels of ${value}`, async () => {
+        const input = path.join('test', 'example.pdf');
+        await assert.rejects(pdf2image(input, { maxCanvasPixels: value }), {
+          message: `Invalid maxCanvasPixels value: ${value}. Must be a positive integer.`,
+          name: 'Error',
+        });
+      });
+    }
+  });
+
   describe('concurrency = auto', () => {
     it('should process pdf with auto concurrency', async () => {
       const input = path.join('test', 'example.pdf');

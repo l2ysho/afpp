@@ -58,6 +58,16 @@ export interface AfppParseOptions {
   imageEncoding?: ImageEncoding;
 
   /**
+   * Maximum size, in pixels (width × height), of a rendered page canvas and of
+   * an embedded image. Rendering a page larger than this rejects with an error,
+   * and embedded images larger than this are skipped, so a crafted PDF cannot
+   * make the process allocate unbounded memory. Defaults to 2^27 (~134M pixels,
+   * ~512 MiB per canvas), which fits an A3 page at scale 10.
+   * @default 134217728
+   */
+  maxCanvasPixels?: number;
+
+  /**
    * Password for encrypted pdf files.
    */
   password?: string;
@@ -71,6 +81,8 @@ export interface AfppParseOptions {
    */
   scale?: number;
 }
+
+const DEFAULT_MAX_CANVAS_PIXELS = 2 ** 27;
 
 interface CanvasAndContext {
   canvas: Canvas;
@@ -140,6 +152,23 @@ const extractText = (items: TextItem[]): string => {
   return parts.join(' ');
 };
 
+const getPageViewport = (
+  page: PDFPageProxy,
+  scale: number,
+  maxCanvasPixels: number,
+) => {
+  const viewport = page.getViewport({ scale });
+  const pixels = Math.ceil(viewport.width) * Math.ceil(viewport.height);
+
+  if (pixels > maxCanvasPixels) {
+    throw new Error(
+      `Page ${page.pageNumber} is too large to render: ${Math.ceil(viewport.width)}x${Math.ceil(viewport.height)} pixels exceeds maxCanvasPixels (${maxCanvasPixels}).`,
+    );
+  }
+
+  return viewport;
+};
+
 const processPdfPageTypeMixed = async <T>(
   page: PDFPageProxy,
   canvasFactory: PdfCanvasFactory,
@@ -147,6 +176,7 @@ const processPdfPageTypeMixed = async <T>(
   pageCount: number,
   scale: number,
   encoding: ImageEncoding,
+  maxCanvasPixels: number,
   callback: PageProcessor<T>,
 ): Promise<T> => {
   const textContent = await page.getTextContent({
@@ -155,7 +185,7 @@ const processPdfPageTypeMixed = async <T>(
   const items = textContent.items as TextItem[];
 
   if (items.length === 0) {
-    const viewport = page.getViewport({ scale });
+    const viewport = getPageViewport(page, scale, maxCanvasPixels);
 
     const canvasAndContext = canvasFactory.create(
       viewport.width,
@@ -195,8 +225,9 @@ const processPdfPageTypeImage = async (
   pageCount: number,
   scale: number,
   encoding: ImageEncoding,
+  maxCanvasPixels: number,
 ) => {
-  const viewport = page.getViewport({ scale });
+  const viewport = getPageViewport(page, scale, maxCanvasPixels);
 
   const canvasAndContext = canvasFactory.create(
     viewport.width,
@@ -253,7 +284,24 @@ const validateParameters = async (
     throw new Error(`Unsupported image encoding format: '${encoding}'`);
   }
 
-  return { concurrency, documentInitParameters, encoding, scale };
+  const maxCanvasPixels = options?.maxCanvasPixels ?? DEFAULT_MAX_CANVAS_PIXELS;
+
+  if (!Number.isSafeInteger(maxCanvasPixels) || maxCanvasPixels < 1) {
+    throw new Error(
+      `Invalid maxCanvasPixels value: ${maxCanvasPixels}. Must be a positive integer.`,
+    );
+  }
+
+  // pdf.js decodes embedded images at full size before drawing them, so cap those too
+  documentInitParameters.maxImageSize = maxCanvasPixels;
+
+  return {
+    concurrency,
+    documentInitParameters,
+    encoding,
+    maxCanvasPixels,
+    scale,
+  };
 };
 
 /**
@@ -289,8 +337,13 @@ export async function parsePdfFile<T>(
   options?: AfppParseOptions,
   callback?: PageProcessor<T>,
 ): Promise<Buffer[] | string[] | T[]> {
-  const { concurrency, documentInitParameters, encoding, scale } =
-    await validateParameters(input, options);
+  const {
+    concurrency,
+    documentInitParameters,
+    encoding,
+    maxCanvasPixels,
+    scale,
+  } = await validateParameters(input, options);
 
   const pooledFactory =
     type !== PROCESSING_TYPE.TEXT
@@ -328,6 +381,7 @@ export async function parsePdfFile<T>(
             numPages,
             scale,
             encoding,
+            maxCanvasPixels,
             callback,
           );
           results[i] = result;
@@ -369,6 +423,7 @@ export async function parsePdfFile<T>(
             numPages,
             scale,
             encoding,
+            maxCanvasPixels,
           );
           page.cleanup();
         });
@@ -413,10 +468,8 @@ export async function* streamPdfFile(
   input: Buffer | string | Uint8Array | URL,
   options?: AfppParseOptions,
 ): AsyncGenerator<StreamingResult<Buffer | string>> {
-  const { documentInitParameters, encoding, scale } = await validateParameters(
-    input,
-    options,
-  );
+  const { documentInitParameters, encoding, maxCanvasPixels, scale } =
+    await validateParameters(input, options);
 
   const pooledFactory =
     type === PROCESSING_TYPE.IMAGE ? new PooledCanvasFactory(1) : undefined;
@@ -444,6 +497,7 @@ export async function* streamPdfFile(
           numPages,
           scale,
           encoding,
+          maxCanvasPixels,
         );
         yield { data, pageCount: numPages, pageNumber: pageNum };
       } else {
