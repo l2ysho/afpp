@@ -9,9 +9,9 @@
 # Run with custom number of runs:
 #   docker run --rm -v $(pwd)/benchmark/pdf-parse/output:/app/benchmark/pdf-parse/output pdf-parse-benchmark 20
 
-FROM node:25-slim@sha256:81db02c4b671288a03915da9534dbd54f96d0e7c24d80ccc54f5b36b2e684370
+FROM node:26-slim@sha256:e4db4c914bf8ad241bd24804fc25d272d89bad97e68cdc8a1414862790a02c39
 
-RUN corepack enable
+RUN npm install -g pnpm@11.1.3
 
 WORKDIR /app
 
