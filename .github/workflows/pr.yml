@@ -120,9 +120,12 @@ jobs:
         run: pnpm lint:package
 
   # Not part of All checks: it needs the pkg.pr.new GitHub App on the repository.
+  # Fork pull requests are skipped so nobody outside the repository can publish
+  # a preview package under its name.
   preview:
     name: Preview package
     needs: package
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
