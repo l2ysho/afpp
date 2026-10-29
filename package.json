@@ -88,7 +88,7 @@
     "oxlint-tsgolint": "7.0.2004",
     "publint": "0.3.25",
     "semantic-release": "25.0.9",
-    "tsc-alias": "1.9.8",
+    "tsc-alias": "1.9.9",
     "tsx": "4.23.15",
     "typescript": "7.0.2"
   },
