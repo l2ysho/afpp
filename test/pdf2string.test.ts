@@ -6,6 +6,14 @@ import { describe, it } from 'node:test';
 import { pdf2string } from '#afpp/src/index.js';
 
 describe('pdf2string', () => {
+  describe('input = page larger than maxCanvasPixels', () => {
+    it('should extract text without rendering the page', async () => {
+      const input = path.join('test', 'example-oversized-page.pdf');
+      const data = await pdf2string(input);
+      assert.deepEqual(data, ['']);
+    });
+  });
+
   describe('input != string, buffer, Uint8Array or URL  ', () => {
     it('promise should be rejected with specific error', async () => {
       // @ts-expect-error It should throw error because input is required

@@ -21,8 +21,11 @@ jobs:
         uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Enable auto-merge for patch/minor updates
-        if: steps.metadata.outputs.update-type != 'version-update:semver-major'
+      # Runtime dependencies ship to every user, so they always get a human review.
+      - name: Enable auto-merge for patch/minor dev updates
+        if: >-
+          steps.metadata.outputs.update-type != 'version-update:semver-major' &&
+          steps.metadata.outputs.dependency-type != 'direct:production'
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}

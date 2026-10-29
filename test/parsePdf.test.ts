@@ -28,6 +28,20 @@ describe('parsePdf', () => {
     });
   });
 
+  describe('input = page larger than maxCanvasPixels', () => {
+    it('should reject when the page has no text and must be rendered', async () => {
+      const input = path.join('test', 'example-oversized-page.pdf');
+      await assert.rejects(
+        parsePdf(input, (content) => content),
+        {
+          message:
+            'Page 1 is too large to render: 20000x20000 pixels exceeds maxCanvasPixels (134217728).',
+          name: 'Error',
+        },
+      );
+    });
+  });
+
   describe('input = valid path to encrypted file as string', () => {
     it('should return valid string parsed from pdf', async () => {
       const input = path.join('test', 'example-encrypted.pdf');

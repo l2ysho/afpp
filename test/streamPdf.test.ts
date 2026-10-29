@@ -165,6 +165,24 @@ describe('streamPdf2image', () => {
     });
   });
 
+  describe('input = page larger than maxCanvasPixels', () => {
+    it('should reject before yielding the page', async () => {
+      const input = path.join('test', 'example-oversized-page.pdf');
+      await assert.rejects(
+        async () => {
+          for await (const _page of streamPdf2image(input)) {
+            assert.fail('no page should be yielded');
+          }
+        },
+        {
+          message:
+            'Page 1 is too large to render: 20000x20000 pixels exceeds maxCanvasPixels (134217728).',
+          name: 'Error',
+        },
+      );
+    });
+  });
+
   describe('early termination', () => {
     it('should allow breaking out of loop early', async () => {
       const input = path.join('test', 'example.pdf');
