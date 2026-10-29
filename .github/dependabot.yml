@@ -19,3 +19,6 @@ updates:
       interval: 'weekly'
     cooldown:
       default-days: 7
+    ignore:
+      - dependency-name: 'node'
+        versions: ['~> 27.0', '~> 29.0', '~> 31.0', '~> 33.0']

@@ -9,7 +9,7 @@
 # Run with custom number of runs:
 #   docker run --rm -v $(pwd)/benchmark/pdf2pic/output:/app/benchmark/pdf2pic/output pdf2pic-benchmark 20
 
-FROM node:22-slim@sha256:4b150b48b4116e2a22f2c39cc27025fbf4f153e2078fd3b14d159fdb5c7279da
+FROM node:26-slim@sha256:e4db4c914bf8ad241bd24804fc25d272d89bad97e68cdc8a1414862790a02c39
 
 # Install GraphicsMagick and Ghostscript (required by pdf2pic)
 RUN apt-get update && apt-get install -y \
@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
     ghostscript \
     && rm -rf /var/lib/apt/lists/*
 
-RUN corepack enable
+RUN npm install -g pnpm@11.1.3
 
 WORKDIR /app
 
