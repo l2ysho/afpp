@@ -9,7 +9,6 @@ on:
       - 'src/**'
       - 'test/**'
       - 'stryker.config.mjs'
-      - 'package.json'
   schedule:
     # Monday 03:00 UTC.
     - cron: '0 3 * * 1'
