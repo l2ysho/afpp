@@ -4,5 +4,7 @@ shellEmulator: true
 # Refuse versions published less than 3 days ago (in minutes); most malicious releases are pulled within hours.
 minimumReleaseAge: 4320
 overrides:
+  glob: ^14.0.0
+  minimatch: ^11.0.1
   qs: ^6.15.2
   zod: ^4.6.6
