@@ -8,6 +8,7 @@
     "sh -c 'command -v zizmor >/dev/null || { echo \"zizmor not installed, skipping\"; exit 0; }; zizmor --offline \"$@\"' zizmor"
   ],
   "*": [
+    "secretlint --maskSecrets",
     "sh -c 'command -v typos >/dev/null || { echo \"typos not installed, skipping\"; exit 0; }; typos --force-exclude \"$@\"' typos"
   ]
 }

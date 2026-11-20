@@ -34,6 +34,8 @@ jobs:
         run: pnpm lint
       - name: Typecheck
         run: pnpm typecheck
+      - name: Secrets
+        run: pnpm lint:secrets
       - name: Unused files, exports and dependencies
         run: pnpm lint:deps
       - name: Spelling
