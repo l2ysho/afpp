@@ -22,10 +22,12 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       # Runtime dependencies ship to every user, so they always get a human review.
-      - name: Enable auto-merge for patch/minor dev updates
+      # Dependabot tags every action as direct:production, but actions never ship.
+      - name: Enable auto-merge for patch/minor dev and Actions updates
         if: >-
           steps.metadata.outputs.update-type != 'version-update:semver-major' &&
-          steps.metadata.outputs.dependency-type != 'direct:production'
+          (steps.metadata.outputs.dependency-type != 'direct:production' ||
+           steps.metadata.outputs.package-ecosystem == 'github_actions')
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
