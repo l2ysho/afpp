@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: 'lts/*'
       - name: Setup pnpm
-        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
         with:
           run_install: false
       - name: Install dependencies
@@ -39,7 +39,7 @@ jobs:
       - name: Unused files, exports and dependencies
         run: pnpm lint:deps
       - name: Spelling
-        uses: crate-ci/typos@7f9d0819ca1c008ade73f4b41fa9d258d48f605b # v1.51.1
+        uses: crate-ci/typos@276087d9a4f06398b3e04825487805e2d7375888 # v1.52.2
 
   test:
     name: Test (${{ matrix.os }}, Node ${{ matrix.node }})
@@ -64,7 +64,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - name: Setup pnpm
-        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
         with:
           run_install: false
       - name: Install dependencies
@@ -85,7 +85,7 @@ jobs:
         with:
           node-version: 'lts/*'
       - name: Setup pnpm
-        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
         with:
           run_install: false
       - name: Install dependencies
@@ -111,7 +111,7 @@ jobs:
         with:
           node-version: 'lts/*'
       - name: Setup pnpm
-        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
         with:
           run_install: false
       - name: Install dependencies
@@ -139,7 +139,7 @@ jobs:
         with:
           node-version: 'lts/*'
       - name: Setup pnpm
-        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
         with:
           run_install: false
       - name: Install dependencies
